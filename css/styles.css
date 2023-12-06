@@ -40,12 +40,27 @@ body {
 }
 
 footer {
-  font-size: 0.8rem;
-  text-align: left;
-  margin-left: 10px;
-  margin-bottom: 10px;
-  color: black;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  text-align: right;
 }
+
+footer .copyright {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  text-align: left;
+}
+
+footer .social-links a {
+  color: black; /* Icon color */
+  margin-left: 10px;
+  font-size: 24px; /* Icon size */
+}
+
+/* Additional styling as needed */
+
 
 h1, p {
   margin: 0;
