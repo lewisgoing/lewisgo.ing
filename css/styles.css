@@ -1,5 +1,8 @@
+body, h1, h2, h3 {
+  font-family: 'Noto Sans', sans-serif;
+}
+
 body {
-  /* Adjusted positions and sizes of radial gradients */
   background: 
     radial-gradient(circle at 20% 50%, #F6DC68 40%, transparent 40%),
     radial-gradient(circle at 40% 50%, #CC70CE 40%, transparent 40%),
@@ -13,11 +16,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Noto sans', sans-serif;
-}
-
-h1, h2, h3 {
-  font-family: 'Noto sans', sans-serif;
+  transform: translate3d(0,0,0);
 }
 
 @keyframes moveWaves {
@@ -29,7 +28,6 @@ h1, h2, h3 {
   }
 }
 
-
 #about {
   flex-grow: 1;
   display: flex;
@@ -38,13 +36,11 @@ h1, h2, h3 {
   align-items: center;
   text-align: center;
   color: white;
-  /* Add a text shadow for better visibility */
   text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-
 footer {
-  font-size: .8em;
+  font-size: 0.8rem;
   text-align: left;
   margin-left: 10px;
   margin-bottom: 10px;
@@ -54,4 +50,3 @@ footer {
 h1, p {
   margin: 0;
 }
-
