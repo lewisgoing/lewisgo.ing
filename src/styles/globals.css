@@ -21,7 +21,131 @@ body {
         #eab308,
         #ec4899
         );
-        
+
         background-size: 300% 300%;
         background-clip: text;
+}
+
+
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 3.9%;
+
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 3.9%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 3.9%;
+
+        --primary: 34 54% 60%;
+        --primary-foreground: 0 0% 98%;
+
+        --secondary: 0 0% 98%;
+        --secondary-foreground: 0 0% 9%;
+
+        --tertiary: 0 0% 96.1%;
+        --tertiary-foreground: 0 0% 9%;
+
+        --muted: 0 0% 96.1%;
+        --muted-foreground: 0 0% 45.1%;
+
+        --accent: 0 0% 96.1%;
+        --accent-foreground: 0 0% 9%;
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 0 0% 89.8%;
+        --input: 0 0% 89.8%;
+        --ring: 34 54% 45%;
+
+        --radius: 0.5rem;
     }
+
+    .dark {
+        --background: 0 0% 3.9%;
+        --foreground: 0 0% 98%;
+
+        --card: 0 0% 3.9%;
+        --card-foreground: 0 0% 98%;
+
+        --popover: 0 0% 3.9%;
+        --popover-foreground: 0 0% 98%;
+
+        --primary: 34 54% 81%;
+        --primary-foreground: 0 0% 9%;
+
+        --secondary: 0 0% 6%;
+        --secondary-foreground: 0 0% 98%;
+
+        --tertiary: 0 0% 14.9%;
+        --tertiary-foreground: 0 0% 98%;
+
+        --muted: 0 0% 14.9%;
+        --muted-foreground: 0 0% 63.9%;
+
+        --accent: 0 0% 14.9%;
+        --accent-foreground: 0 0% 98%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 0 0% 14.9%;
+        --input: 0 0% 14.9%;
+        --ring: 34 54% 81%;
+
+        --radius: 0.5rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+
+.react-grid-item {
+    @apply flex select-none items-center rounded-3xl border border-border bg-secondary !duration-500 hover:scale-[1.025] hover:cursor-grab hover:shadow-lg;
+    transition:
+        transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        all 200ms ease;
+    transition-property: transform, left, top, width, height;
+}
+
+.react-draggable-dragging {
+    @apply !cursor-grabbing;
+}
+
+.react-grid-placeholder {
+    @apply !bg-primary/75 !duration-500;
+}
+
+@keyframes skeleton {
+    0%,
+    100% {
+        @apply bg-muted;
+    }
+    50% {
+        @apply bg-secondary;
+    }
+}
+
+
+article[style*='--react-activity-calendar-level-0:#ebebeb'] {
+    @apply hidden;
+}
+
+svg[width='1372'] {
+    @apply hidden;
+}
+
+/* <Box> styling */
+.my-6.rounded-lg.p-4.bg-secondary.text-center ul {
+    @apply m-0;
+}

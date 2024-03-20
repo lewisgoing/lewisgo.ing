@@ -1,6 +1,7 @@
 import Head from "next/head";
 import NavBar from "../../components/NavBar";
 import Bento from "../../components/Bento";
+import Cursor from "../../components/Cursor";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         {/* <div className="divide-y divide-accent-foreground dark:divide-accent"> */}
           {/* <div className="mx-auto md:-mx-[5vw] lg:-mx-[20vw]"> */}
             <Bento />
+        
           {/* </div> */}
         {/* </div> */}
     </>
