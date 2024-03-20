@@ -3,12 +3,11 @@ import ImageBox from "../assets/ImageBox";
 // import Cursor from "../oldcursor";
 
 const IntroBox = () => {
-    const [isActive, setIsActive] = useState(false);
-    const [introSilhouette, setIntroSilhouette] = useState(false);
+
   return (
-    <div key="intro">
+    <>
       <ImageBox
-        src="gradient-bg.jpg"
+        src="/svg/grad1.svg"
         alt="Bento Intro Silhouette"
         fill
         className={`rounded-3xl object-cover transition-opacity duration-300 ${
@@ -32,7 +31,7 @@ const IntroBox = () => {
         priority
       />
       {/* <Cursor isActive={isActive} /> */}
-    </div>
+      </>
   );
 };
 

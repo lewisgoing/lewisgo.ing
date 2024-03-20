@@ -23,10 +23,10 @@ module.exports = {
 
     extend: {
       screens: {
-        'sm': '374px',
-        'md': '799px',
-        'lg': '1199px',
-    },
+        'bento-sm': '374px',
+        'bento-md': '799px',
+        'bento-lg': '1199px',
+      },
       colors: {
         instagram: "#E4405F",
         linkedin: "#0E76A8",
@@ -98,9 +98,98 @@ module.exports = {
       animation: {
         gradient: "gradient 6s linear infinite",
       },
+      typography: ({ theme }) => ({
+        DEFAULT: {
+            css: {
+                a: {
+                    color: theme('colors.primary.DEFAULT'),
+                    '&:hover': {
+                        filter: 'brightness(1.10)',
+                    },
+                    code: { color: theme('colors.primary.DEFAULT') },
+                },
+                p: {
+                    fontSize: '14px',
+                },
+                'h1,h2': {
+                    fontWeight: '700',
+                    letterSpacing: theme('letterSpacing.tight'),
+                },
+                h3: {
+                    fontWeight: '600',
+                },
+                pre: {
+                    fontSize: '14px !important',
+                },
+                code: {
+                    color: theme('colors.primary.DEFAULT'),
+                    fontSize: 'inherit',
+                    fontWeight: '400',
+                    backgroundColor: theme('colors.primary.foreground'),
+                    borderWidth: '1px',
+                    borderColor: theme('colors.border'),
+                    fontFamily: 'inherit',
+                    borderRadius: '0.25rem',
+                    padding: '0.25rem 0.5rem',
+                },
+                'code::before': {
+                    display: 'none',
+                },
+                'code::after': {
+                    display: 'none',
+                },
+                img: {
+                    display: 'block',
+                    borderRadius: '0.5rem',
+                    borderWidth: '1px',
+                    borderColor: theme('colors.border'),
+                    margin: '1.5rem auto !important',
+                },
+                blockquote: {
+                    color: theme('colors.muted.foreground'),
+                    quotes: 'none',
+                    fontStyle: 'normal',
+                    borderLeftColor: theme('colors.border'),
+                },
+                hr: {
+                    borderColor: theme('colors.border'),
+                },
+                tr: {
+                    borderColor: theme('colors.border'),
+                },
+                thead: {
+                    borderColor: theme('colors.border'),
+                },
+                'li::marker': {
+                    color: theme('colors.muted.foreground'),
+                },
+            },
+        },
+        invert: {
+            css: {
+                a: {
+                    color: theme('colors.primary.DEFAULT'),
+                    '&:hover': {
+                        filter: 'brightness(1.10)',
+                    },
+                    code: { color: theme('colors.primary.DEFAULT') },
+                },
+                p: {
+                    fontSize: '14px',
+                },
+                'h1,h2,h3,h4,h5,h6': {
+                    color: theme('colors.gray.100'),
+                },
+            },
+        },
+    }),
     },
   },
   
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/typography'),
+    require('tailwindcss-animate'),
+  ],
   darkMode: "class",
 };

@@ -8,6 +8,16 @@ const nextConfig = {
     });
     return config;
   },
+  images: {
+    domains: [
+      "api.lanyard.rest",
+      "cdn.discordapp.com",
+      "pbs.twimg.com",
+      "i.scdn.co",
+      "www.gravatar.com",
+      "avatars.githubusercontent.com",
+    ],
+  },
 };
 
 module.exports = nextConfig;

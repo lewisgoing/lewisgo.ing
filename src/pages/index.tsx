@@ -1,7 +1,6 @@
 import Head from "next/head";
 import NavBar from "../../components/NavBar";
 import Bento from "../../components/Bento";
-import Cursor from "../../components/Cursor";
 
 export default function Home() {
   return (
