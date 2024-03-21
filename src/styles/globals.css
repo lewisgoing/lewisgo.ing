@@ -136,6 +136,9 @@ body {
     }
 }
 
+.react-grid-container {
+    @apply mx-auto max-w-[1200px];
+}
 
 article[style*='--react-activity-calendar-level-0:#ebebeb'] {
     @apply hidden;

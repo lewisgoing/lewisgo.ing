@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import IntroBox from "./boxes/IntroBox";
+import AudioVisualizerBox from "./boxes/AudioVisualizerBox";
 
 import Image from "./assets/ImageBox";
 import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
@@ -25,7 +26,7 @@ import DiscordPresence from './boxes/DiscordStatusBox'
 import ExternalLink from "./assets/ExternalLink";
 import GithubCalendar from "./boxes/GithubCalendar";
 import SilhouetteHover from "./boxes/SilhouetteHover";
-// import SpotifyPresence from './SpotifyPresence'
+import SpotifyStatusBox from './boxes/SpotifyBox'
 
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { Odor_Mean_Chey } from "next/font/google";
@@ -39,6 +40,24 @@ export default function Bento() {
         userId: '661068667781513236',
         // userId: process.env.NEXT_PUBLIC_DISCORD_USER_ID,
     })
+
+    useEffect(() => {
+      if (lanyard.data && !lanyard.isValidating) {
+        // Lanyard data is valid
+        // Add your validation logic here
+        // Example: 
+        if (lanyard.data.status === 'online') {
+          console.log('User is online');
+        } else {
+          console.log('User is offline', lanyard.data);
+        }
+      } else {
+        // Lanyard data is not available or still validating
+        // Add your error handling logic here
+        // Example:
+        console.log('Lanyard data is not available or still validating');
+      }
+    }, [lanyard.data, lanyard.isValidating]);
 
   const [introSilhouette, setIntroSilhouette] = useState(false);
 
@@ -83,6 +102,8 @@ export default function Bento() {
       }
     };
   }, []);
+
+  const audioFile = "/test.mp3";
 
   return (
     <>
@@ -180,14 +201,14 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <SilhouetteHover
+          {/* <SilhouetteHover
             silhouetteSrc="/static/images/bento/bento-latest-post-silhouette.svg"
             silhouetteAlt="Bento Latest Post Silhouette"
             mainSrc="/static/images/bento/bento-latest-post.svg"
             mainAlt="Bento Latest Post"
             className="rounded-3xl object-cover"
-          >
-            <Image
+          > */}
+            {/* <Image
               src="../public/gradient-bg.jpg"
               alt="posts 1"
               // src={posts[0].images[0]}
@@ -198,8 +219,13 @@ export default function Bento() {
               skeletonClassName="rounded-3xl"
               noRelative
               unoptimized
-            />
-          </SilhouetteHover>
+            /> */}
+                        {/* <div className="m-2 w-[80%] rounded-2xl border border-border bento-md:m-3 bento-lg:m-4" skeletonClassName="rounded-3xl"> */}
+              {/* <AudioVisualizerBox audioFile={audioFile} width="100%" height="100%" /> */}
+            {/* </div> */}
+
+           {/* FIT AUDIOVISUALIZERBOX HERE */}
+          {/* </SilhouetteHover> */}
           <ExternalLink href="/#" newTab={false} />
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
         </div>
@@ -254,15 +280,14 @@ export default function Bento() {
           onMouseLeave={() => setIntroSilhouette(false)}
         >
             {lanyard.data && !lanyard.isValidating ? (
-            // <SpotifyPresence
-            //   lanyard={lanyard.data}
-            //   onLoad={() => setIsSpotifyLoaded(true)}
-            // />
-            <>  </>
+            <SpotifyStatusBox
+              lanyard={lanyard.data}
+              onLoad={() => setIsSpotifyLoaded(true)}
+            />
           ) : (
             <Skeleton className="w-full h-full rounded-3xl z-[1]" />
           )}
-          <SilhouetteHover
+          {/* <SilhouetteHover
             silhouetteSrc="/static/images/bento/bento-spotify-silhouette.svg"
             silhouetteAlt="Bento Spotify Silhouette"
             mainSrc="/static/images/bento/bento-spotify.svg"
@@ -275,7 +300,7 @@ export default function Bento() {
             mainSrc="/static/images/bento/bento-spotify-2x1.svg"
             mainAlt="Bento Spotify"
             className="block bento-lg:hidden object-cover rounded-3xl ml-auto"
-          />
+          /> */}
         </div>
         <div key="tech">
           <Image

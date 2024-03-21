@@ -5,7 +5,7 @@ const siteMetadata = {
     headerTitle: 'lewisgo.ing',
     description: 'Full-stack developer, creative, and student.',
     language: 'en-us',
-    theme: 'dark', // system, dark or light
+    theme: 'light', // system, dark or light
     siteUrl: 'https://lewisgo.ing/',
     siteRepo: 'https://github.com/lewisgoing/',
     siteLogo: '../favicon.ico',

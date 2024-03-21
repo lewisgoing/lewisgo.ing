@@ -4,7 +4,7 @@ import siteMetadata from '../public/data/siteMetadata'
 import { Github, Mail, Twitter } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
-import Link from './Link'
+import Link from './assets/Link'
 
 export default function Footer() {
     const pathName = usePathname()

@@ -5,12 +5,14 @@ const colors = require('tailwindcss/colors')
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
+    './node_modules/pliny/**/*.js',
     "./app/**/*.{js,ts,jsx,tsx}",
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
 
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx}",
+    './data/**/*.mdx',
   ],
   theme: {
     container: {
@@ -27,6 +29,12 @@ module.exports = {
         'bento-md': '799px',
         'bento-lg': '1199px',
       },
+      lineHeight: {
+        11: '2.75rem',
+        12: '3rem',
+        13: '3.25rem',
+        14: '3.5rem',
+    },
       colors: {
         instagram: "#E4405F",
         linkedin: "#0E76A8",
@@ -75,14 +83,8 @@ module.exports = {
             foreground: 'hsl(var(--card-foreground))',
         },
       },
-      lineHeight: {
-        11: '2.75rem',
-        12: '3rem',
-        13: '3.25rem',
-        14: '3.5rem',
-      },
       fontFamily: {
-          // sans: ['var(--font-space-jetbrains-mono)', ...fontFamily.sans],
+        //   sans: ['var(--font-space-jetbrains-mono)', ...fontFamily.sans],
       },
       borderRadius: {
         lg: `var(--radius)`,
@@ -97,6 +99,9 @@ module.exports = {
       },
       animation: {
         gradient: "gradient 6s linear infinite",
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        skeleton: 'skeleton 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       typography: ({ theme }) => ({
         DEFAULT: {
