@@ -22,11 +22,11 @@ import {
 } from "react-icons/fa";
 import { useLanyard } from "react-use-lanyard";
 
-import DiscordPresence from './boxes/DiscordStatusBox'
+import DiscordPresence from "./boxes/DiscordStatusBox";
 import ExternalLink from "./assets/ExternalLink";
 import GithubCalendar from "./boxes/GithubCalendar";
 import SilhouetteHover from "./boxes/SilhouetteHover";
-import SpotifyStatusBox from './boxes/SpotifyBox'
+import SpotifyStatusBox from "./boxes/SpotifyBox";
 
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { Odor_Mean_Chey } from "next/font/google";
@@ -36,35 +36,35 @@ const ResponsiveGridLayout = WidthProvider(Responsive, {
 });
 
 export default function Bento() {
-    const lanyard = useLanyard({
-        userId: '661068667781513236',
-        // userId: process.env.NEXT_PUBLIC_DISCORD_USER_ID,
-    })
+  const lanyard = useLanyard({
+    userId: "661068667781513236",
+    // userId: process.env.NEXT_PUBLIC_DISCORD_USER_ID,
+  });
 
-    useEffect(() => {
-      if (lanyard.data && !lanyard.isValidating) {
-        // Lanyard data is valid
-        // Add your validation logic here
-        // Example: 
-        if (lanyard.data.status === 'online') {
-          console.log('User is online');
-        } else {
-          console.log('User is offline', lanyard.data);
-        }
+  useEffect(() => {
+    if (lanyard.data && !lanyard.isValidating) {
+      // Lanyard data is valid
+      // Add your validation logic here
+      // Example:
+      if (lanyard.data.status === "online") {
+        console.log("User is online");
       } else {
-        // Lanyard data is not available or still validating
-        // Add your error handling logic here
-        // Example:
-        console.log('Lanyard data is not available or still validating');
+        console.log("User is offline", lanyard.data);
       }
-    }, [lanyard.data, lanyard.isValidating]);
+    } else {
+      // Lanyard data is not available or still validating
+      // Add your error handling logic here
+      // Example:
+      console.log("Lanyard data is not available or still validating");
+    }
+  }, [lanyard.data, lanyard.isValidating]);
 
   const [introSilhouette, setIntroSilhouette] = useState(false);
 
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [isDiscordLoaded, setDiscordLoaded] = useState(false)
-  const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false)
+  const [isDiscordLoaded, setDiscordLoaded] = useState(false);
+  const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false);
 
   const [rowHeight, setRowHeight] = useState(280);
   const handleWidthChange = (width) => {
@@ -152,7 +152,6 @@ export default function Bento() {
             unoptimized
             priority
           />
-
         </div>
         {/* <div key="intro"><IntroBox introSilhouette={introSilhouette}/></div> */}
 
@@ -212,7 +211,7 @@ export default function Bento() {
             mainAlt="Bento Latest Post"
             className="rounded-3xl object-cover"
           > */}
-            {/* <Image
+          {/* <Image
               src="../public/gradient-bg.jpg"
               alt="posts 1"
               // src={posts[0].images[0]}
@@ -224,11 +223,11 @@ export default function Bento() {
               noRelative
               unoptimized
             /> */}
-                        {/* <div className="m-2 w-[80%] rounded-2xl border border-border bento-md:m-3 bento-lg:m-4" skeletonClassName="rounded-3xl"> */}
-              {/* <AudioVisualizerBox audioFile={audioFile} width="100%" height="100%" /> */}
-            {/* </div> */}
+          {/* <div className="m-2 w-[80%] rounded-2xl border border-border bento-md:m-3 bento-lg:m-4" skeletonClassName="rounded-3xl"> */}
+          {/* <AudioVisualizerBox audioFile={audioFile} width="100%" height="100%" /> */}
+          {/* </div> */}
 
-           {/* FIT AUDIOVISUALIZERBOX HERE */}
+          {/* FIT AUDIOVISUALIZERBOX HERE */}
           {/* </SilhouetteHover> */}
           <ExternalLink href="/#" newTab={false} />
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
@@ -285,7 +284,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-            {lanyard.data && !lanyard.isValidating ? (
+          {lanyard.data && !lanyard.isValidating ? (
             <SpotifyStatusBox
               lanyard={lanyard.data}
               onLoad={() => setIsSpotifyLoaded(true)}
@@ -308,7 +307,9 @@ export default function Bento() {
             className="block bento-lg:hidden object-cover rounded-3xl ml-auto"
           /> */}
         </div>
-        <div key="tech"><p>Technologies/Skills</p></div>
+        <div key="tech">
+          <p>Technologies/Skills</p>
+        </div>
         {/* <div key="tech">
           <Image
             src="/static/images/bento/bento-technologies.svg"
