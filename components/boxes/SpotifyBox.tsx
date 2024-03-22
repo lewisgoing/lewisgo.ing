@@ -53,7 +53,7 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
         }
     }, [displayData, onLoad])
 
-    if (!displayData) return <p>Something absolutely horrible has gone wrong</p>
+    if (!displayData) return <p>Something absolutely horrible has gone wrong (Spotify data)</p>
     if (displayData.error) return <p>{displayData.error}</p>
 
     const { song, artist, album, album_art_url, track_id } = displayData

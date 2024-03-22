@@ -139,6 +139,7 @@ export default function Bento() {
             unoptimized
             priority
           />
+
           <Image
             src="gradient-bg.jpg"
             alt="Bento Intro"
@@ -151,6 +152,7 @@ export default function Bento() {
             unoptimized
             priority
           />
+
         </div>
         {/* <div key="intro"><IntroBox introSilhouette={introSilhouette}/></div> */}
 
@@ -162,18 +164,19 @@ export default function Bento() {
         >
           <div className="relative flex h-full w-full items-center justify-center rounded-lg">
             <FaGithub className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24" />
-            <SilhouetteHover
+            {/* <SilhouetteHover
               silhouetteSrc="/static/images/bento/bento-github-silhouette.svg"
               silhouetteAlt="Bento Github Silhouette"
               mainSrc="../public/images/github.svg"
               mainAlt="Bento Github"
               className="rounded-3xl object-cover"
-            />
+            /> */}
             <ExternalLink href="https://github.com/lewisgoing" />
           </div>
         </div>
         <div key="image-1">
-          <Image
+          <p>Image #1/Audio Picker</p>
+          {/* <Image
             src="/static/images/bento/bento-image-1.svg"
             alt="Bento Box 1"
             fill
@@ -182,7 +185,7 @@ export default function Bento() {
             skeletonClassName="rounded-3xl"
             unoptimized
             priority
-          />
+          /> */}
         </div>
         <div key="discord">
           {lanyard.data && !lanyard.isValidating ? ( // lanyard.data && !lanyard.isValidating ? (
@@ -201,6 +204,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
+          <p>Projects</p>
           {/* <SilhouetteHover
             silhouetteSrc="/static/images/bento/bento-latest-post-silhouette.svg"
             silhouetteAlt="Bento Latest Post Silhouette"
@@ -230,7 +234,7 @@ export default function Bento() {
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
         </div>
         <div key="image-2">
-          <Image
+          {/* <Image
             src="/static/images/bento/bento-image-2.svg"
             alt="Bento Box 2"
             fill
@@ -239,7 +243,8 @@ export default function Bento() {
             noRelative
             unoptimized
             priority
-          />
+          /> */}
+          <p>Image/Animation</p>
         </div>
         <div
           key="about-ctfs"
@@ -247,13 +252,14 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <SilhouetteHover
+          <p>About Me/Interests</p>
+          {/* <SilhouetteHover
             silhouetteSrc="/static/images/bento/bento-about-ctfs-silhouette.svg"
             silhouetteAlt="Bento About CTFs Silhouette"
             mainSrc="/static/images/bento/bento-about-ctfs.svg"
             mainAlt="Bento About CTFs"
             className="rounded-3xl object-cover"
-          />
+          /> */}
         </div>
         <div
           key="twitter"
@@ -263,14 +269,14 @@ export default function Bento() {
         >
           <div className="relative flex h-full w-full items-center justify-center rounded-lg">
             <FaSoundcloud className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24" />
-            <SilhouetteHover
+            {/* <SilhouetteHover
               silhouetteSrc="/static/images/bento/bento-twitter-silhouette.svg"
               silhouetteAlt="Bento Twitter Silhouette"
               mainSrc="/static/images/bento/bento-twitter.svg"
               mainAlt="Bento Twitter"
               className="rounded-3xl object-cover"
-            />
-            <ExternalLink href="https://twitter.com/enscry" />
+            /> */}
+            <ExternalLink href="https://soundcloud.com/lewisgoing" />
           </div>
         </div>
         <div
@@ -302,7 +308,8 @@ export default function Bento() {
             className="block bento-lg:hidden object-cover rounded-3xl ml-auto"
           /> */}
         </div>
-        <div key="tech">
+        <div key="tech"><p>Technologies/Skills</p></div>
+        {/* <div key="tech">
           <Image
             src="/static/images/bento/bento-technologies.svg"
             alt="Bento Technologies"
@@ -312,20 +319,20 @@ export default function Bento() {
             noRelative
             unoptimized
           />
-        </div>
+        </div> */}
         <div
           key="contributions"
           className="group flex items-center justify-center"
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <SilhouetteHover
+          {/* <SilhouetteHover
                     silhouetteSrc="svg/contri1.svg"
                     silhouetteAlt="Bento GitHub Contributions Silhouette"
                     mainSrc="svg/contri0.svg"
                     mainAlt="Bento GitHub Contributions"
                     className="rounded-3xl object-cover z-[2] flex items-center justify-center p-4"
-                >
+                > */}
           <GithubCalendar
             username="lewisgoing"
             hideColorLegend
@@ -334,7 +341,7 @@ export default function Bento() {
             blockSize={20}
             blockRadius={7}
           />
-          </SilhouetteHover>
+          {/* </SilhouetteHover> */}
         </div>
 
         {/* <section className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 mb-4"> */}
