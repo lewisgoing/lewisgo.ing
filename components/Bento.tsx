@@ -1,11 +1,21 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import React, { useEffect, useState } from "react";
 
+import LottiePlayPauseButton from "../components/LottiePlayPauseButton";
+
+const LottiePlayPauseWithNoSSR = dynamic(() => import('../components/LottiePlayPauseButton'), {
+  ssr: false,
+});
+
+import AudioBox from "./boxes/AudioBox";
 import IntroBox from "./boxes/IntroBox";
 import AudioVisualizerBox from "./boxes/AudioVisualizerBox";
 
 import Image from "./assets/ImageBox";
+import NextImage from "next/image";
 import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
 
 import HeroBox from "./boxes/HeroBox";
@@ -22,11 +32,11 @@ import {
 } from "react-icons/fa";
 import { useLanyard } from "react-use-lanyard";
 
-import DiscordPresence from './boxes/DiscordStatusBox'
+import DiscordPresence from "./boxes/DiscordStatusBox";
 import ExternalLink from "./assets/ExternalLink";
 import GithubCalendar from "./boxes/GithubCalendar";
 import SilhouetteHover from "./boxes/SilhouetteHover";
-import SpotifyStatusBox from './boxes/SpotifyBox'
+import SpotifyStatusBox from "./boxes/SpotifyBox";
 
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { Odor_Mean_Chey } from "next/font/google";
@@ -36,35 +46,50 @@ const ResponsiveGridLayout = WidthProvider(Responsive, {
 });
 
 export default function Bento() {
-    const lanyard = useLanyard({
-        userId: '661068667781513236',
-        // userId: process.env.NEXT_PUBLIC_DISCORD_USER_ID,
-    })
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioPlayer, setAudioPlayer] = useState(null);
 
-    useEffect(() => {
-      if (lanyard.data && !lanyard.isValidating) {
-        // Lanyard data is valid
-        // Add your validation logic here
-        // Example: 
-        if (lanyard.data.status === 'online') {
-          console.log('User is online');
-        } else {
-          console.log('User is offline', lanyard.data);
-        }
+  const audio = "./test.mp3";
+  useEffect(() => {
+    setAudioPlayer(new Audio(audio));
+  }, []);
+
+  const handlePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+
+  
+
+  const lanyard = useLanyard({
+    userId: "661068667781513236",
+    // userId: process.env.NEXT_PUBLIC_DISCORD_USER_ID,
+  });
+
+  useEffect(() => {
+    if (lanyard.data && !lanyard.isValidating) {
+      // Lanyard data is valid
+      // Add your validation logic here
+      // Example:
+      if (lanyard.data.status === "online") {
+        console.log("User is online");
       } else {
-        // Lanyard data is not available or still validating
-        // Add your error handling logic here
-        // Example:
-        console.log('Lanyard data is not available or still validating');
+        console.log("User is offline", lanyard.data);
       }
-    }, [lanyard.data, lanyard.isValidating]);
+    } else {
+      // Lanyard data is not available or still validating
+      // Add your error handling logic here
+      // Example:
+      console.log("Lanyard data is not available or still validating");
+    }
+  }, [lanyard.data, lanyard.isValidating]);
 
   const [introSilhouette, setIntroSilhouette] = useState(false);
 
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [isDiscordLoaded, setDiscordLoaded] = useState(false)
-  const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false)
+  const [isDiscordLoaded, setDiscordLoaded] = useState(false);
+  const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false);
 
   const [rowHeight, setRowHeight] = useState(280);
   const handleWidthChange = (width) => {
@@ -102,8 +127,6 @@ export default function Bento() {
       }
     };
   }, []);
-
-  const audioFile = "/test.mp3";
 
   return (
     <>
@@ -152,7 +175,6 @@ export default function Bento() {
             unoptimized
             priority
           />
-
         </div>
         {/* <div key="intro"><IntroBox introSilhouette={introSilhouette}/></div> */}
 
@@ -204,7 +226,59 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <p>Projects</p>
+
+          {/* <>
+            <div className="flex flex-row w-full h-full" style={{border: '1px solid red'}}>
+              <div className="flex flex-col items-center w-1/4 h-full" style={{border: '1px solid red' }}>
+                <div className="uppergfx" style={{border: '1px solid red' }}></div>
+                <div className="player-controls" style={{border: '1px solid red' }}>
+                  <div className="tracklengthbar" style={{border: '1px solid red' }}></div>
+                  <div className="buttons" style={{border: '1px solid red' }}>
+                  <div className="back"></div>
+                  <div className="playpause"></div>
+                  <div className="next"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center w-3/4 h-full" style={{border: '1px solid red'}}></div>
+            </div>
+          </>
+          <> */}
+          {/* <div className="flex flex-col w-full h-full">
+              <div
+                className="flex flex-col items-center w-1/2"
+                style={{ border: "1px solid red" }}
+              >
+                <div className="w-full">Header</div>
+              </div>
+              <div className="flex-grow flex flex-col justify-between">
+                <div className="w-full">Avatar</div>
+                <div className="w-full flex justify-center">Discord Icon</div>
+                <div className="w-full">Username</div>
+              </div>
+              <div className="flex flex-col items-center w-full bg-tertiary/50">
+                <div className="w-full p-2">Badges</div>
+                <div className="w-full p-2">Main Activity Placeholder</div>
+              </div>
+              <div className="flex flex-col items-center w-full">
+                <div className="w-full p-2">Additional Info Placeholder</div>
+              </div>
+            </div> */}
+
+          {/* 
+          <div className="relative flex h-full w-full items-center justify-center rounded-lg">
+            <button onClick={togglePlay}>
+              <Image
+                src={
+                  isPlaying ? "./svg/player/pause.svg" : "./svg/player/play.svg"
+                }
+                alt="play"
+                width={20}
+                height={20}
+              />
+            </button>
+          </div>
+          <p>Projects</p> */}
           {/* <SilhouetteHover
             silhouetteSrc="/static/images/bento/bento-latest-post-silhouette.svg"
             silhouetteAlt="Bento Latest Post Silhouette"
@@ -212,7 +286,7 @@ export default function Bento() {
             mainAlt="Bento Latest Post"
             className="rounded-3xl object-cover"
           > */}
-            {/* <Image
+          {/* <Image
               src="../public/gradient-bg.jpg"
               alt="posts 1"
               // src={posts[0].images[0]}
@@ -224,13 +298,13 @@ export default function Bento() {
               noRelative
               unoptimized
             /> */}
-                        {/* <div className="m-2 w-[80%] rounded-2xl border border-border bento-md:m-3 bento-lg:m-4" skeletonClassName="rounded-3xl"> */}
-              {/* <AudioVisualizerBox audioFile={audioFile} width="100%" height="100%" /> */}
-            {/* </div> */}
+          {/* <div className="m-2 w-[80%] rounded-2xl border border-border bento-md:m-3 bento-lg:m-4" skeletonClassName="rounded-3xl"> */}
+          {/* <AudioVisualizerBox audioFile={audioFile} width="100%" height="100%" /> */}
+          {/* </div> */}
 
-           {/* FIT AUDIOVISUALIZERBOX HERE */}
+          {/* FIT AUDIOVISUALIZERBOX HERE */}
           {/* </SilhouetteHover> */}
-          <ExternalLink href="/#" newTab={false} />
+          {/* <ExternalLink href="/#" newTab={false} /> */}
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
         </div>
         <div key="image-2">
@@ -246,13 +320,33 @@ export default function Bento() {
           /> */}
           <p>Image/Animation</p>
         </div>
+        {/* <div
+          key="about-ctfs"
+          className="group bg-[url('/static/images/bento/bento-about-ctfs-bg.svg')] bg-cover bg-center"
+          onMouseEnter={() => setIntroSilhouette(true)}
+          onMouseLeave={() => setIntroSilhouette(false)}
+        >
+          <p>About Me/Interests</p> */}
+        {/* <SilhouetteHover
+            silhouetteSrc="/static/images/bento/bento-about-ctfs-silhouette.svg"
+            silhouetteAlt="Bento About CTFs Silhouette"
+            mainSrc="/static/images/bento/bento-about-ctfs.svg"
+            mainAlt="Bento About CTFs"
+            className="rounded-3xl object-cover"
+          /> */}
+        {/* </div> */}
         <div
           key="about-ctfs"
           className="group bg-[url('/static/images/bento/bento-about-ctfs-bg.svg')] bg-cover bg-center"
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <p>About Me/Interests</p>
+          <div className="relative flex h-full w-full items-center justify-center rounded-lg">
+            <LottiePlayPauseWithNoSSR />
+          </div>
+
+          {/* <p>About Me/Interests</p> */}
+          {/* <AudioBox /> */}
           {/* <SilhouetteHover
             silhouetteSrc="/static/images/bento/bento-about-ctfs-silhouette.svg"
             silhouetteAlt="Bento About CTFs Silhouette"
@@ -285,7 +379,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-            {lanyard.data && !lanyard.isValidating ? (
+          {lanyard.data && !lanyard.isValidating ? (
             <SpotifyStatusBox
               lanyard={lanyard.data}
               onLoad={() => setIsSpotifyLoaded(true)}
@@ -308,7 +402,9 @@ export default function Bento() {
             className="block bento-lg:hidden object-cover rounded-3xl ml-auto"
           /> */}
         </div>
-        <div key="tech"><p>Technologies/Skills</p></div>
+        <div key="tech">
+          <p>Technologies/Skills</p>
+        </div>
         {/* <div key="tech">
           <Image
             src="/static/images/bento/bento-technologies.svg"
