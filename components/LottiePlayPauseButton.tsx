@@ -32,7 +32,7 @@ const LottiePlayPauseButton: React.FC<{
 
   // TODO: Implement dark mode detection
 
-  const lottieSrc = isDark ? lottieDarkSrc : lottieLightSrc;
+  const lottieSrc = isDark ?  lottieLightSrc : lottieDarkSrc;
 
   return (
     <div
