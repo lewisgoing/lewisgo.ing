@@ -12,32 +12,70 @@ const LottiePlayPauseWithNoSSR = dynamic(
 
 const AudioBox = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
   const [audioSrc, setAudioSrc] = useState("/whatever.mp3"); // Ensure the path is correct. Consider using an absolute path if necessary.
 
+    const audioSources = ["./whatever.mp3", "/call.mp3", "./trying.mp3", "./doss.mp3", "./cantstop.mp3"];
+
+    useEffect(() => {
+        if (!audioPlayer) {
+          const audio = new Audio(audioSources[currentTrackIndex]);
+          setAudioPlayer(audio);
+          audio.addEventListener('ended', playNextTrackAutomatically);
+          
+          return () => audio.removeEventListener('ended', playNextTrackAutomatically);
+        }
+      }, [audioPlayer]);
+
+
   useEffect(() => {
-    // Only create a new Audio instance if audioPlayer hasn't been initialized
-    if (!audioPlayer) {
-      const audio = new Audio(audioSrc);
-      setAudioPlayer(audio);
-    } else {
-      // If audioPlayer already exists but src has changed, update src and load
-      audioPlayer.src = audioSrc;
+    // Update source and play immediately when index changes
+    if (audioPlayer) {
+      audioPlayer.src = audioSources[currentTrackIndex];
       audioPlayer.load();
+      if (isPlaying) {
+        audioPlayer.play().catch(console.error);
+      }
     }
-  }, [audioSrc, audioPlayer]);
+  }, [currentTrackIndex]);
+
+  // Play next track automatically when the current track ends
+  const playNextTrackAutomatically = () => {
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
+  };
 
   const togglePlay = () => {
     if (audioPlayer) {
-        if (isPlaying) {
-          audioPlayer.pause();
-        } else {
+      if (isPlaying) {
+        audioPlayer.pause();
+      } else {
+        audioPlayer.play().catch(console.error);
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const skipToNextTrack = () => {
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
+  };
+
+  const playLastTrack = () => {
+    if (audioPlayer) {
+      if (audioPlayer.currentTime < 5) {
+        setCurrentTrackIndex((prevIndex) => prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1);
+      } else {
+        audioPlayer.currentTime = 0;
+        if (!isPlaying) {
           audioPlayer.play().catch(console.error);
+          setIsPlaying(true);
         }
-        setIsPlaying(!isPlaying); // This should be sufficient to toggle both audio and animation
       }
     }
+  };
+            
 
+    const isDarkMode = true; // useDarkMode();
 
   return (
     <>
@@ -59,15 +97,15 @@ const AudioBox = () => {
           {/* <div className="border-b border-black w-full"></div> */}
           <div
             
-            className="flex flex-row w-full h-fit  rounded-lg bg-tertiary/50 leading-snug gap-2 items-center justify-between"
+            className="flex flex-row w-full h-fit rounded-lg bg-tertiary/50 gap-2 items-center justify-between"
           >
-            <div>
-              <button className="text-black text-2xl py-2 px-4">
+            <div className="flex grow justify-center" onClick={playLastTrack}>
+              <button className="text-black text-2xl py-2 px-2">
                 <NextImage
-                  src="/svg/player/back.svg"
+                  src={isDarkMode ? "/svg/player/back-dark.svg" : "/svg/player/back.svg"}
                   alt="Bento Box 2"
-                  width={40}
-                  height={40}
+                  width={36}
+                  height={36}
                   className="rounded-3xl object-cover"
                   unoptimized
                   priority
@@ -75,20 +113,20 @@ const AudioBox = () => {
               </button>
             </div>
 
-            <div s>
-              {/* <button className="text-black text-2xl py-2 px-4" > */}
+            <div className="flex grow justify-center">
+              <button className="text-black text-2xl py-2 px-2" >
                 <LottiePlayPauseWithNoSSR togglePlay={togglePlay} isPlaying={isPlaying}
                 />
-              {/* </button> */}
+              </button>
             </div>
 
-            <div >
-              <button className="text-black text-2xl py-2 px-4">
+            <div className="flex grow justify-center">
+              <button className="text-black text-2xl py-2 px-2" onClick={skipToNextTrack}>
                 <NextImage
-                  src="/svg/player/next.svg"
+                  src={isDarkMode ? "/svg/player/next-dark.svg" : "/svg/player/next.svg"}
                   alt="Bento Box 2"
-                  width={40}
-                  height={40}
+                  width={36}
+                  height={36}
                   className="rounded-3xl object-cover"
                   unoptimized
                   priority
@@ -110,9 +148,9 @@ const AudioBox = () => {
 
           <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
             <button className="text-black text-2xl mx-2">⭘</button>
-            <button className="text-black text-2xl mx-2" onClick={togglePlay}>
-              <LottiePlayPauseWithNoSSR
-              />
+            <button className="text-black text-2xl mx-2">
+            <LottiePlayPauseWithNoSSR togglePlay={togglePlay} isPlaying={isPlaying}
+                />
             </button>
             <button className="text-black text-2xl mx-2">❚❚</button>
           </div>

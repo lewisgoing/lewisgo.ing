@@ -90,6 +90,7 @@ export default function App(
             outerAlpha={0.2}
             innerScale={0.7}
             outerScale={5}
+            showSystemCursor={false}
             clickables={[
               "a",
               'input[type="text"]',

@@ -71,7 +71,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                     <div className="h-6 flex-shrink-0">
                         <div className="bg-tertiary/50 rounded-lg w-[40%] h-full ml-auto">
                             <Image
-                                src="/static/images/bento/bento-discord-badges.svg"
+                                src="svg/discord-badges.svg"
                                 alt="Discord Badges"
                                 width={0}
                                 height={0}
@@ -178,7 +178,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                                 </div>
                             </div>
                             <Image
-                                src="/static/images/bento/bento-discord-badges.svg"
+                                src="svg/discord-badges.svg"
                                 alt="Discord Badges"
                                 width={0}
                                 height={0}
