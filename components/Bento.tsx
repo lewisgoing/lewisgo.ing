@@ -3,12 +3,19 @@
 import dynamic from "next/dynamic";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import React, { useEffect, useState } from "react";
+import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
+import * as reactSpring from "@react-spring/three";
+import * as drei from "@react-three/drei";
+import * as fiber from "@react-three/fiber";
 
 import LottiePlayPauseButton from "../components/LottiePlayPauseButton";
 
-const LottiePlayPauseWithNoSSR = dynamic(() => import('../components/LottiePlayPauseButton'), {
-  ssr: false,
-});
+const LottiePlayPauseWithNoSSR = dynamic(
+  () => import("../components/LottiePlayPauseButton"),
+  {
+    ssr: false,
+  }
+);
 
 import AudioBox from "./boxes/AudioBox";
 import IntroBox from "./boxes/IntroBox";
@@ -25,7 +32,13 @@ import ProjectPreviewBox from "./boxes/ProjectPreviewBox";
 import { Skeleton } from "./shadcn/skeleton";
 import {
   FaLinkedin,
+  FaCompactDisc,
+  FaMusic,
   FaGithub,
+  FaCaretSquareUp,
+  FaAngleDoubleRight,
+  FaAngleDoubleLeft,
+  FaBackward,
   FaDiscord,
   FaSpotify,
   FaSoundcloud,
@@ -40,6 +53,7 @@ import SpotifyStatusBox from "./boxes/SpotifyBox";
 
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { Odor_Mean_Chey } from "next/font/google";
+import { Button } from "@/components/shadcn/button.tsx";
 
 const ResponsiveGridLayout = WidthProvider(Responsive, {
   measureBeforeMount: true,
@@ -57,9 +71,6 @@ export default function Bento() {
   const handlePlay = () => {
     setIsPlaying(!isPlaying);
   };
-
-
-  
 
   const lanyard = useLanyard({
     userId: "661068667781513236",
@@ -150,32 +161,60 @@ export default function Bento() {
         }
       >
         <div key="intro">
-          <Image
-            src="gradient-bg.jpg"
-            alt="Bento Intro Silhouette"
-            fill
-            className={`rounded-3xl object-cover transition-opacity duration-300 ${
-              introSilhouette ? "opacity-100" : "opacity-0 delay-75"
-            }`}
-            skeletonClassName="rounded-3xl"
-            noRelative
-            unoptimized
-            priority
-          />
+          {/*<Image*/}
+          {/*    src="gradient-bg.jpg"*/}
+          {/*    alt="Bento Intro Silhouette"*/}
+          {/*    fill*/}
+          {/*    className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
+          {/*        introSilhouette ? "opacity-100" : "opacity-0 delay-75"*/}
+          {/*    }`}*/}
+          {/*    skeletonClassName="rounded-3xl"*/}
+          {/*    noRelative*/}
+          {/*    unoptimized*/}
+          {/*    priority*/}
+          {/*/>*/}
 
-          <Image
-            src="gradient-bg.jpg"
-            alt="Bento Intro"
-            fill
-            className={`rounded-3xl object-cover transition-opacity duration-300 ${
-              introSilhouette ? "opacity-0 delay-75" : "opacity-100"
-            }`}
-            skeletonClassName="rounded-3xl"
-            noRelative
-            unoptimized
-            priority
-          />
+          {/*<Image*/}
+          {/*    src="gradient-bg.jpg"*/}
+          {/*    alt="Bento Intro"*/}
+          {/*    fill*/}
+          {/*    className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
+          {/*        introSilhouette ? "opacity-0 delay-75" : "opacity-100"*/}
+          {/*    }`}*/}
+          {/*    skeletonClassName="rounded-3xl"*/}
+          {/*    noRelative*/}
+          {/*    unoptimized*/}
+          {/*    priority*/}
+          {/*/>*/}
         </div>
+        {/*<div key="intro">*/}
+        {/*  <Image*/}
+        {/*      src="gradient-bg.jpg"*/}
+        {/*      alt="Bento Intro Silhouette"*/}
+        {/*      fill*/}
+        {/*      className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
+        {/*          introSilhouette ? "opacity-100" : "opacity-0 delay-75"*/}
+        {/*      }`}*/}
+        {/*      skeletonClassName="rounded-3xl"*/}
+        {/*      noRelative*/}
+        {/*      unoptimized*/}
+        {/*      priority*/}
+        {/*  />*/}
+
+        {/*  <Image*/}
+        {/*      src="gradient-bg.jpg"*/}
+        {/*      alt="Bento Intro"*/}
+        {/*      fill*/}
+        {/*      className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
+        {/*          introSilhouette ? "opacity-0 delay-75" : "opacity-100"*/}
+        {/*      }`}*/}
+        {/*      skeletonClassName="rounded-3xl"*/}
+        {/*      noRelative*/}
+        {/*      unoptimized*/}
+        {/*      priority*/}
+        {/*  />*/}
+        {/*</div>*/}
+
         {/* <div key="intro"><IntroBox introSilhouette={introSilhouette}/></div> */}
 
         <div
@@ -226,7 +265,6 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-
           {/* <>
             <div className="flex flex-row w-full h-full" style={{border: '1px solid red'}}>
               <div className="flex flex-col items-center w-1/4 h-full" style={{border: '1px solid red' }}>
@@ -265,7 +303,7 @@ export default function Bento() {
               </div>
             </div> */}
 
-          {/* 
+          {/*
           <div className="relative flex h-full w-full items-center justify-center rounded-lg">
             <button onClick={togglePlay}>
               <Image
@@ -318,7 +356,64 @@ export default function Bento() {
             unoptimized
             priority
           /> */}
-          <p>Image/Animation</p>
+          {/* 
+          <ShaderGradientCanvas
+            importedFiber={{ ...fiber, ...drei, ...reactSpring }}
+            style={{
+              position: "absolute",
+              top: 0,
+            }}
+          >
+            <ShaderGradient
+              control="query"
+              urlString="https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=1.2&cAzimuthAngle=180&cDistance=3.6&cPolarAngle=90&cameraZoom=1&color1=%2352ff89&color2=%23dbba95&color3=%23d0bce1&embedMode=off&envPreset=city&fov=45&gizmoHelper=hide&grain=on&lightType=3d&pixelDensity=1&positionX=-1.4&positionY=0&positionZ=0&reflection=0.1&rotationX=0&rotationY=10&rotationZ=0&shader=defaults&type=plane&uDensity=1.3&uFrequency=5.5&uSpeed=0.4&uStrength=4&uTime=0&wireframe=false&zoomOut=false"
+            />
+          </ShaderGradientCanvas> */}
+          <ShaderGradientCanvas
+            importedFiber={{ ...fiber, ...drei, ...reactSpring }}
+            style={{
+              position: "absolute",
+              top: 0,
+              rounded: "3xl",
+              pointerEvents: "none",
+            }}
+            className="rounded-3xl"
+          >
+            <ShaderGradient
+              animate="on" // Disable animation to make the component non-reactive to interactions.
+              control="props" // Control the component entirely through props.
+              positionX={-1.4}
+              positionY={0}
+              positionZ={0}
+              rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+              rotationY={10}
+              rotationZ={50}
+              color1="#F27562"
+              color2="#FFF8EE"
+              color3="#C7B8DA"
+              reflection={0.4}
+              wireframe={false}
+              shader="defaults" // Use a default shader that does not react to user input.
+              type="plane" // Example; adjust as needed.
+              uAmplitude={1.4}
+              uDensity={1.3}
+              uFrequency={5.5}
+              uSpeed={0.2}
+              uStrength={4}
+              cDistance={3.6}
+              cameraZoom={45}
+              cAzimuthAngle={0}
+              cPolarAngle={90}
+              uTime={1} // Static time value to ensure the gradient's appearance is fixed.
+              lightType="3d" // Example lighting; adjust as needed.
+              brightness={0.9}
+              grain="off" // Disable grain effect for static appearance.
+              toggleAxis={false} // Ensure axis toggling does not react to user input.
+              hoverState="off"
+            />
+            {/* <ShaderGradient animate="on" type="waterPlane" range={"disabled"} uTime={0} uSpeed={0.05} uStrength={1.5} uDensity={1.5} uFrequency={0} uAmplitude={0} positionX={0} positionY={0} positionZ={0} rotationX={0} rotationY={0} rotationZ={0} color3="#cdadff" color2="#dbf3ff" color1="#ffffff" reflection={0.5} wireframe={false} shader="defaults" lightType="3d" grain="off" cameraZoom={1} cDistance={5} cAzimuthAngle={0} cPolarAngle={90} brightness={1.2} envPreset={"city"} /> */}
+          </ShaderGradientCanvas>
+          {/* <p>Image/Animation</p> */}
         </div>
         {/* <div
           key="about-ctfs"
@@ -341,19 +436,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <div className="relative flex h-full w-full items-center justify-center rounded-lg">
-            <LottiePlayPauseWithNoSSR />
-          </div>
-
-          {/* <p>About Me/Interests</p> */}
-          {/* <AudioBox /> */}
-          {/* <SilhouetteHover
-            silhouetteSrc="/static/images/bento/bento-about-ctfs-silhouette.svg"
-            silhouetteAlt="Bento About CTFs Silhouette"
-            mainSrc="/static/images/bento/bento-about-ctfs.svg"
-            mainAlt="Bento About CTFs"
-            className="rounded-3xl object-cover"
-          /> */}
+            <AudioBox />
         </div>
         <div
           key="twitter"
