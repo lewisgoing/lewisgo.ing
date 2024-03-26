@@ -1,5 +1,6 @@
 "use client";
 
+import ShaderGradientBox from "./boxes/ShaderGradientBox";
 import dynamic from "next/dynamic";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import React, { useEffect, useState } from "react";
@@ -235,8 +236,17 @@ export default function Bento() {
             <ExternalLink href="https://github.com/lewisgoing" />
           </div>
         </div>
-        <div key="image-1">
-          <p>Image #1/Audio Picker</p>
+        <div key="image-1" className="h-full w-full overflow-hidden">
+          <NextImage
+            src="svg/gradient.svg"
+            alt="Bento Box 1"
+            fill
+            noRelative
+            className="rounded-3xl object-cover grayscale scale-150"
+            skeletonClassName="rounded-3xl"
+            unoptimized
+            priority
+            />
           {/* <Image
             src="/static/images/bento/bento-image-1.svg"
             alt="Bento Box 1"
@@ -265,6 +275,8 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
+          {/* <AudioBox /> */}
+
           {/* <>
             <div className="flex flex-row w-full h-full" style={{border: '1px solid red'}}>
               <div className="flex flex-col items-center w-1/4 h-full" style={{border: '1px solid red' }}>
@@ -369,7 +381,42 @@ export default function Bento() {
               urlString="https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=1.2&cAzimuthAngle=180&cDistance=3.6&cPolarAngle=90&cameraZoom=1&color1=%2352ff89&color2=%23dbba95&color3=%23d0bce1&embedMode=off&envPreset=city&fov=45&gizmoHelper=hide&grain=on&lightType=3d&pixelDensity=1&positionX=-1.4&positionY=0&positionZ=0&reflection=0.1&rotationX=0&rotationY=10&rotationZ=0&shader=defaults&type=plane&uDensity=1.3&uFrequency=5.5&uSpeed=0.4&uStrength=4&uTime=0&wireframe=false&zoomOut=false"
             />
           </ShaderGradientCanvas> */}
-          <ShaderGradientCanvas
+          <ShaderGradientBox
+                        className="rounded-3xl object-cover grayscale"
+                        animate="on" // Disable animation to make the component non-reactive to interactions.
+                        control="props" // Control the component entirely through props.
+                        positionX={-1.4}
+                        positionY={0}
+                        positionZ={0}
+                        rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+                        rotationY={10}
+                        rotationZ={50}
+                        color1="#893D63"
+                        color2="#9E59B6"
+                        color3="#7060CF"
+                        wireframe={false}
+                        shader="defaults" // Use a default shader that does not react to user input.
+                        type="plane" // Example; adjust as needed.
+                        uAmplitude={1.4}
+                        uDensity={1.3}
+                        uFrequency={5.5}
+                        uSpeed={0.4}
+                        uStrength={4}
+                        cDistance={3.6}
+                        cameraZoom={45}
+                        cAzimuthAngle={0}
+                        cPolarAngle={90}
+                        uTime={1} // Static time value to ensure the gradient's appearance is fixed.
+                        lightType="env" // Example lighting; adjust as needed.
+                        envPreset="dawn"
+                        reflection={0.4}
+                        brightness={0.9}
+                        grain="on" // Disable grain effect for static appearance.
+                        toggleAxis={false} // Ensure axis toggling does not react to user input.
+                        hoverState="off"
+
+            />
+          {/* <ShaderGradientCanvas
             importedFiber={{ ...fiber, ...drei, ...reactSpring }}
             style={{
               position: "absolute",
@@ -397,7 +444,7 @@ export default function Bento() {
               uAmplitude={1.4}
               uDensity={1.3}
               uFrequency={5.5}
-              uSpeed={0.1}
+              uSpeed={0.4}
               uStrength={4}
               cDistance={3.6}
               cameraZoom={45}
@@ -411,9 +458,9 @@ export default function Bento() {
               grain="on" // Disable grain effect for static appearance.
               toggleAxis={false} // Ensure axis toggling does not react to user input.
               hoverState="off"
-            />
+            /> */}
             {/* <ShaderGradient animate="on" type="waterPlane" range={"disabled"} uTime={0} uSpeed={0.05} uStrength={1.5} uDensity={1.5} uFrequency={0} uAmplitude={0} positionX={0} positionY={0} positionZ={0} rotationX={0} rotationY={0} rotationZ={0} color3="#cdadff" color2="#dbf3ff" color1="#ffffff" reflection={0.5} wireframe={false} shader="defaults" lightType="3d" grain="off" cameraZoom={1} cDistance={5} cAzimuthAngle={0} cPolarAngle={90} brightness={1.2} envPreset={"city"} /> */}
-          </ShaderGradientCanvas>
+          {/* </ShaderGradientCanvas> */}
           {/* <p>Image/Animation</p> */}
         </div>
         {/* <div

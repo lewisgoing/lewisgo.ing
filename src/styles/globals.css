@@ -136,6 +136,18 @@ body {
     }
 }
 
+.spin {
+    animation: spin 2s linear infinite;
+  }  
+  
+
+/* Add this to your global CSS file or a CSS module */
+@keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
 .react-grid-container {
     @apply mx-auto max-w-[1200px];
 }
