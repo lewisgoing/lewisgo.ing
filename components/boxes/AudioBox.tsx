@@ -141,7 +141,7 @@ const AudioBox = () => {
               onClick={playLastTrack}
             >
               <button className="text-black text-2xl py-2 px-2">
-              <img
+              <NextImage
       src={isDark ? "/svg/player/back-dark.svg" : "/svg/player/back.svg"}
       alt="Bento Box 2"
       width={40}

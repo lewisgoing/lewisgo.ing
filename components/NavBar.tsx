@@ -1,7 +1,6 @@
 'use client'
 
 import headerNavLinks from '../public/data/headerNavLinks'
-import logo from '../public/logo.png'
 import siteMetadata from '../public/data/siteMetadata'
 import { cn } from '../scripts/utils/tailwind-helpers'
 import NextImage from 'next/image'
@@ -14,6 +13,7 @@ import ThemeSwitch from './assets/ThemeSwitch'
 import { Button } from './shadcn/button'
 
 const NavBar = () => {
+    const logo = 'public/logo.png'
     const [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
