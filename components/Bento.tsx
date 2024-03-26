@@ -377,7 +377,7 @@ export default function Bento() {
               rounded: "3xl",
               pointerEvents: "none",
             }}
-            className="rounded-3xl"
+            className="rounded-3xl grayscale"
           >
             <ShaderGradient
               animate="on" // Disable animation to make the component non-reactive to interactions.
@@ -388,26 +388,27 @@ export default function Bento() {
               rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
               rotationY={10}
               rotationZ={50}
-              color1="#F27562"
-              color2="#FFF8EE"
-              color3="#C7B8DA"
-              reflection={0.4}
+              color1="#893D63"
+              color2="#9E59B6"
+              color3="#7060CF"
               wireframe={false}
               shader="defaults" // Use a default shader that does not react to user input.
               type="plane" // Example; adjust as needed.
               uAmplitude={1.4}
               uDensity={1.3}
               uFrequency={5.5}
-              uSpeed={0.2}
+              uSpeed={0.1}
               uStrength={4}
               cDistance={3.6}
               cameraZoom={45}
               cAzimuthAngle={0}
               cPolarAngle={90}
               uTime={1} // Static time value to ensure the gradient's appearance is fixed.
-              lightType="3d" // Example lighting; adjust as needed.
+              lightType="env" // Example lighting; adjust as needed.
+              envPreset="dawn"
+              reflection={0.4}
               brightness={0.9}
-              grain="off" // Disable grain effect for static appearance.
+              grain="on" // Disable grain effect for static appearance.
               toggleAxis={false} // Ensure axis toggling does not react to user input.
               hoverState="off"
             />

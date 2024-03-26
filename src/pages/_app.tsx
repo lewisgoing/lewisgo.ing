@@ -7,6 +7,7 @@ import siteMetadata from "../../public/data/siteMetadata";
 import "../styles/tailwind.css";
 import { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
+import AnimatedCursor from "react-animated-cursor";
 // import { SearchConfig, SearchProvider } from 'pliny/search'
 // import 'pliny/search/algolia.css'
 import "react-grid-layout/css/styles.css";
@@ -79,19 +80,83 @@ export default function App(
         content="#E9D3B6"
       />
       {/* <body className="bg-background text-black antialiased dark:text-white"> */}
-        <ThemeProviders>
-          {/* <Analytics /> */}
-          <SectionContainer>
-            <div className="flex h-full flex-col justify-between font-sans">
-              {/* <SearchProvider searchConfig={siteMetadata.search as SearchConfig}> */}
-              <NavBar />
-              <Component {...pageProps} />
-              {/* <main className="mb-auto">{children}</main> */}
-              {/* </SearchProvider> */}
-              <Footer />
-            </div>
-          </SectionContainer>
-        </ThemeProviders>
+      <ThemeProviders>
+        {/* <Analytics /> */}
+        <SectionContainer>
+          <AnimatedCursor
+            innerSize={8}
+            outerSize={8}
+            color="193, 11, 111"
+            outerAlpha={0.2}
+            innerScale={0.7}
+            outerScale={5}
+            clickables={[
+              "a",
+              'input[type="text"]',
+              'input[type="email"]',
+              'input[type="number"]',
+              'input[type="submit"]',
+              'input[type="image"]',
+              "label[for]",
+              "select",
+              "textarea",
+              "button",
+              ".link",
+              {
+                target: ".react-grid-item",
+                options: {
+                  innerSize: 12,
+                  outerSize: 16,
+                  color: "255, 255, 255",
+                  outerAlpha: 0.3,
+                  innerScale: 0.7,
+                  outerScale: 5,
+                },
+              },
+            ]}
+          />{" "}
+                    {/* <AnimatedCursor
+            innerSize={8}
+            outerSize={16}
+            color="193, 11, 111"
+            outerAlpha={0.2}
+            innerScale={0.7}
+            outerScale={5}
+            clickables={[
+              "a",
+              'input[type="text"]',
+              'input[type="email"]',
+              'input[type="number"]',
+              'input[type="submit"]',
+              'input[type="image"]',
+              "label[for]",
+              "select",
+              "textarea",
+              "button",
+              ".link",
+              {
+                target: ".react-grid-item",
+                options: {
+                  innerSize: 12,
+                  outerSize: 16,
+                  color: "255, 255, 255",
+                  outerAlpha: 0.3,
+                  innerScale: 0.7,
+                  outerScale: 5,
+                },
+              },
+            ]}
+          />{" "} */}
+          <div className="flex h-full flex-col justify-between font-sans">
+            {/* <SearchProvider searchConfig={siteMetadata.search as SearchConfig}> */}
+            <NavBar />
+            <Component {...pageProps} />
+            {/* <main className="mb-auto">{children}</main> */}
+            {/* </SearchProvider> */}
+            <Footer />
+          </div>
+        </SectionContainer>
+      </ThemeProviders>
       {/* </body> */}
     </>
   );
