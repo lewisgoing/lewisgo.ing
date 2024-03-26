@@ -17,7 +17,9 @@ const AudioBox = () => {
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
   const { theme } = useTheme();
+  console.log(theme)
   const isDark = theme === 'dark';
+  const ThemeContext = React.createContext(false);
 
   // Define SVG paths
   const backLight = "/svg/player/back.svg";
@@ -74,16 +76,23 @@ const AudioBox = () => {
   };
 
   const playLastTrack = () => {
-    if (audioPlayer && audioPlayer.currentTime < 5) {
-      setCurrentTrackIndex(prevIndex => prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1);
-    } else {
-      audioPlayer.currentTime = 0;
-      if (!isPlaying) {
-        audioPlayer.play().catch(console.error);
-        setIsPlaying(true);
+    if (audioPlayer) {
+      if (audioPlayer.currentTime < 5) {
+        setCurrentTrackIndex(prevIndex => prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1);
+      } else {
+        audioPlayer.currentTime = 0;
+        if (!isPlaying) {
+          audioPlayer.play().catch(console.error);
+          setIsPlaying(true);
+        }
       }
     }
   };
+
+  console.log("pre-render theme:" + theme + isDark)
+  const backSrc = isDark ? backDark : backLight;
+  const nextSrc = isDark ? nextDark : nextLight;
+  
   return (
     <>
       <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
@@ -131,7 +140,7 @@ const AudioBox = () => {
             >
               <button className="text-black text-2xl py-2 px-2">
               <NextImage
-      src={isDark ? "/svg/player/back-dark.svg" : "/svg/player/back.svg"}
+      src={backSrc}
       alt="Bento Box 2"
       width={40}
       height={40}
@@ -156,7 +165,7 @@ const AudioBox = () => {
                 onClick={skipToNextTrack}
               >
             <NextImage
-            src={isDark ? nextDark : nextLight}
+            src={nextSrc}
             alt="Next"
             width={40}
             height={40}
@@ -176,46 +185,46 @@ const AudioBox = () => {
           </div>
 
           {/* Full-width Divider */}
-          {/* <div className="border-b border-black w-full"></div> */}
+          }
 
-          <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
-            <button className="text-black text-2xl py-2 px-2">
-            <NextImage
-            src={isDark ? nextDark : nextLight}
-            alt="Next"
-            width={40}
-            height={40}
-            className="rounded-3xl object-cover"
-            unoptimized
-          />
-            </button>
-            <button className="text-black text-2xl py-2 px-2">
-              <LottiePlayPauseWithNoSSR
-                togglePlay={togglePlay}
-                isPlaying={isPlaying}
-                isDark={isDark}
-              />
-            </button>
-            <button
-              className="text-black text-2xl py-2 px-2"
-              onClick={skipToNextTrack}
-            >
-              <NextImage
-                src={
-                  isDark
+                <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
+                <button className="text-black text-2xl py-2 px-2">
+                  <NextImage
+                  src={isDark ? nextLight : nextDark}
+                  alt="Next"
+                  width={40}
+                  height={40}
+                  className="rounded-3xl object-cover"
+                  unoptimized
+                  />
+                </button>
+                <button className="text-black text-2xl py-2 px-2">
+                  <LottiePlayPauseWithNoSSR
+                  togglePlay={togglePlay}
+                  isPlaying={isPlaying}
+                  isDark={isDark}
+                  />
+                </button>
+                <button
+                  className="text-black text-2xl py-2 px-2"
+                  onClick={skipToNextTrack}
+                >
+                  <NextImage
+                  src={
+                    isDark
                     ? "/svg/player/next-dark.svg"
                     : "/svg/player/next.svg"
-                }
-                alt="Bento Box 2"
-                width={36}
-                height={36}
-                className="rounded-3xl object-cover"
-                unoptimized
-                priority
-              />
-            </button>{" "}
-          </div>
-        </div>
+                  }
+                  alt="Bento Box 2"
+                  width={36}
+                  height={36}
+                  className="rounded-3xl object-cover"
+                  unoptimized
+                  priority
+                  />
+                </button>{" "}
+                </div>
+              </div>
       </div>
     </>
   );

@@ -29,6 +29,7 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
         lanyard.data.spotify,
         lanyard.data.listening_to_spotify,
         lanyard.data.kv.spotify_last_played,
+        setLastPlayed,
     ])
 
     let displayData = lanyard.data.spotify
