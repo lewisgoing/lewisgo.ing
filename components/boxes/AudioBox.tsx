@@ -12,7 +12,6 @@ const LottiePlayPauseWithNoSSR = dynamic(
 );
 
 const AudioBox = () => {
-  
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
@@ -20,23 +19,24 @@ const AudioBox = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  // Define SVG paths
   const backLight = "/svg/player/back.svg";
   const backDark = "/svg/player/back-dark.svg";
   const nextLight = "/svg/player/next.svg";
   const nextDark = "/svg/player/next-dark.svg";
-
-  // Use useMemo to ensure audioSources array is not re-initialized on every render
+  
+  // Memoizing the array of audio sources
   const audioSources = useMemo(() => [
     "./whatever.mp3",
     "/call.mp3",
     "./trying.mp3",
     "./doss.mp3",
     "./cantstop.mp3",
-  ], []); // Dependencies array is empty, indicating this useMemo only runs once on component mount
+  ], []);
 
-  // useCallback to memoize playNextTrackAutomatically and prevent it from being recreated on every render
+  // Memoizing the function to play the next track automatically
   const playNextTrackAutomatically = useCallback(() => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
+    setCurrentTrackIndex(prevIndex => (prevIndex + 1) % audioSources.length);
   }, [audioSources.length]);
 
   useEffect(() => {
@@ -44,14 +44,11 @@ const AudioBox = () => {
       const audio = new Audio(audioSources[currentTrackIndex]);
       setAudioPlayer(audio);
       audio.addEventListener("ended", playNextTrackAutomatically);
-
-      return () =>
-        audio.removeEventListener("ended", playNextTrackAutomatically);
+      return () => audio.removeEventListener("ended", playNextTrackAutomatically);
     }
   }, [audioPlayer, audioSources, currentTrackIndex, playNextTrackAutomatically]);
 
   useEffect(() => {
-    // Ensure the audioPlayer is updated when the currentTrackIndex changes
     if (audioPlayer) {
       audioPlayer.src = audioSources[currentTrackIndex];
       audioPlayer.load();
@@ -59,7 +56,7 @@ const AudioBox = () => {
         audioPlayer.play().catch(console.error);
       }
     }
-  }, [currentTrackIndex, audioPlayer, audioSources, isPlaying]); // No warning here as audioSources is stabilized by useMemo
+  }, [currentTrackIndex, audioPlayer, audioSources, isPlaying]);
 
   const togglePlay = () => {
     if (audioPlayer) {
@@ -73,28 +70,20 @@ const AudioBox = () => {
   };
 
   const skipToNextTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
+    setCurrentTrackIndex(prevIndex => (prevIndex + 1) % audioSources.length);
   };
 
   const playLastTrack = () => {
-    if (audioPlayer) {
-      if (audioPlayer.currentTime < 5) {
-        setCurrentTrackIndex((prevIndex) =>
-          prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1
-        );
-      } else {
-        audioPlayer.currentTime = 0;
-        if (!isPlaying) {
-          audioPlayer.play().catch(console.error);
-          setIsPlaying(true);
-        }
+    if (audioPlayer && audioPlayer.currentTime < 5) {
+      setCurrentTrackIndex(prevIndex => prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1);
+    } else {
+      audioPlayer.currentTime = 0;
+      if (!isPlaying) {
+        audioPlayer.play().catch(console.error);
+        setIsPlaying(true);
       }
     }
   };
-
-  const isDarkMode = false; // useDarkMode();
-
-
   return (
     <>
       <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
@@ -156,6 +145,7 @@ const AudioBox = () => {
                 <LottiePlayPauseWithNoSSR
                   togglePlay={togglePlay}
                   isPlaying={isPlaying}
+                  isDark={isDark}
                 />
               </button>
             </div>
@@ -165,19 +155,14 @@ const AudioBox = () => {
                 className="text-black text-2xl py-2 px-2"
                 onClick={skipToNextTrack}
               >
-                <NextImage
-                  src={
-                    isDark
-                      ? nextDark
-                      : nextLight
-                  }
-                  alt="Bento Box 2"
-                  width={40}
-                  height={40}
-                  className="rounded-3xl object-cover"
-                  unoptimized
-                  priority
-                />
+            <NextImage
+            src={isDark ? nextDark : nextLight}
+            alt="Next"
+            width={40}
+            height={40}
+            className="rounded-3xl object-cover"
+            unoptimized
+          />
               </button>
             </div>
           </div>
@@ -195,24 +180,20 @@ const AudioBox = () => {
 
           <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
             <button className="text-black text-2xl py-2 px-2">
-              <NextImage
-                src={
-                  isDark
-                    ? "/svg/player/back-dark.svg"
-                    : "/svg/player/back.svg"
-                }
-                alt="Bento Box 2"
-                width={36}
-                height={36}
-                className="rounded-3xl object-cover"
-                unoptimized
-                priority
-              />
+            <NextImage
+            src={isDark ? nextDark : nextLight}
+            alt="Next"
+            width={40}
+            height={40}
+            className="rounded-3xl object-cover"
+            unoptimized
+          />
             </button>
             <button className="text-black text-2xl py-2 px-2">
               <LottiePlayPauseWithNoSSR
                 togglePlay={togglePlay}
                 isPlaying={isPlaying}
+                isDark={isDark}
               />
             </button>
             <button
