@@ -185,7 +185,7 @@ const AudioBox = () => {
           </div>
 
           {/* Full-width Divider */}
-          }
+
 
                 <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
                 <button className="text-black text-2xl py-2 px-2">
