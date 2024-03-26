@@ -20,14 +20,11 @@ const LottiePlayPauseWithNoSSR = dynamic(
 
 import AudioBox from "./boxes/AudioBox";
 import IntroBox from "./boxes/IntroBox";
-import AudioVisualizerBox from "./boxes/AudioVisualizerBox";
 
 import Image from "./assets/ImageBox";
 import NextImage from "next/image";
 import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
 
-import HeroBox from "./boxes/HeroBox";
-import PFPBox from "./boxes/PFPBox";
 import ProjectPreviewBox from "./boxes/ProjectPreviewBox";
 
 import { Skeleton } from "./shadcn/skeleton";
@@ -56,13 +53,39 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import { Odor_Mean_Chey } from "next/font/google";
 import { Button } from "@/components/shadcn/button.tsx";
 
-const ResponsiveGridLayout = WidthProvider(Responsive, {
-  measureBeforeMount: true,
-});
+interface DiscordUser {
+  id: string;
+  username: string;
+  avatar: string;
+  discriminator: string;
+  bot: boolean;
+  // Add other properties as needed
+}
+
+interface LanyardData {
+  active_on_discord_desktop: boolean;
+  active_on_discord_mobile: boolean;
+  active_on_discord_web: boolean;
+  activities: any[]; // Adjust the type according to your data structure
+  discord_status: string; // Include discord_status here
+  discord_user: DiscordUser;
+  kv: {
+    spotify_last_played: string; // or any other type as per your data structure
+  };
+  listening_to_spotify: boolean;
+  spotify: null; // or the correct type if spotify data is available
+}
+
+interface LanyardResponse {
+  data: LanyardData;
+  // Include any other top-level properties of the Lanyard response
+}
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function Bento() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioPlayer, setAudioPlayer] = useState(null);
+  const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
 
   const audio = "./test.mp3";
   useEffect(() => {
@@ -83,10 +106,12 @@ export default function Bento() {
       // Lanyard data is valid
       // Add your validation logic here
       // Example:
-      if (lanyard.data.status === "online") {
+
+      if (lanyard.data.data.discord_status === "online") {
+        console.log("Lanyard data is valid", lanyard.data);
         console.log("User is online");
       } else {
-        console.log("User is offline", lanyard.data);
+        console.log("User is offline", lanyard.data.data.discord_status);
       }
     } else {
       // Lanyard data is not available or still validating
@@ -162,31 +187,41 @@ export default function Bento() {
         }
       >
         <div key="intro">
-          {/*<Image*/}
-          {/*    src="gradient-bg.jpg"*/}
-          {/*    alt="Bento Intro Silhouette"*/}
-          {/*    fill*/}
-          {/*    className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
-          {/*        introSilhouette ? "opacity-100" : "opacity-0 delay-75"*/}
-          {/*    }`}*/}
-          {/*    skeletonClassName="rounded-3xl"*/}
-          {/*    noRelative*/}
-          {/*    unoptimized*/}
-          {/*    priority*/}
-          {/*/>*/}
-
-          {/*<Image*/}
-          {/*    src="gradient-bg.jpg"*/}
-          {/*    alt="Bento Intro"*/}
-          {/*    fill*/}
-          {/*    className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
-          {/*        introSilhouette ? "opacity-0 delay-75" : "opacity-100"*/}
-          {/*    }`}*/}
-          {/*    skeletonClassName="rounded-3xl"*/}
-          {/*    noRelative*/}
-          {/*    unoptimized*/}
-          {/*    priority*/}
-          {/*/>*/}
+        <ShaderGradientBox
+            className="rounded-3xl object-cover"
+            animate="on" // Disable animation to make the component non-reactive to interactions.
+            control="props" // Control the component entirely through props.
+            positionX={-1.4}
+            positionY={0}
+            positionZ={0}
+            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            rotationY={10}
+            rotationZ={50}
+            color1="#893D63"
+            color2="#9E59B6"
+            color3="#7060CF"
+            wireframe={false}
+            shader="defaults" // Use a default shader that does not react to user input.
+            type="sphere" // Example; adjust as needed.
+            uAmplitude={1.4}
+            uDensity={1.3}
+            uFrequency={5.5}
+            uSpeed={0.4}
+            uStrength={4}
+            cDistance={3.6}
+            cameraZoom={0.4}
+            cAzimuthAngle={0}
+            cPolarAngle={90}
+            uTime={1} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="env" // Example lighting; adjust as needed.
+            envPreset="dawn"
+            reflection={0.4}
+            brightness={0.9}
+            grain="on" // Disable grain effect for static appearance.
+            toggleAxis={false} // Ensure axis toggling does not react to user input.
+            hoverState="off"
+          />
+          <p className="pl-10">intro</p>
         </div>
         {/*<div key="intro">*/}
         {/*  <Image*/}
@@ -241,12 +276,12 @@ export default function Bento() {
             src="svg/gradient.svg"
             alt="Bento Box 1"
             fill
-            noRelative
+            // noRelative
             className="rounded-3xl object-cover grayscale scale-150"
-            skeletonClassName="rounded-3xl"
+            // skeletonClassName="rounded-3xl"
             unoptimized
             priority
-            />
+          />
           {/* <Image
             src="/static/images/bento/bento-image-1.svg"
             alt="Bento Box 1"
@@ -275,8 +310,44 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          {/* <AudioBox /> */}
+          <div className="flex flex-row ">
+          <ShaderGradientBox
+            className="rounded-3xl object-cover"
+            animate="on" // Disable animation to make the component non-reactive to interactions.
+            control="props" // Control the component entirely through props.
+            positionX={-1.4}
+            positionY={0}
+            positionZ={0}
+            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            rotationY={10}
+            rotationZ={50}
+            color1="#893D63"
+            color2="#9E59B6"
+            color3="#7060CF"
+            wireframe={false}
+            shader="defaults" // Use a default shader that does not react to user input.
+            type="sphere" // Example; adjust as needed.
+            uAmplitude={1.4}
+            uDensity={1.3}
+            uFrequency={1.5}
+            uSpeed={0.1}
+            uStrength={4}
+            cDistance={3.6}
+            cameraZoom={10.4}
+            cAzimuthAngle={0}
+            cPolarAngle={90}
+            uTime={1} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="env" // Example lighting; adjust as needed.
+            envPreset="dawn"
+            reflection={0.4}
+            brightness={0.9}
+            grain="off" // Disable grain effect for static appearance.
+            toggleAxis={false} // Ensure axis toggling does not react to user input.
+            hoverState="off"
+            />
+            <span className="text-right">AudioPlayer</span>
 
+          </div>
           {/* <>
             <div className="flex flex-row w-full h-full" style={{border: '1px solid red'}}>
               <div className="flex flex-col items-center w-1/4 h-full" style={{border: '1px solid red' }}>
@@ -382,40 +453,39 @@ export default function Bento() {
             />
           </ShaderGradientCanvas> */}
           <ShaderGradientBox
-                        className="rounded-3xl object-cover grayscale"
-                        animate="on" // Disable animation to make the component non-reactive to interactions.
-                        control="props" // Control the component entirely through props.
-                        positionX={-1.4}
-                        positionY={0}
-                        positionZ={0}
-                        rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
-                        rotationY={10}
-                        rotationZ={50}
-                        color1="#893D63"
-                        color2="#9E59B6"
-                        color3="#7060CF"
-                        wireframe={false}
-                        shader="defaults" // Use a default shader that does not react to user input.
-                        type="plane" // Example; adjust as needed.
-                        uAmplitude={1.4}
-                        uDensity={1.3}
-                        uFrequency={5.5}
-                        uSpeed={0.4}
-                        uStrength={4}
-                        cDistance={3.6}
-                        cameraZoom={45}
-                        cAzimuthAngle={0}
-                        cPolarAngle={90}
-                        uTime={1} // Static time value to ensure the gradient's appearance is fixed.
-                        lightType="env" // Example lighting; adjust as needed.
-                        envPreset="dawn"
-                        reflection={0.4}
-                        brightness={0.9}
-                        grain="on" // Disable grain effect for static appearance.
-                        toggleAxis={false} // Ensure axis toggling does not react to user input.
-                        hoverState="off"
-
-            />
+            className="rounded-3xl object-cover grayscale"
+            animate="on" // Disable animation to make the component non-reactive to interactions.
+            control="props" // Control the component entirely through props.
+            positionX={-1.4}
+            positionY={0}
+            positionZ={0}
+            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            rotationY={10}
+            rotationZ={50}
+            color1="#893D63"
+            color2="#9E59B6"
+            color3="#7060CF"
+            wireframe={false}
+            shader="defaults" // Use a default shader that does not react to user input.
+            type="plane" // Example; adjust as needed.
+            uAmplitude={1.4}
+            uDensity={1.3}
+            uFrequency={5.5}
+            uSpeed={0.4}
+            uStrength={4}
+            cDistance={3.6}
+            cameraZoom={45}
+            cAzimuthAngle={0}
+            cPolarAngle={90}
+            uTime={1} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="env" // Example lighting; adjust as needed.
+            envPreset="dawn"
+            reflection={0.4}
+            brightness={0.9}
+            grain="on" // Disable grain effect for static appearance.
+            toggleAxis={false} // Ensure axis toggling does not react to user input.
+            hoverState="off"
+          />
           {/* <ShaderGradientCanvas
             importedFiber={{ ...fiber, ...drei, ...reactSpring }}
             style={{
@@ -459,7 +529,7 @@ export default function Bento() {
               toggleAxis={false} // Ensure axis toggling does not react to user input.
               hoverState="off"
             /> */}
-            {/* <ShaderGradient animate="on" type="waterPlane" range={"disabled"} uTime={0} uSpeed={0.05} uStrength={1.5} uDensity={1.5} uFrequency={0} uAmplitude={0} positionX={0} positionY={0} positionZ={0} rotationX={0} rotationY={0} rotationZ={0} color3="#cdadff" color2="#dbf3ff" color1="#ffffff" reflection={0.5} wireframe={false} shader="defaults" lightType="3d" grain="off" cameraZoom={1} cDistance={5} cAzimuthAngle={0} cPolarAngle={90} brightness={1.2} envPreset={"city"} /> */}
+          {/* <ShaderGradient animate="on" type="waterPlane" range={"disabled"} uTime={0} uSpeed={0.05} uStrength={1.5} uDensity={1.5} uFrequency={0} uAmplitude={0} positionX={0} positionY={0} positionZ={0} rotationX={0} rotationY={0} rotationZ={0} color3="#cdadff" color2="#dbf3ff" color1="#ffffff" reflection={0.5} wireframe={false} shader="defaults" lightType="3d" grain="off" cameraZoom={1} cDistance={5} cAzimuthAngle={0} cPolarAngle={90} brightness={1.2} envPreset={"city"} /> */}
           {/* </ShaderGradientCanvas> */}
           {/* <p>Image/Animation</p> */}
         </div>
@@ -484,7 +554,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-            <AudioBox />
+          <AudioBox />
         </div>
         <div
           key="twitter"
@@ -533,8 +603,10 @@ export default function Bento() {
             className="block bento-lg:hidden object-cover rounded-3xl ml-auto"
           /> */}
         </div>
-        <div key="tech">
-          <p>Technologies/Skills</p>
+        <div key="tech" style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ textAlign: "center" }}>
+            <p>Technologies/Skills</p>
+          </div>
         </div>
         {/* <div key="tech">
           <Image

@@ -58,7 +58,6 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
                 light: ['#E9D3B6', '#1A1A1A'],
             }}
             {...props}
-            // @ts-expect-error
             maxLevel={4}
         />
     )

@@ -14,7 +14,7 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 import "../styles/globals.css";
-import { ThemeProviders } from "./theme-providers";
+import { ThemeProviders } from "../../components/ThemeProviders";
 
 const font = JetBrains_Mono({
   subsets: ["latin"],
@@ -63,9 +63,7 @@ export const metadata: Metadata = {
 };
 
 export default function App(
-  { children, Component, pageProps }: { children: React.ReactNode },
-  AppProps: AppProps
-) {
+  { Component, pageProps }: AppProps) {
   return (
     <>
       <meta name="msapplication-TileColor" content="#000000" />
@@ -113,7 +111,7 @@ export default function App(
                   innerScale: 0.7,
                   outerScale: 5,
                 },
-              },
+              } as any,
             ]}
           />{" "}
                     {/* <AnimatedCursor

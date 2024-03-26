@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ImageBox from "../assets/ImageBox";
 // import Cursor from "../oldcursor";
 
-const IntroBox = () => {
+const IntroBox = ({ introSilhouette }: { introSilhouette: boolean }) => {
 
   return (
     <>
@@ -30,8 +30,7 @@ const IntroBox = () => {
         unoptimized
         priority
       />
-      {/* <Cursor isActive={isActive} /> */}
-      </>
+    </>
   );
 };
 

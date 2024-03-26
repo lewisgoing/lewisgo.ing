@@ -1,7 +1,7 @@
 'use client'
 
 import headerNavLinks from '../public/data/headerNavLinks'
-import Logo from '../public/logo.png'
+import logo from '../public/logo.png'
 import siteMetadata from '../public/data/siteMetadata'
 import { cn } from '../scripts/utils/tailwind-helpers'
 import NextImage from 'next/image'
@@ -41,7 +41,7 @@ const NavBar = () => {
                 <div>
                     <Link href="/" aria-label={siteMetadata.headerTitle}>
                         <div className="flex items-center justify-between">
-                            <NextImage src={Logo} alt="Logo" width="40" height="40" />
+                            <NextImage src={logo} alt="Logo" width="40" height="40" unoptimized />
                             <p className="px-3 py-2 text-lg font-medium text-muted-foreground hover:text-foreground">lewisgoing</p>
                         </div>
                     </Link>

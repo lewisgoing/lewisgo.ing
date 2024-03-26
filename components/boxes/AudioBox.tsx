@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { FaCompactDisc } from "react-icons/fa";
 import NextImage from "next/image";
+import { useTheme } from "next-themes";
 
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
@@ -11,18 +12,32 @@ const LottiePlayPauseWithNoSSR = dynamic(
 );
 
 const AudioBox = () => {
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
-  const [audioSrc, setAudioSrc] = useState("/whatever.mp3"); // Ensure the path is correct. Consider using an absolute path if necessary.
 
-  const audioSources = [
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const backLight = "/svg/player/back.svg";
+  const backDark = "/svg/player/back-dark.svg";
+  const nextLight = "/svg/player/next.svg";
+  const nextDark = "/svg/player/next-dark.svg";
+
+  // Use useMemo to ensure audioSources array is not re-initialized on every render
+  const audioSources = useMemo(() => [
     "./whatever.mp3",
     "/call.mp3",
     "./trying.mp3",
     "./doss.mp3",
     "./cantstop.mp3",
-  ];
+  ], []); // Dependencies array is empty, indicating this useMemo only runs once on component mount
+
+  // useCallback to memoize playNextTrackAutomatically and prevent it from being recreated on every render
+  const playNextTrackAutomatically = useCallback(() => {
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
+  }, [audioSources.length]);
 
   useEffect(() => {
     if (!audioPlayer) {
@@ -33,10 +48,10 @@ const AudioBox = () => {
       return () =>
         audio.removeEventListener("ended", playNextTrackAutomatically);
     }
-  }, [audioPlayer]);
+  }, [audioPlayer, audioSources, currentTrackIndex, playNextTrackAutomatically]);
 
   useEffect(() => {
-    // Update source and play immediately when index changes
+    // Ensure the audioPlayer is updated when the currentTrackIndex changes
     if (audioPlayer) {
       audioPlayer.src = audioSources[currentTrackIndex];
       audioPlayer.load();
@@ -44,12 +59,7 @@ const AudioBox = () => {
         audioPlayer.play().catch(console.error);
       }
     }
-  }, [currentTrackIndex]);
-
-  // Play next track automatically when the current track ends
-  const playNextTrackAutomatically = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
-  };
+  }, [currentTrackIndex, audioPlayer, audioSources, isPlaying]); // No warning here as audioSources is stabilized by useMemo
 
   const togglePlay = () => {
     if (audioPlayer) {
@@ -84,6 +94,7 @@ const AudioBox = () => {
 
   const isDarkMode = false; // useDarkMode();
 
+
   return (
     <>
       <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
@@ -105,6 +116,7 @@ const AudioBox = () => {
               <div>Song</div>
               <div className="text-[10px] text-muted-foreground">Artist(s)</div>
             </div>
+            
             <div className="text-sm h-full w-1/2 px-2 py-2 rounded-lg bg-tertiary/50 leading-snug">
                 <NextImage
                   src="./albumart/feb22.jpeg"
@@ -123,25 +135,19 @@ const AudioBox = () => {
             <div className="text-[10px] text-muted-foreground">Artist(s)</div>
           </div> */}
           {/* <div className="border-b border-black w-full"></div> */}
-          <div className="flex flex-row w-full h-fit bg-tertiary/50 rounded-lg gap-2 items-center justify-between">
+          <div className="flex flex-row w-full h-fit rounded-lg gap-2 items-center justify-between">
             <div
               className="flex grow justify-center bg-tertiary/50 rounded-lg"
               onClick={playLastTrack}
             >
               <button className="text-black text-2xl py-2 px-2">
-                <NextImage
-                  src={
-                    isDarkMode
-                      ? "/svg/player/back-dark.svg"
-                      : "/svg/player/back.svg"
-                  }
-                  alt="Bento Box 2"
-                  width={40}
-                  height={40}
-                  className="rounded-3xl object-cover"
-                  unoptimized
-                  priority
-                />
+              <img
+      src={isDark ? "/svg/player/back-dark.svg" : "/svg/player/back.svg"}
+      alt="Bento Box 2"
+      width={40}
+      height={40}
+      className="rounded-3xl object-cover"
+    />
               </button>
             </div>
 
@@ -161,9 +167,9 @@ const AudioBox = () => {
               >
                 <NextImage
                   src={
-                    isDarkMode
-                      ? "/svg/player/next-dark.svg"
-                      : "/svg/player/next.svg"
+                    isDark
+                      ? nextDark
+                      : nextLight
                   }
                   alt="Bento Box 2"
                   width={40}
@@ -191,7 +197,7 @@ const AudioBox = () => {
             <button className="text-black text-2xl py-2 px-2">
               <NextImage
                 src={
-                  isDarkMode
+                  isDark
                     ? "/svg/player/back-dark.svg"
                     : "/svg/player/back.svg"
                 }
@@ -215,7 +221,7 @@ const AudioBox = () => {
             >
               <NextImage
                 src={
-                  isDarkMode
+                  isDark
                     ? "/svg/player/next-dark.svg"
                     : "/svg/player/next.svg"
                 }

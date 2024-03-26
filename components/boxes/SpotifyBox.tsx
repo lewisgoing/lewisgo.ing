@@ -1,57 +1,50 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FaSpotify } from 'react-icons/fa';
-
+import { set } from 'react-use-lanyard'
 import ExternalLink from '../assets/ExternalLink';
 
-const SpotifyBox = ({ lanyard }) => {
-  // State to hold the last played or currently playing Spotify track
-  const [spotifyData, setSpotifyData] = useState(null);
-
-  useEffect(() => {
-    // Attempt to set last played track on component mount using stored value
-    const storedSpotifyData = localStorage.getItem('spotify_last_played');
-    if (storedSpotifyData) {
-      setSpotifyData(JSON.parse(storedSpotifyData));
-    }
-
-    // Update with real-time data if available
-    if (lanyard.data.listening_to_spotify) {
-      setSpotifyData(lanyard.data.spotify);
-      localStorage.setItem('spotify_last_played', JSON.stringify(lanyard.data.spotify));
-    }
-  }, [lanyard.data.listening_to_spotify, lanyard.data.spotify]);
-
-  useEffect(() => {
-    if (spotifyData) {
-      try {
-        const apiKey = process.env.NEXT_PUBLIC_LANYARD_KV_KEY;
-        const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID;
-
-        if (!apiKey || !userId) {
-          throw new Error('Missing environment variables');
+const SpotifyBox = ({ lanyard, onLoad }) => {
+    const setLastPlayed = async () => {
+        try {
+            await set({
+                apiKey: process.env.NEXT_PUBLIC_LANYARD_KV_KEY!,
+                userId: '661068667781513236',
+                key: 'spotify_last_played',
+                value: JSON.stringify(lanyard.data.spotify),
+            })
+        } catch (error) {
+            console.error('Error setting KV pair:', error)
         }
-
-        // Example async operation: Storing the last played track using your backend or other services
-        (async () => {
-          await set({
-            apiKey,
-            userId,
-            key: 'spotify_last_played',
-            value: JSON.stringify(spotifyData),
-          });
-          console.log('Spotify data stored:', spotifyData);
-        })();
-      } catch (error) {
-        console.error('Error storing Spotify data:', error);
-      }
     }
-  }, [spotifyData]);
 
-  if (!spotifyData) return <p>Spotify data is not available</p>;
+    useEffect(() => {
+        if (
+            JSON.parse(lanyard.data.kv.spotify_last_played) !== lanyard.data.spotify &&
+            lanyard.data.listening_to_spotify
+        ) {
+            setLastPlayed()
+        }
+    }, [
+        lanyard.data.spotify,
+        lanyard.data.listening_to_spotify,
+        lanyard.data.kv.spotify_last_played,
+    ])
 
-  const { song, artist, album, album_art_url, track_id } = spotifyData;
+    let displayData = lanyard.data.spotify
+    if (!displayData && lanyard.data.kv.spotify_last_played) {
+        displayData = JSON.parse(lanyard.data.kv.spotify_last_played)
+    }
 
+    useEffect(() => {
+        if (displayData && onLoad) {
+            onLoad()
+        }
+    }, [displayData, onLoad])
+
+    if (!displayData) return <p>Something absolutely horrible has gone wrong</p>
+
+    const { song, artist, album, album_art_url, track_id } = displayData
 
     return (
         <>
@@ -67,7 +60,7 @@ const SpotifyBox = ({ lanyard }) => {
                 <div className="flex flex-col">
                     <span className="mb-2 flex gap-2">
                         <Image
-                            src="./svg/now-playing.svg"
+                            src="svg/bento-now-playing.svg"
                             alt="Now playing"
                             width={16}
                             height={16}
@@ -99,7 +92,7 @@ const SpotifyBox = ({ lanyard }) => {
                 <div className="flex flex-col w-[42%]">
                     <span className="mb-2 flex gap-2">
                         <Image
-                            src="/static/images/bento/bento-now-playing.svg"
+                            src="svg/bento-now-playing.svg"
                             alt="Now playing"
                             width={16}
                             height={16}
@@ -130,4 +123,4 @@ const SpotifyBox = ({ lanyard }) => {
     )
 }
 
-export default SpotifyBox
+export default SpotifyBox;

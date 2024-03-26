@@ -1,6 +1,7 @@
 import { getTopTracks } from '../../fetchSpotifyData';
 
-export default async (_, res) => {
+// Assign the async function to a variable
+const topTracksHandler = async (req, res) => {
   const response = await getTopTracks();
   const { items } = await response.json();
 
@@ -12,3 +13,6 @@ export default async (_, res) => {
 
   return res.status(200).json({ tracks });
 };
+
+// Export the variable as default
+export default topTracksHandler;

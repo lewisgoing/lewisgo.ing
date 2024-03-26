@@ -1,6 +1,6 @@
 'use client'
 
-import siteMetadata from '../../public/data/siteMetadata'
+import siteMetadata from '../public/data/siteMetadata'
 import { ThemeProvider } from 'next-themes'
 
 export function ThemeProviders({ children }: { children: React.ReactNode }) {

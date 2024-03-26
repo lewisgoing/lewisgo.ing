@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Player } from '@lottiefiles/react-lottie-player';
+import { Player, PlayerDirection } from '@lottiefiles/react-lottie-player';
 import { dir } from 'console';
 import lottieDarkSrc from '../public/lottie-dark.json';
 import lottieLightSrc from '../public/lottie-light.json';
+import { useTheme } from 'next-themes';
 
 const LottiePlayPauseButton: React.FC<{ isPlaying: boolean, togglePlay: () => void }> = ({ isPlaying, togglePlay }) => {
-    const [direction, setDirection] = useState(-1); // 1 for forward, -1 for reverse
-
+  const [direction, setDirection] = useState<PlayerDirection>(-1);
   const playerRef = useRef<Player>(null);
 
 
@@ -18,18 +18,15 @@ const LottiePlayPauseButton: React.FC<{ isPlaying: boolean, togglePlay: () => vo
   
 
   useEffect(() => {
-
     if (playerRef.current) {
       playerRef.current.setPlayerDirection(direction);
       playerRef.current.play();
     }
-  }, [direction]); 
+  }, [direction]);
+  
 
-  const toggleAnimationDirection = () => {
-
-    console.log('input direction:', direction, 'output direction:', direction * -1)
-    setDirection(direction * -1);
-
+  const toggleDirection = () => {
+    setDirection((prevDirection) => (prevDirection === 1 ? -1 : 1));
   };
 
 
@@ -39,7 +36,7 @@ const LottiePlayPauseButton: React.FC<{ isPlaying: boolean, togglePlay: () => vo
   const lottie = darkMode ? lottieDarkSrc : lottieLightSrc;
 
   return (
-    <div onClick={() => {toggleAnimationDirection(); togglePlay();}} style={{cursor: 'pointer', width: 40, height: 40 }}>
+    <div onClick={() => {toggleDirection(); togglePlay();}} style={{cursor: 'pointer', width: 40, height: 40 }}>
       <Player
         ref={playerRef}
         autoplay={false}
