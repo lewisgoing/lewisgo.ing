@@ -1,63 +1,57 @@
-import Image from 'next/image'
-import React, { useEffect } from 'react'
-import { FaSpotify } from 'react-icons/fa'
-import { set } from 'react-use-lanyard'
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { FaSpotify } from 'react-icons/fa';
 
-import ExternalLink from '../assets/ExternalLink'
+import ExternalLink from '../assets/ExternalLink';
 
-const SpotifyBox = ({ lanyard, onLoad }) => {
-    const setLastPlayed = async () => {
-        try {
-            // const apiKey = fa47763a38ea5b7e8424e17fc808ceb7;
-            const userId = 661068667781513236;
-            const apiKey = process.env.NEXT_PUBLIC_LANYARD_KV_KEY;
-            // const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID;
-            
-            if (!apiKey || !userId) {
-                throw new Error('Missing environment variables');
-            }
-            
-            await set({
-                apiKey,
-                userId,
-                key: 'spotify_last_played',
-                value: JSON.stringify(lanyard.data.spotify),
-            })
-        } catch (error) {
-            console.error('Error setting KV pair:', error)
-        }
+const SpotifyBox = ({ lanyard }) => {
+  // State to hold the last played or currently playing Spotify track
+  const [spotifyData, setSpotifyData] = useState(null);
+
+  useEffect(() => {
+    // Attempt to set last played track on component mount using stored value
+    const storedSpotifyData = localStorage.getItem('spotify_last_played');
+    if (storedSpotifyData) {
+      setSpotifyData(JSON.parse(storedSpotifyData));
     }
 
-    useEffect(() => {
-        if (
-            JSON.parse(lanyard.data.kv.spotify_last_played) !== lanyard.data.spotify &&
-            lanyard.data.listening_to_spotify
-        ) {
-            console.log('Setting last played...', lanyard.data.spotify)
-            setLastPlayed()
-        }
-    }, [
-        lanyard.data.spotify,
-        lanyard.data.listening_to_spotify,
-        lanyard.data.kv.spotify_last_played,
-    ])
-
-    let displayData = lanyard.data.spotify
-    if (!displayData && lanyard.data.kv.spotify_last_played) {
-        displayData = JSON.parse(lanyard.data.kv.spotify_last_played)
+    // Update with real-time data if available
+    if (lanyard.data.listening_to_spotify) {
+      setSpotifyData(lanyard.data.spotify);
+      localStorage.setItem('spotify_last_played', JSON.stringify(lanyard.data.spotify));
     }
+  }, [lanyard.data.listening_to_spotify, lanyard.data.spotify]);
 
-    useEffect(() => {
-        if (displayData && onLoad) {
-            onLoad()
+  useEffect(() => {
+    if (spotifyData) {
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_LANYARD_KV_KEY;
+        const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID;
+
+        if (!apiKey || !userId) {
+          throw new Error('Missing environment variables');
         }
-    }, [displayData, onLoad])
 
-    if (!displayData) return <p>Something absolutely horrible has gone wrong (Spotify data)</p>
-    // if (displayData.error) return <p>{displayData.error}</p>
+        // Example async operation: Storing the last played track using your backend or other services
+        (async () => {
+          await set({
+            apiKey,
+            userId,
+            key: 'spotify_last_played',
+            value: JSON.stringify(spotifyData),
+          });
+          console.log('Spotify data stored:', spotifyData);
+        })();
+      } catch (error) {
+        console.error('Error storing Spotify data:', error);
+      }
+    }
+  }, [spotifyData]);
 
-    const { song, artist, album, album_art_url, track_id } = displayData
-    console.log('displayData:', displayData)
+  if (!spotifyData) return <p>Spotify data is not available</p>;
+
+  const { song, artist, album, album_art_url, track_id } = spotifyData;
+
 
     return (
         <>
