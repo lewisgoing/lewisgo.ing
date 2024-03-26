@@ -10,6 +10,9 @@ const LottiePlayPauseButton: React.FC<{ isPlaying: boolean, togglePlay: () => vo
   const playerRef = useRef<Player>(null);
 
 
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   // URLs for light and dark mode Lottie animations
   // const lightModeSrc = "https://lottie.host/0c031d29-23f9-46ec-8987-64bb837f1ced/G5VwoOdh07.json";
     const lightModeSrc = "../public/lottie-light.json";
@@ -29,11 +32,9 @@ const LottiePlayPauseButton: React.FC<{ isPlaying: boolean, togglePlay: () => vo
     setDirection((prevDirection) => (prevDirection === 1 ? -1 : 1));
   };
 
+// TODO: Implement dark mode detection
 
-
-  const darkMode = true; // TODO: Implement dark mode detection
-
-  const lottie = darkMode ? lottieDarkSrc : lottieLightSrc;
+  const lottieSrc = isDark ? lottieDarkSrc : lottieLightSrc;
 
   return (
     <div onClick={() => {toggleDirection(); togglePlay();}} style={{cursor: 'pointer', width: 40, height: 40 }}>
@@ -41,7 +42,7 @@ const LottiePlayPauseButton: React.FC<{ isPlaying: boolean, togglePlay: () => vo
         ref={playerRef}
         autoplay={false}
         loop={false}
-        src={lottieLightSrc}
+        src={lottieSrc}
         style={{width: '100%', height: '100%'}}
         keepLastFrame={true}
       />

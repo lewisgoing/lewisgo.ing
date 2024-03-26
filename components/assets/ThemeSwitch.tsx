@@ -35,7 +35,7 @@ const ThemeSwitch = () => {
                     </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <span>Temporarily disabled!</span>
+                    <span>Still in development! Will be buggy</span>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

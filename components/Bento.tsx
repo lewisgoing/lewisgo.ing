@@ -605,7 +605,9 @@ export default function Bento() {
         </div>
         <div key="tech" style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ textAlign: "center" }}>
-            <p>Technologies/Skills</p>
+          <div className="text-black uppercase font-bold">Skills</div>
+            <div className="text-[10px] text-muted-foreground">Made using NextJS, TailwindCSS. Deployed using Vercel</div>
+
           </div>
         </div>
         {/* <div key="tech">

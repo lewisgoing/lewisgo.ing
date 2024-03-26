@@ -13,7 +13,7 @@ import ThemeSwitch from './assets/ThemeSwitch'
 import { Button } from './shadcn/button'
 
 const NavBar = () => {
-    const logo = 'public/logo.png'
+    const logo = './logo.png'
     const [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
