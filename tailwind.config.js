@@ -14,6 +14,11 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
     './data/**/*.mdx',
   ],
+  variants: {
+    extend: {
+      grayscale: ['hover'],
+    },
+  },
   theme: {
     container: {
       center: true,

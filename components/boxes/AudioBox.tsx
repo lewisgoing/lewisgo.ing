@@ -29,6 +29,7 @@ const AudioBox = () => {
   
   // Memoizing the array of audio sources
   const audioSources = useMemo(() => [
+    "./nirvana.mp3",
     "./whatever.mp3",
     "/call.mp3",
     "./trying.mp3",

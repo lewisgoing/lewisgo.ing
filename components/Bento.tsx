@@ -1,6 +1,7 @@
 "use client";
 
 import ShaderGradientBox from "./boxes/ShaderGradientBox";
+import ShaderParkReactiveBox from "./boxes/ShaderParkBoxReactive";
 import dynamic from "next/dynamic";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import React, { useEffect, useState } from "react";
@@ -8,6 +9,7 @@ import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
 import * as reactSpring from "@react-spring/three";
 import * as drei from "@react-three/drei";
 import * as fiber from "@react-three/fiber";
+import SoundcloudBox from "./boxes/SoundcloudBox"
 
 import LottiePlayPauseButton from "../components/LottiePlayPauseButton";
 
@@ -187,7 +189,8 @@ export default function Bento() {
         }
       >
         <div key="intro">
-        <ShaderGradientBox
+          <ShaderParkReactiveBox />
+        {/* <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -221,7 +224,7 @@ export default function Bento() {
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
           />
-          <p className="pl-10">intro</p>
+          <p className="pl-10">intro</p> */}
         </div>
         {/*<div key="intro">*/}
         {/*  <Image*/}
@@ -311,7 +314,7 @@ export default function Bento() {
           onMouseLeave={() => setIntroSilhouette(false)}
         >
           <div className="flex flex-row ">
-          <ShaderGradientBox
+          {/* <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -344,7 +347,7 @@ export default function Bento() {
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-            />
+            /> */}
             <span className="text-right">AudioPlayer</span>
 
           </div>
@@ -452,7 +455,7 @@ export default function Bento() {
               urlString="https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=1.2&cAzimuthAngle=180&cDistance=3.6&cPolarAngle=90&cameraZoom=1&color1=%2352ff89&color2=%23dbba95&color3=%23d0bce1&embedMode=off&envPreset=city&fov=45&gizmoHelper=hide&grain=on&lightType=3d&pixelDensity=1&positionX=-1.4&positionY=0&positionZ=0&reflection=0.1&rotationX=0&rotationY=10&rotationZ=0&shader=defaults&type=plane&uDensity=1.3&uFrequency=5.5&uSpeed=0.4&uStrength=4&uTime=0&wireframe=false&zoomOut=false"
             />
           </ShaderGradientCanvas> */}
-          <ShaderGradientBox
+          {/* <ShaderGradientBox
             className="rounded-3xl object-cover grayscale"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -485,7 +488,7 @@ export default function Bento() {
             grain="on" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-          />
+          /> */}
           {/* <ShaderGradientCanvas
             importedFiber={{ ...fiber, ...drei, ...reactSpring }}
             style={{
@@ -562,17 +565,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <div className="relative flex h-full w-full items-center justify-center rounded-lg">
-            <FaSoundcloud className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24" />
-            {/* <SilhouetteHover
-              silhouetteSrc="/static/images/bento/bento-twitter-silhouette.svg"
-              silhouetteAlt="Bento Twitter Silhouette"
-              mainSrc="/static/images/bento/bento-twitter.svg"
-              mainAlt="Bento Twitter"
-              className="rounded-3xl object-cover"
-            /> */}
-            <ExternalLink href="https://soundcloud.com/lewisgoing" />
-          </div>
+        <SoundcloudBox />
         </div>
         <div
           key="spotify"
