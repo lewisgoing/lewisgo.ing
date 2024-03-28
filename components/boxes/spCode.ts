@@ -1,7 +1,7 @@
 // spCode.ts
-export const spCode = (audioFrequency: number): string => {
+export const spCode = (): string => {
     return `
-      let audio = ${audioFrequency};
+      let audio = input();
       let pointerDown = input();
       
       setMaxIterations(5);

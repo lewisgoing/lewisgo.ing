@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { FaCompactDisc } from "react-icons/fa";
 import NextImage from "next/image";
 import { useTheme } from "next-themes";
+// import ShaderParkBoxReactive from "../../../marchWebsite/assets/ShaderParkBoxReactive";
 
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
@@ -117,7 +118,8 @@ const AudioBox = () => {
             </div>
             
             <div className="text-sm h-full w-1/2 px-2 py-2 rounded-lg bg-tertiary/50 leading-snug">
-                <NextImage
+              {/* <ShaderParkBoxReactive /> */}
+                {/* <NextImage
                   src="./albumart/feb22.jpeg"
                   alt="Now playing"
                   width={0}
@@ -125,7 +127,7 @@ const AudioBox = () => {
                   className="rounded-3xl object-cover grayscale w-full h-[80px]"
                   unoptimized
                   priority
-                />
+                /> */}
             </div>
           </div>
 

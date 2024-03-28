@@ -1,6 +1,7 @@
 'use client'
 
-import siteMetadata from '../public/data/siteMetadata'
+
+import siteMetadata from 'public/data/siteMetaData'
 import { Github, Mail, Twitter } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 

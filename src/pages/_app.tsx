@@ -2,7 +2,7 @@ import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import SectionContainer from "../../components/SectionContainer";
 import type { AppProps } from "next/app";
-import siteMetadata from "../../public/data/siteMetadata";
+import siteMetadata from "../../public/data/siteMetaData";
 // import { Analytics } from '@vercel/analytics/react'
 import "../styles/tailwind.css";
 import { Metadata } from "next";

@@ -7,6 +7,7 @@ import { icons } from "lucide-react";
 
 const SpotifyBox = ({ lanyard, onLoad }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [spotifyData, setSpotifyData] = useState(null);
 
   const iconStyle = {
     transition: "color 0.3s ease",
@@ -27,34 +28,59 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
   };
 
   useEffect(() => {
-    if (
-      JSON.parse(lanyard.data.kv.spotify_last_played) !==
-        lanyard.data.spotify &&
-      lanyard.data.listening_to_spotify
-    ) {
-      setLastPlayed();
+    // Attempt to set last played track on component mount using stored value
+    const storedSpotifyData = localStorage.getItem('spotify_last_played');
+    if (storedSpotifyData) {
+      setSpotifyData(JSON.parse(storedSpotifyData));
     }
-  }, [
-    lanyard.data.spotify,
-    lanyard.data.listening_to_spotify,
-    lanyard.data.kv.spotify_last_played,
-    setLastPlayed,
-  ]);
 
-  let displayData = lanyard.data.spotify;
-  if (!displayData && lanyard.data.kv.spotify_last_played) {
-    displayData = JSON.parse(lanyard.data.kv.spotify_last_played);
-  }
+    // Update with real-time data if available
+    if (lanyard.data.listening_to_spotify) {
+      setSpotifyData(lanyard.data.spotify);
+      localStorage.setItem('spotify_last_played', JSON.stringify(lanyard.data.spotify));
+    }
+  }, [lanyard.data.listening_to_spotify, lanyard.data.spotify]);
 
   useEffect(() => {
-    if (displayData && onLoad) {
+    if (spotifyData) {
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_LANYARD_KV_KEY;
+        const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID;
+
+        if (!apiKey || !userId) {
+          throw new Error('Missing environment variables');
+        }
+
+        // Example async operation: Storing the last played track using your backend or other services
+        (async () => {
+          await set({
+            apiKey,
+            userId,
+            key: 'spotify_last_played',
+            value: JSON.stringify(spotifyData),
+          });
+          console.log('Spotify data stored:', spotifyData);
+        })();
+      } catch (error) {
+        console.error('Error storing Spotify data:', error);
+      }
+    }
+  }, [spotifyData]);
+
+
+
+
+
+
+  useEffect(() => {
+    if (spotifyData && onLoad) {
       onLoad();
     }
-  }, [displayData, onLoad]);
+  }, [spotifyData, onLoad]);
 
-  if (!displayData) return <p>Something absolutely horrible has gone wrong</p>;
+  if (!spotifyData) return <p>Something absolutely horrible has gone wrong</p>;
 
-  const { song, artist, album, album_art_url, track_id } = displayData;
+  const { song, artist, album, album_art_url, track_id } = spotifyData;
 
   const imageStyle = isHovered
   ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }

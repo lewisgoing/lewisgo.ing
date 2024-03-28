@@ -1,7 +1,7 @@
 "use client";
 
 import ShaderGradientBox from "./boxes/ShaderGradientBox";
-import ShaderParkReactiveBox from "./boxes/ShaderParkBoxReactive";
+// import ShaderParkReactiveBox from "../../marchWebsite/assets/ShaderParkBoxReactive";
 import dynamic from "next/dynamic";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import React, { useEffect, useState } from "react";
@@ -54,6 +54,7 @@ import SpotifyStatusBox from "./boxes/SpotifyBox";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { Odor_Mean_Chey } from "next/font/google";
 import { Button } from "@/components/shadcn/button.tsx";
+import GithubBox from "./boxes/GithubBox";
 
 interface DiscordUser {
   id: string;
@@ -189,8 +190,8 @@ export default function Bento() {
         }
       >
         <div key="intro">
-          <ShaderParkReactiveBox />
-        {/* <ShaderGradientBox
+          {/* <ShaderParkReactiveBox /> */}
+        <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -224,7 +225,7 @@ export default function Bento() {
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
           />
-          <p className="pl-10">intro</p> */}
+          {/* <p className="pl-10">intro</p> */}
         </div>
         {/*<div key="intro">*/}
         {/*  <Image*/}
@@ -262,17 +263,7 @@ export default function Bento() {
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
         >
-          <div className="relative flex h-full w-full items-center justify-center rounded-lg">
-            <FaGithub className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24" />
-            {/* <SilhouetteHover
-              silhouetteSrc="/static/images/bento/bento-github-silhouette.svg"
-              silhouetteAlt="Bento Github Silhouette"
-              mainSrc="../public/images/github.svg"
-              mainAlt="Bento Github"
-              className="rounded-3xl object-cover"
-            /> */}
-            <ExternalLink href="https://github.com/lewisgoing" />
-          </div>
+          <GithubBox />
         </div>
         <div key="image-1" className="h-full w-full overflow-hidden">
           <NextImage
@@ -314,7 +305,7 @@ export default function Bento() {
           onMouseLeave={() => setIntroSilhouette(false)}
         >
           <div className="flex flex-row ">
-          {/* <ShaderGradientBox
+          <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -347,7 +338,7 @@ export default function Bento() {
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-            /> */}
+            />
             <span className="text-right">AudioPlayer</span>
 
           </div>
