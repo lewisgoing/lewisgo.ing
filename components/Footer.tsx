@@ -2,7 +2,7 @@
 
 
 import siteMetadata from 'public/data/siteMetaData'
-import { Github, Linkedin, Mail, Twitter, Soundcloud } from 'lucide-react'
+import { Github, Linkedin, Mail, Twitter } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 import Link from './assets/Link'

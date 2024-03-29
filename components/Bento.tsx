@@ -241,7 +241,7 @@ export default function Bento() {
               />
 
             <ShaderGradientBox
-                className={`rounded-3xl object-cover transition-opacity duration-300`}
+                className={`rounded-3xl object-cover transition-opacity duration-300 skeleton rounded-3xl`}
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
             positionX={0}
@@ -276,7 +276,7 @@ export default function Bento() {
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-            skeletonClassName="rounded-3xl"
+            // skeletonClassName="rounded-3xl"
             />
 
 
@@ -341,8 +341,8 @@ export default function Bento() {
             unoptimized
             priority
           /> */}
-                    <ShaderGradientBox
-            className="rounded-3xl object-cover"
+            <ShaderGradientBox
+                className={`rounded-3xl object-cover transition-opacity duration-300 skeleton rounded-3xl`}
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
             positionX={0}
@@ -363,20 +363,21 @@ export default function Bento() {
             uAmplitude={1.4}
             uDensity={1.2}
             uFrequency={1.5}
-            uSpeed={0.04}
+            uSpeed={0.08}
             uStrength={1.4}
             cDistance={10}
-            cameraZoom={20}
-            cAzimuthAngle={0}
+            cameraZoom={25}
+            cAzimuthAngle={30}
             cPolarAngle={90}
             uTime={2} // Static time value to ensure the gradient's appearance is fixed.
             lightType="3d" // Example lighting; adjust as needed.
             envPreset="dawn"
             reflection={0.4}
-            brightness={1.9}
+            brightness={1.5}
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
+            // skeletonClassName="rounded-3xl"
             />
         </div>
         <div key="discord">

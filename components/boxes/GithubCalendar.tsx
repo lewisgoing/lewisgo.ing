@@ -2,6 +2,7 @@
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import Calendar, { type Props as ActivityCalendarProps } from 'react-activity-calendar'
+import Image from '../assets/ImageBox'
 
 // Adopted from https://github.com/grubersjoe/react-github-calendar
 // Copyright (c) 2019 Jonathan Gruber, MIT License
@@ -43,7 +44,17 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
     useEffect(fetchData, [fetchData])
 
     if (error) {
-        return <div>Github fetch failed! Contact lgoing7@uw.edu immediately.</div>
+        return <div>                                <Image
+        src="/svg/lewis-gh-down.svg"
+        alt="Bento Intro Silhouette"
+        fill
+        className={`rounded-3xl object-cover `}
+        skeletonClassName="rounded-3xl"
+        noRelative
+        unoptimized
+        priority
+        style={{ position: 'absolute', top: 0, left: 0, zIndex: 2}}
+      /></div>
     }
 
     if (loading || !data) {
