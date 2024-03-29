@@ -6,8 +6,7 @@ class AudioContextManager {
   private constructor() {
     this.sourceNodes = new WeakMap(); // Ensure this is initialized in the constructor
     if (typeof window !== "undefined") {
-      this.audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
+      this.audioContext = new (window.AudioContext)();
     }
   }
 

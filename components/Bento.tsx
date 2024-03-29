@@ -267,7 +267,7 @@ export default function Bento() {
           <GithubBox />
         </div>
         <div key="image-1" className="h-full w-full overflow-hidden">
-          <NextImage
+          {/* <Image
             src="svg/gradient.svg"
             alt="Bento Box 1"
             fill
@@ -276,13 +276,13 @@ export default function Bento() {
             // skeletonClassName="rounded-3xl"
             unoptimized
             priority
-          />
+          /> */}
           <Image
-            src="svg/gradient.svg"
+            src="svg/image-4.svg"
             alt="Bento Box 1"
             fill
             noRelative
-            className="rounded-3xl object-cover scale-150"
+            className="rounded-3xl object-cover"
             skeletonClassName="rounded-3xl"
             unoptimized
             priority
@@ -431,8 +431,8 @@ export default function Bento() {
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
         </div>
         <div key="image-2">
-          {/* <Image
-            src="/static/images/bento/bento-image-2.svg"
+          <Image
+            src="/svg/image-2.svg"
             alt="Bento Box 2"
             fill
             className="rounded-3xl object-cover"
@@ -440,7 +440,7 @@ export default function Bento() {
             noRelative
             unoptimized
             priority
-          /> */}
+          />
           {/* 
           <ShaderGradientCanvas
             importedFiber={{ ...fiber, ...drei, ...reactSpring }}
