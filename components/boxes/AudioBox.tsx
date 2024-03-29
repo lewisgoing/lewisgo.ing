@@ -18,6 +18,7 @@ import {
 import { FaCompactDisc } from "react-icons/fa";
 import { audioContextManager } from "src/context/AudioContextManager";
 import { current } from "tailwindcss/colors";
+import { ExternalLink } from "lucide-react";
 
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
@@ -58,6 +59,7 @@ interface Song {
   artist: string;
   albumCoverUrl: string;
   audioSrc: string;
+  audioLink?: string;
 }
 
 const AudioBox = () => {
@@ -78,6 +80,7 @@ const AudioBox = () => {
         artist: "lewisgoing & Avi8",
         albumCoverUrl: "/albumart/closer.jpg", // Adjust paths as necessary
         audioSrc: "./audio/closer.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/closer",
       },
 
       {
@@ -85,13 +88,15 @@ const AudioBox = () => {
         artist: "GG12",
         albumCoverUrl: "/albumart/jan22.jpeg", // Adjust paths as necessary
         audioSrc: "./audio/nirvana.mp3",
+        audioLink: "https://soundcloud.com/djgg12/nirvana_rmx?si=c9480e9878d748b9aa420d49a5a185f9&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
       },
 
       {
         title: "Can't Stop",
-        artist: "ddertbag",
+        artist: "Simply Funk",
         albumCoverUrl: "/albumart/may22.jpeg", // Adjust paths as necessary
         audioSrc: "./audio/cantstop.mp3",
+        audioLink: "https://soundcloud.com/funkopop/cantstop?si=e648fa1dc12041dfb8f7c002304699ee&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
       },
 
       {
@@ -99,6 +104,7 @@ const AudioBox = () => {
         artist: "Doss",
         albumCoverUrl: "/albumart/sept21.jpeg", // Adjust paths as necessary
         audioSrc: "./audio/doss.mp3",
+        audioLink: "https://soundcloud.com/doss/extended-mix?si=21bcfd70b8094943b120d47fc4568b1b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
       },
 
       {
@@ -215,6 +221,14 @@ const AudioBox = () => {
   };
 
   const currentSong = songs[currentTrackIndex];
+
+const handleSongLinkClick = () => {
+  const songLink = songs[currentTrackIndex].audioLink;
+  if (songLink) {
+    window.open(songLink, "_blank");
+  }
+}
+
   // Format time to display
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -228,7 +242,7 @@ const AudioBox = () => {
   const backDark = "/svg/player/back-dark.svg";
   const nextLight = "/svg/player/next.svg";
   const nextDark = "/svg/player/next-dark.svg";
-  console.log("pre-render theme:" + theme + isDark);
+  // console.log("pre-render theme:" + theme + isDark);
   const backSrc = isDark ? backDark : backLight;
   const nextSrc = isDark ? nextDark : nextLight;
 
@@ -272,7 +286,7 @@ const AudioBox = () => {
           {/* Middle Elements */}
           {/* Album Cover and Song Info */}
           <div
-            className="flex flex-col h-full gap-1  items-center justify-center mt-[-66px]"
+            className="flex flex-col h-full gap-1 items-center justify-center mt-[-48px]"
             // style={{ border: "1px solid red" }}
           >
             <div>
@@ -296,7 +310,7 @@ const AudioBox = () => {
 
             {/* Song duration and progress bar */}
             <div
-              className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2 mb-1"
+              className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2 "
               // style={{ border: "1px solid red" }}
             >
               <div style={progressBarStyle} onClick={handleProgressBarClick}>
@@ -317,16 +331,16 @@ const AudioBox = () => {
                 </div>
               </div>
             </div>
-          </div>
-          {/* Buttons */}
+                      {/* Buttons */}
           <div
-            className="flex flex-row w-full h-full rounded-lg items-center justify-between"
+            className="flex flex-row w-full h-full rounded-lg items-center justify-between gap-1"
             // style={{ border: "1px red solid" }}
           >
             <div className="flex grow justify-center  rounded-lg">
-              <button className="cursor-pointer">
-                <HiInformationCircle size={28} className={"text-primary"} />
-              </button>
+            <button className="info-icon cursor-pointer"
+                onClick={handleSongLinkClick}>
+                <HiQueueList size={28} className={"text-primary"} />
+                              </button>
             </div>
             {/* Back */}
             <div
@@ -371,17 +385,24 @@ const AudioBox = () => {
                   width={40}
                   height={40}
                   className="rounded-3xl object-cover"
-                  unoptimized
+
                 /> */}
               </button>
             </div>
 
             <div className="flex grow justify-center rounded-lg">
-              <button className="cursor-pointer">
-                <HiQueueList size={28} className={"text-primary"} />
+            <button className="info-icon cursor-pointer"
+                onClick={handleSongLinkClick}>
+              {
+  songs[currentTrackIndex].audioLink 
+    ? <div><ExternalLink href={songs[currentTrackIndex].audioLink}           className="text-primary z-[1] block" newTab={true} /></div>
+    : <div><ExternalLink href={'/#'}           className="z-[1] block" newTab={true} /></div>
+}
               </button>
             </div>
           </div>
+          </div>
+
         </div>
       </div>
       {/* Mobile Styles */}

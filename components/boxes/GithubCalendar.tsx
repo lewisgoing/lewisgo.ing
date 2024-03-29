@@ -43,7 +43,7 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
     useEffect(fetchData, [fetchData])
 
     if (error) {
-        return <div>Fetch failed! Contact lgoing7@uw.edu immediately.</div>
+        return <div>Github fetch failed! Contact lgoing7@uw.edu immediately.</div>
     }
 
     if (loading || !data) {

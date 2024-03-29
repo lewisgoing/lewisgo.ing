@@ -10,6 +10,7 @@ import * as reactSpring from "@react-spring/three";
 import * as drei from "@react-three/drei";
 import * as fiber from "@react-three/fiber";
 import SoundcloudBox from "./boxes/SoundcloudBox"
+import SkillsBox from "./boxes/SkillsBox";
 
 import LottiePlayPauseButton from "../components/LottiePlayPauseButton";
 
@@ -104,25 +105,25 @@ export default function Bento() {
     // userId: process.env.NEXT_PUBLIC_DISCORD_USER_ID,
   });
 
-  useEffect(() => {
-    if (lanyard.data && !lanyard.isValidating) {
-      // Lanyard data is valid
-      // Add your validation logic here
-      // Example:
+  // useEffect(() => {
+  //   // if (lanyard.data && !lanyard.isValidating) {
+  //     // Lanyard data is valid
+  //     // Add your validation logic here
+  //     // Example:
 
-      if (lanyard.data.data.discord_status === "online") {
-        console.log("Lanyard data is valid", lanyard.data);
-        console.log("User is online");
-      } else {
-        console.log("User is offline", lanyard.data.data.discord_status);
-      }
-    } else {
-      // Lanyard data is not available or still validating
-      // Add your error handling logic here
-      // Example:
-      console.log("Lanyard data is not available or still validating");
-    }
-  }, [lanyard.data, lanyard.isValidating]);
+  //     // if (lanyard.data.data.discord_status === "online") {
+  //       // console.log("Lanyard data is valid", lanyard.data);
+  //       // console.log("User is online");
+  //     // } else {
+  //       // console.log("User is offline", lanyard.data.data.discord_status);
+  //     // }
+  //   // } else {
+  //     // Lanyard data is not available or still validating
+  //     // Add your error handling logic here
+  //     // Example:
+  //     // console.log("Lanyard data is not available or still validating");
+  //   }
+  // }, [lanyard.data, lanyard.isValidating]);
 
   const [introSilhouette, setIntroSilhouette] = useState(false);
 
@@ -227,20 +228,60 @@ export default function Bento() {
             hoverState="off"
           /> */}
           {/* <p className="pl-10">intro</p> */}
-          <Image
-                src="/svg/lewis-card.svg"
+                                <Image
+                src="/svg/lewis-card-hover-4.svg"
                 alt="Bento Intro Silhouette"
                 fill
-                className={`rounded-3xl object-cover transition-opacity duration-300 ${
-                  introSilhouette ? "opacity-100" : "opacity-0 delay-75"
-                }`}
+                className={`rounded-3xl object-cover `}
                 skeletonClassName="rounded-3xl"
                 noRelative
                 unoptimized
                 priority
+                style={{ position: 'absolute', top: 0, left: 0, zIndex: 2}}
               />
 
-              <Image
+            <ShaderGradientBox
+                className={`rounded-3xl object-cover transition-opacity duration-300`}
+            animate="on" // Disable animation to make the component non-reactive to interactions.
+            control="props" // Control the component entirely through props.
+            positionX={0}
+            positionY={0}
+            positionZ={0}
+            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            rotationY={10}
+            rotationZ={50}
+            // color1="#893D63"
+            // color2="#9E59B6"
+            // color3="#7060CF"
+            color1="#FF0006"
+            color2="#003FFF"
+            color3="#4AA6FF"
+            wireframe={false}
+            shader="defaults" // Use a default shader that does not react to user input.
+            type="sphere" // Example; adjust as needed.
+            uAmplitude={1.4}
+            uDensity={1.2}
+            uFrequency={1.5}
+            uSpeed={0.04}
+            uStrength={1.4}
+            cDistance={10}
+            cameraZoom={20}
+            cAzimuthAngle={0}
+            cPolarAngle={90}
+            uTime={2} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="3d" // Example lighting; adjust as needed.
+            envPreset="dawn"
+            reflection={0.4}
+            brightness={1.9}
+            grain="off" // Disable grain effect for static appearance.
+            toggleAxis={false} // Ensure axis toggling does not react to user input.
+            hoverState="off"
+            skeletonClassName="rounded-3xl"
+            />
+
+
+
+              {/* <Image
                 src="/svg/lewis-card.svg"
                 alt="Bento Intro"
                 fill
@@ -251,7 +292,20 @@ export default function Bento() {
                 noRelative
                 unoptimized
                 priority
-              />
+              /> */}
+              
+              {/* <Image
+                src="/svg/lewis-card.svg"
+                alt="Bento Intro"
+                fill
+                className={`rounded-3xl object-cover transition-opacity duration-300 ${
+                  introSilhouette ? "opacity-0 delay-75" : "opacity-100"
+                }`}
+                skeletonClassName="rounded-3xl"
+                noRelative
+                unoptimized
+                priority
+              /> */}
               </div>
 
 
@@ -336,14 +390,14 @@ export default function Bento() {
           )}
         </div>
 
-        <div
+        {/* <div
           key="latest-post"
           className="group"
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
-        >
-          <div className="flex flex-row ">
-          <ShaderGradientBox
+        > */}
+          {/* <div className="flex flex-row "> */}
+          {/* <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -379,10 +433,10 @@ export default function Bento() {
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-            />
+            /> */}
             {/* <span className="text-right">AudioPlayer</span> */}
 
-          </div>
+          {/* </div> */}
           {/* <SilhouetteHover
             silhouetteSrc=""
             silhouetteAlt=""
@@ -469,8 +523,8 @@ export default function Bento() {
           {/* </SilhouetteHover> */}
           {/* <ExternalLink href="/#" newTab={false} /> */}
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
-        </div>
-        <div key="image-2">
+        {/* </div> */}
+        {/* <div key="image-2"> */}
           {/* <Image
             src="/svg/image-2.svg"
             alt="Bento Box 2"
@@ -481,7 +535,7 @@ export default function Bento() {
             unoptimized
             priority
           /> */}
-                    <ShaderGradientBox
+                    {/* <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -517,7 +571,7 @@ export default function Bento() {
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-            />
+            /> */}
           {/* 
           <ShaderGradientCanvas
             importedFiber={{ ...fiber, ...drei, ...reactSpring }}
@@ -611,7 +665,7 @@ export default function Bento() {
           {/* <ShaderGradient animate="on" type="waterPlane" range={"disabled"} uTime={0} uSpeed={0.05} uStrength={1.5} uDensity={1.5} uFrequency={0} uAmplitude={0} positionX={0} positionY={0} positionZ={0} rotationX={0} rotationY={0} rotationZ={0} color3="#cdadff" color2="#dbf3ff" color1="#ffffff" reflection={0.5} wireframe={false} shader="defaults" lightType="3d" grain="off" cameraZoom={1} cDistance={5} cAzimuthAngle={0} cPolarAngle={90} brightness={1.2} envPreset={"city"} /> */}
           {/* </ShaderGradientCanvas> */}
           {/* <p>Image/Animation</p> */}
-        </div>
+        {/* </div> */}
         {/* <div
           key="about-ctfs"
           className="group bg-[url('/static/images/bento/bento-about-ctfs-bg.svg')] bg-cover bg-center"
@@ -673,11 +727,12 @@ export default function Bento() {
           /> */}
         </div>
         <div key="tech" style={{ display: "flex", justifyContent: "center" }}>
-          <div style={{ textAlign: "center" }}>
+          <SkillsBox />
+          {/* <div style={{ textAlign: "center" }}>
           <div className="text-black uppercase font-bold">Skills</div>
             <div className="text-[10px] text-muted-foreground">Made using NextJS, TailwindCSS. Deployed using Vercel</div>
 
-          </div>
+          </div> */}
         </div>
         {/* <div key="tech">
           <Image

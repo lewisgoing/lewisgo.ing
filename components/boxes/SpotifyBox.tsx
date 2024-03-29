@@ -47,8 +47,12 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
         const apiKey = process.env.NEXT_PUBLIC_LANYARD_KV_KEY;
         const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID;
 
-        if (!apiKey || !userId) {
-          throw new Error('Missing environment variables');
+        if (!apiKey) {
+          throw new Error('Missing environment variable: NEXT_PUBLIC_LANYARD_KV_KEY');
+        }
+        
+        if (!userId) {
+          throw new Error('Missing environment variable: NEXT_PUBLIC_LANYARD_USER_ID');
         }
 
         // Example async operation: Storing the last played track using your backend or other services
@@ -59,7 +63,7 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
             key: 'spotify_last_played',
             value: JSON.stringify(spotifyData),
           });
-          console.log('Spotify data stored:', spotifyData);
+          // console.log('Spotify data stored:', spotifyData);
         })();
       } catch (error) {
         console.error('Error storing Spotify data:', error);

@@ -10,6 +10,10 @@ body {
   @apply max-w-[90%] w-[1080px] mx-auto;
 }
 
+.tooltip-content {
+    z-index: 100; /* High enough to be on top of other content */
+  }
+
 .gradient-text {
   background: linear-gradient(
     to right,
@@ -97,6 +101,10 @@ body {
     --radius: 0.5rem;
   }
 }
+.tooltip-content {
+    z-index: 1000; /* Adjust as necessary */
+  }
+  
 
 @layer base {
   * {
@@ -110,10 +118,16 @@ body {
 .react-grid-item {
   @apply flex select-none items-center rounded-3xl border border-border bg-secondary !duration-500 hover:scale-[1.025] bento-md:hover:cursor-grab bento-md:hover:shadow-lg;
   transition-property: transform, left, top, width, height;
+  overflow: visible;
 }
 
 .react-draggable-dragging {
   @apply !cursor-grabbing;
+}
+
+.tooltip-content {
+    z-index: 1000; /* Adjust as necessary */
+    
 }
 
 .react-grid-placeholder {

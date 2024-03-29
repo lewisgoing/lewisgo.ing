@@ -65,7 +65,7 @@ const NavBar = () => {
                         ))}
                     </ul>
                     {/* <SearchButton /> */}
-                    <ThemeSwitch />
+                    {/* <ThemeSwitch /> */}
                     {/* <MobileNav /> */}
                 </div>
             </div>

@@ -1,6 +1,6 @@
 export const lgLayout = [
     { i: 'intro', x: 0, y: 0, w: 2, h: 1 },
-    { i: 'about-ctfs', x: 2, y: 0, w: 1, h: 1 },
+    { i: 'about-ctfs', x: 2, y: 4, w: 1, h: 1 },
     { i: 'image-1', x: 3, y: 0, w: 1, h: 2 },
     { i: 'discord', x: 0, y: 1, w: 1, h: 1 },
     { i: 'latest-post', x: 1, y: 1, w: 2, h: 1 },
@@ -8,7 +8,7 @@ export const lgLayout = [
     { i: 'contributions', x: 1, y: 3, w: 2, h: 1 },
     { i: 'spotify', x: 3, y: 3, w: 1, h: 1 },
     { i: 'github', x: 1, y: 4, w: 1, h: 1 },
-    { i: 'tech', x: 2, y: 4, w: 1, h: 1 },
+    { i: 'tech', x: 2, y: 0, w: 1, h: 1 },
     { i: 'twitter', x: 3, y: 4, w: 1, h: 1 },
 ]
 
