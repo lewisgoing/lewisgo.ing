@@ -83,43 +83,59 @@ const AudioBox = () => {
         audioSrc: "./audio/closer.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/closer",
       },
-
       {
-        title: "Nirvana",
-        artist: "GG12",
-        albumCoverUrl: "/albumart/jan22.jpeg", // Adjust paths as necessary
-        audioSrc: "./audio/nirvana.mp3",
-        audioLink: "https://soundcloud.com/djgg12/nirvana_rmx?si=c9480e9878d748b9aa420d49a5a185f9&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        title: "Winter '22 Samples",
+        artist: "lewisgoing",
+        albumCoverUrl: "/albumart/winter22.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/winter22.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/winter22?si=6464126a1a6d4fbdad72cda1978ba8b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
       },
-
       {
-        title: "Can't Stop",
-        artist: "Simply Funk",
-        albumCoverUrl: "/albumart/may22.jpeg", // Adjust paths as necessary
-        audioSrc: "./audio/cantstop.mp3",
-        audioLink: "https://soundcloud.com/funkopop/cantstop?si=e648fa1dc12041dfb8f7c002304699ee&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-      },
-
-      {
-        title: "Extended Mix",
-        artist: "Doss",
-        albumCoverUrl: "/albumart/sept21.jpeg", // Adjust paths as necessary
-        audioSrc: "./audio/doss.mp3",
-        audioLink: "https://soundcloud.com/doss/extended-mix?si=21bcfd70b8094943b120d47fc4568b1b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
-      },
-
-      {
-        title: "Trying",
-        artist: "Unknown Artist",
+        title: "2023 Samples",
+        artist: "lewisgoing",
         albumCoverUrl: "/albumart/2023clips.jpeg", // Adjust paths as necessary
-        audioSrc: "./audio/trying.mp3",
+        audioSrc: "./audio/2023samples.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/whereimat?si=b18a4a36f49540789802800d35bc63c7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
       },
 
       {
-        title: "Whatever",
-        artist: "DJ Something",
+        title: "New Paths",
+        artist: "Pradaalife produced by lewisgoing",
+        albumCoverUrl: "/albumart/newpaths.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/newpaths.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/newpaths?si=cd069d336dcf4059840ede43a5d69a47&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+      },
+
+      // {
+      //   title: "Harvey Specter",
+      //   artist: "Pradaalife produced by lewisgoing",
+      //   albumCoverUrl: "/albumart/harvey.jpeg", // Adjust paths as necessary
+      //   audioSrc: "./audio/harvey.mp3",
+      //   audioLink: "https://soundcloud.com/doss/extended-mix?si=21bcfd70b8094943b120d47fc4568b1b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+      // },
+
+      {
+        title: "Midsummer '22 Clips",
+        artist: "lewisgoing",
         albumCoverUrl: "/albumart/summer22.jpeg", // Adjust paths as necessary
-        audioSrc: "./audio/whatever.mp3",
+        audioSrc: "./audio/midsummer22.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+      },
+
+      {
+        title: "May '22 Clips",
+        artist: "lewisgoing",
+        albumCoverUrl: "/albumart/may22.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/may22.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/may?si=4880056ad4e94c3fa4b6285d08951427&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+      },
+
+      {
+        title: "February '22 Clips",
+        artist: "lewisgoing",
+        albumCoverUrl: "/albumart/feb22.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/feb22.mp3",
+        audioLink: "https://soundcloud.com/lewisgoing/feb22?si=9a9c188a73a84cb78d6ac17fc76de175&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
       },
     ],
     []
@@ -301,7 +317,7 @@ const toggleMute = () => {
               // style={{ border: "1px solid red" }}
             >
               <div className="text-center">{currentSong.title}</div>
-              <div className="text-center text-[10px] text-muted-foreground">
+              <div className="text-center text-[10px] pt-0.5 text-muted-foreground">
                 {currentSong.artist}
               </div>
             </div>
