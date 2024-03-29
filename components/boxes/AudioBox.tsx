@@ -18,7 +18,7 @@ import {
 import { FaCompactDisc } from "react-icons/fa";
 import { audioContextManager } from "src/context/AudioContextManager";
 import { current } from "tailwindcss/colors";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Volume2, VolumeX } from "lucide-react";
 
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
@@ -68,6 +68,7 @@ const AudioBox = () => {
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
 
   const { theme } = useTheme();
@@ -217,6 +218,15 @@ const handleSongLinkClick = () => {
   }
 }
 
+const toggleMute = () => {
+  const audio = audioElementRef.current;
+  if (audio) {
+    setIsMuted(!isMuted);
+    audio.muted = !isMuted; // Mute or unmute the audio
+  }
+};
+
+
   // Format time to display
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -247,8 +257,14 @@ const handleSongLinkClick = () => {
       >
         {/* Top Bar */}
         <div className="absolute left-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"></div>
-        <div className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full ">
           {/* // bg-primary */}
+          <button onClick={toggleMute} className="absolute right-0 top-0 z-[1] w-10 h-10 flex items-center justify-center m-3 rounded-full bg-tertiary/50">
+        {isMuted ? (
+          <VolumeX size={24} className="text-primary" />
+        ) : (
+          <Volume2 size={24} className="text-primary" />
+        )}
+      </button>
           {/* <FaCompactDisc
             size={40}
             className={"text-primary p-1"}
@@ -257,7 +273,6 @@ const handleSongLinkClick = () => {
               animationPlayState: isPlaying ? "running" : "paused",
             }}
           />{" "} */}
-        </div>
 
         <div
           className="w-full h-[80px] rounded-t-3xl flex-shrink-0" // bg-tertiary/50

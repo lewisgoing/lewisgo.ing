@@ -148,7 +148,7 @@ export default function App(
           />{" "} */}
           <div className="flex h-full flex-col justify-between font-sans">
             {/* <SearchProvider searchConfig={siteMetadata.search as SearchConfig}> */}
-            <NavBar />
+            {/* <NavBar /> */}
             <Component {...pageProps} />
             {/* <main className="mb-auto">{children}</main> */}
             {/* </SearchProvider> */}

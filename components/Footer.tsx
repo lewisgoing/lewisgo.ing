@@ -2,7 +2,7 @@
 
 
 import siteMetadata from 'public/data/siteMetaData'
-import { Github, Mail, Twitter } from 'lucide-react'
+import { Github, Linkedin, Mail, Twitter, Soundcloud } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 import Link from './assets/Link'
@@ -14,12 +14,12 @@ export default function Footer() {
         <footer>
             <div className="mt-16 flex flex-col items-center">
                 <div className="mb-3 flex space-x-4">
-                    {siteMetadata.twitter && (
+                    {siteMetadata.linkedin && (
                         <a
-                            href={siteMetadata.twitter}
+                            href={siteMetadata.linkedin}
                             className="text-muted-foreground hover:brightness-125 dark:hover:brightness-125"
                         >
-                            <Twitter size={24} />
+                            <Linkedin size={24} />
                         </a>
                     )}
                     {siteMetadata.email && (
