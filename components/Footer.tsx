@@ -40,7 +40,7 @@ export default function Footer() {
                     )}
                 </div>
                 {pathName == '/' && (
-                    <div className="mb-2 text-xs text-muted-foreground/50">
+                    <div className="mb-2 text-xs text-muted-foreground/50 text-center">
                         Homepage assets by{' '}
                         <Link
                             href="https://freepik.com"
@@ -48,6 +48,8 @@ export default function Footer() {
                         >
                             Freepik
                         </Link>
+                        
+                        <br />  Made with ❤️ by {'lewisgoing'} using NextJS, Typescript and TailwindCSS
                     </div>
                 )}
                 <div className="mb-10 flex space-x-2 text-sm text-muted-foreground">
