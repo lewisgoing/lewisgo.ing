@@ -33,7 +33,7 @@ const LottiePlayPauseButton: React.FC<{
   }, [isPlaying]);
 
   return (
-    <div onClick={togglePlay} style={{ cursor: "pointer", width: 40, height: 40 }}>
+    <div onClick={togglePlay} style={{ cursor: "pointer", width: 36, height: 36 }}>
       <Player
         ref={playerRef}
         autoplay={false}

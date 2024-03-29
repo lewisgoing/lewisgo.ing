@@ -9,9 +9,15 @@ import React, {
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import NextImage from "next/image";
-import { HiForward, HiBackward, HiQueueList, HiInformationCircle } from "react-icons/hi2";
+import {
+  HiForward,
+  HiBackward,
+  HiQueueList,
+  HiInformationCircle,
+} from "react-icons/hi2";
 import { FaCompactDisc } from "react-icons/fa";
 import { audioContextManager } from "src/context/AudioContextManager";
+import { current } from "tailwindcss/colors";
 
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
@@ -47,6 +53,13 @@ const dotIndicatorStyle = (percentage: number): CSSProperties => ({
   backgroundColor: "#FFFFFF", // Color of the dot
 });
 
+interface Song {
+  title: string;
+  artist: string;
+  albumCoverUrl: string;
+  audioSrc: string;
+}
+
 const AudioBox = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -58,32 +71,79 @@ const AudioBox = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const audioSources = useMemo(
+  const songs: Song[] = useMemo(
     () => [
-      "./audio/closer.mp3",
-      "./audio/nirvana.mp3",
-      "./audio/whatever.mp3",
-      "/audio/call.mp3",
-      "./audio/trying.mp3",
-      "./audio/doss.mp3",
-      "./audio/cantstop.mp3",
+      {
+        title: "Closer",
+        artist: "lewisgoing & Avi8",
+        albumCoverUrl: "/albumart/closer.jpg", // Adjust paths as necessary
+        audioSrc: "./audio/closer.mp3",
+      },
+
+      {
+        title: "Nirvana",
+        artist: "GG12",
+        albumCoverUrl: "/albumart/jan22.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/nirvana.mp3",
+      },
+
+      {
+        title: "Can't Stop",
+        artist: "ddertbag",
+        albumCoverUrl: "/albumart/may22.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/cantstop.mp3",
+      },
+
+      {
+        title: "Extended Mix",
+        artist: "Doss",
+        albumCoverUrl: "/albumart/sept21.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/doss.mp3",
+      },
+
+      {
+        title: "Trying",
+        artist: "Unknown Artist",
+        albumCoverUrl: "/albumart/2023clips.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/trying.mp3",
+      },
+
+      {
+        title: "Whatever",
+        artist: "DJ Something",
+        albumCoverUrl: "/albumart/summer22.jpeg", // Adjust paths as necessary
+        audioSrc: "./audio/whatever.mp3",
+      },
     ],
     []
   );
+
+  // const audioSources = useMemo(
+  //   () => [
+  //     "./audio/closer.mp3",
+  //     "./audio/nirvana.mp3",
+  //     "./audio/whatever.mp3",
+  //     "/audio/call.mp3",
+  //     "./audio/trying.mp3",
+  //     "./audio/doss.mp3",
+  //     "./audio/cantstop.mp3",
+  //   ],
+  //   []
+  // );
   const handleProgressBarClick = (e) => {
     const clickX = e.nativeEvent.offsetX;
     const totalWidth = e.currentTarget.offsetWidth;
     const clickPercentage = (clickX / totalWidth) * 100;
     const newTime = (clickPercentage / 100) * duration;
     if (audioElementRef.current) {
-    audioElementRef.current.currentTime = newTime; // Use the ref here
-  }
+      audioElementRef.current.currentTime = newTime; // Use the ref here
+    }
   };
 
   useEffect(() => {
     // Initialize the audio element on the client side
-    if (typeof window !== 'undefined' && !audioElementRef.current) {
-      audioElementRef.current = new Audio(audioSources[currentTrackIndex]);
+    if (typeof window !== "undefined" && !audioElementRef.current) {
+      audioElementRef.current = new Audio(songs[currentTrackIndex].audioSrc);
     }
   }, []);
 
@@ -100,28 +160,28 @@ const AudioBox = () => {
     };
 
     const onEnded = () => {
-      const nextIndex = (currentTrackIndex + 1) % audioSources.length;
+      const nextIndex = (currentTrackIndex + 1) % songs.length;
       setCurrentTrackIndex(nextIndex);
     };
 
-    audio.addEventListener('loadedmetadata', onLoadedMetadata);
-    audio.addEventListener('timeupdate', onTimeUpdate);
-    audio.addEventListener('ended', onEnded);
+    audio.addEventListener("loadedmetadata", onLoadedMetadata);
+    audio.addEventListener("timeupdate", onTimeUpdate);
+    audio.addEventListener("ended", onEnded);
 
     // Load new source if track changes
-    if (audio.src !== audioSources[currentTrackIndex]) {
-      audio.src = audioSources[currentTrackIndex];
+    if (audio.src !== songs[currentTrackIndex].audioSrc) {
+      audio.src = songs[currentTrackIndex].audioSrc;
       audio.load();
       if (isPlaying) {
         audio.play().catch(console.error);
       }
     }
     return () => {
-      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
-      audio.removeEventListener('timeupdate', onTimeUpdate);
-      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener("loadedmetadata", onLoadedMetadata);
+      audio.removeEventListener("timeupdate", onTimeUpdate);
+      audio.removeEventListener("ended", onEnded);
     };
-  }, [currentTrackIndex, audioSources]);
+  }, [currentTrackIndex, songs, isPlaying]);
 
   useEffect(() => {
     const audio = audioElementRef.current;
@@ -137,20 +197,25 @@ const AudioBox = () => {
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
-  };  
-    const skipToNextTrack = () => {
-      setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
-            if (!isPlaying) {
-        setIsPlaying(true); // Ensure that playback starts if it was paused
-      }
-    };
-  
-    const playLastTrack = () => {
-      setCurrentTrackIndex((prevIndex) => prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1);      if (!isPlaying) {
-        setIsPlaying(true); // Ensure that playback starts if it was paused
-      }
-    };
-      // Format time to display
+  };
+  const skipToNextTrack = () => {
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % songs.length);
+    if (!isPlaying) {
+      setIsPlaying(true); // Ensure that playback starts if it was paused
+    }
+  };
+
+  const playLastTrack = () => {
+    setCurrentTrackIndex((prevIndex) =>
+      prevIndex - 1 < 0 ? songs.length - 1 : prevIndex - 1
+    );
+    if (!isPlaying) {
+      setIsPlaying(true); // Ensure that playback starts if it was paused
+    }
+  };
+
+  const currentSong = songs[currentTrackIndex];
+  // Format time to display
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -185,11 +250,11 @@ const AudioBox = () => {
       >
         {/* Top Bar */}
         <div className="absolute left-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"></div>
-        <div className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full bg-primary">
+        <div className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full ">
           {/* // bg-primary */}
           <FaCompactDisc
-            size={50}
-            className={"text-secondary p-1"}
+            size={40}
+            className={"text-primary p-1"}
             style={{
               animation: "spin 2s linear infinite",
               animationPlayState: isPlaying ? "running" : "paused",
@@ -212,8 +277,8 @@ const AudioBox = () => {
           >
             <div>
               <NextImage
-                src="/albumart/feb22.jpeg"
-                alt="Bento Box 2"
+                src={currentSong.albumCoverUrl}
+                alt={currentSong.title}
                 width={120}
                 height={120}
                 className="rounded-2xl object-cover "
@@ -223,9 +288,9 @@ const AudioBox = () => {
               className="text-sm h-fit w-full px-2 py-1 rounded-lg leading-snug text-center"
               // style={{ border: "1px solid red" }}
             >
-              <div>Closer</div>
+              <div>{currentSong.title}</div>
               <div className="text-[10px] text-muted-foreground">
-                lewisgoing
+                {currentSong.artist}
               </div>
             </div>
 
@@ -255,12 +320,11 @@ const AudioBox = () => {
           </div>
           {/* Buttons */}
           <div
-            className="flex flex-row w-full h-fit rounded-lg items-center justify-between"
+            className="flex flex-row w-full h-full rounded-lg items-center justify-between"
             // style={{ border: "1px red solid" }}
           >
             <div className="flex grow justify-center  rounded-lg">
-              <button                className="cursor-pointer"
->
+              <button className="cursor-pointer">
                 <HiInformationCircle size={28} className={"text-primary"} />
               </button>
             </div>
@@ -269,14 +333,8 @@ const AudioBox = () => {
               className="flex grow justify-center  rounded-lg"
               onClick={playLastTrack}
             >
-              <button
-                              className="cursor-pointer"
-
-              >
-                <HiBackward
-                  size={36}
-                  className="text-primary"
-                />
+              <button className="cursor-pointer">
+                <HiBackward size={36} className="text-primary" />
 
                 {/* <NextImage
                   src={backSrc}
@@ -301,11 +359,7 @@ const AudioBox = () => {
 
             {/* Next */}
             <div className="flex grow justify-center rounded-lg">
-              <button
-                onClick={skipToNextTrack}
-                className="cursor-pointer"
-
-              >
+              <button onClick={skipToNextTrack} className="cursor-pointer">
                 <HiForward
                   size={36}
                   className="rounded-3xl object-cover text-primary"
@@ -323,9 +377,8 @@ const AudioBox = () => {
             </div>
 
             <div className="flex grow justify-center rounded-lg">
-              <button                className="cursor-pointer"
->
-              <HiQueueList size={28} className={"text-primary"} />
+              <button className="cursor-pointer">
+                <HiQueueList size={28} className={"text-primary"} />
               </button>
             </div>
           </div>
@@ -390,7 +443,6 @@ const AudioBox = () => {
       </div>
     </>
   );
-
 };
 
 export default AudioBox;
