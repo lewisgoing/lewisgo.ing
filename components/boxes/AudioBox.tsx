@@ -124,18 +124,6 @@ const AudioBox = () => {
     []
   );
 
-  // const audioSources = useMemo(
-  //   () => [
-  //     "./audio/closer.mp3",
-  //     "./audio/nirvana.mp3",
-  //     "./audio/whatever.mp3",
-  //     "/audio/call.mp3",
-  //     "./audio/trying.mp3",
-  //     "./audio/doss.mp3",
-  //     "./audio/cantstop.mp3",
-  //   ],
-  //   []
-  // );
   const handleProgressBarClick = (e) => {
     const clickX = e.nativeEvent.offsetX;
     const totalWidth = e.currentTarget.offsetWidth;
@@ -246,18 +234,13 @@ const handleSongLinkClick = () => {
   const backSrc = isDark ? backDark : backLight;
   const nextSrc = isDark ? nextDark : nextLight;
 
+  const mobileAlbumCoverSize = 80; // Adjust the size of the album cover on mobile
+  const mobileControlButtonSize = 24; // Adjust control button sizes on mobile
+
   return (
     <>
       {/* Desktop Styles */}
-      {/* <div className="hidden bento-lg:absolute w-full h-full bento-lg:flex flex-col">
-              <NextImage
-                src="/albumart/feb22.jpeg"
-                alt="Bento Box 2"
-                width={300}
-                height={300}
-                className="rounded-2xl object-cover "
-              />
-            </div> */}
+
       <div
         className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col"
         // style={{ border: "1px red solid" }}
@@ -266,14 +249,14 @@ const handleSongLinkClick = () => {
         <div className="absolute left-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"></div>
         <div className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full ">
           {/* // bg-primary */}
-          <FaCompactDisc
+          {/* <FaCompactDisc
             size={40}
             className={"text-primary p-1"}
             style={{
               animation: "spin 2s linear infinite",
               animationPlayState: isPlaying ? "running" : "paused",
             }}
-          />{" "}
+          />{" "} */}
         </div>
 
         <div
@@ -302,8 +285,8 @@ const handleSongLinkClick = () => {
               className="text-sm h-fit w-full px-2 py-1 rounded-lg leading-snug text-center"
               // style={{ border: "1px solid red" }}
             >
-              <div>{currentSong.title}</div>
-              <div className="text-[10px] text-muted-foreground">
+              <div className="text-center">{currentSong.title}</div>
+              <div className="text-center text-[10px] text-muted-foreground">
                 {currentSong.artist}
               </div>
             </div>
@@ -336,10 +319,18 @@ const handleSongLinkClick = () => {
             className="flex flex-row w-full h-full rounded-lg items-center justify-between gap-1"
             // style={{ border: "1px red solid" }}
           >
-            <div className="flex grow justify-center  rounded-lg">
+            <div className="flex grow justify-center rounded-lg">
             <button className="info-icon cursor-pointer"
-                onClick={handleSongLinkClick}>
-                <HiQueueList size={28} className={"text-primary"} />
+                >
+                            <FaCompactDisc
+            size={28}
+            className={"text-primary"}
+            style={{
+              animation: "spin 2s linear infinite",
+              animationPlayState: isPlaying ? "running" : "paused",
+            }}
+          />{" "}
+                {/* <HiQueueList size={28} className={"text-secondary"} /> */}
                               </button>
             </div>
             {/* Back */}
@@ -350,13 +341,7 @@ const handleSongLinkClick = () => {
               <button className="cursor-pointer">
                 <HiBackward size={36} className="text-primary" />
 
-                {/* <NextImage
-                  src={backSrc}
-                  alt="Bento Box 2"
-                  width={40}
-                  height={40}
-                  className="rounded-3xl object-cover"
-                /> */}
+
               </button>
             </div>
 
@@ -379,14 +364,7 @@ const handleSongLinkClick = () => {
                   className="rounded-3xl object-cover text-primary"
                 />
 
-                {/* <NextImage
-                  src={nextSrc}
-                  alt="Next"
-                  width={40}
-                  height={40}
-                  className="rounded-3xl object-cover"
 
-                /> */}
               </button>
             </div>
 
@@ -395,8 +373,8 @@ const handleSongLinkClick = () => {
                 onClick={handleSongLinkClick}>
               {
   songs[currentTrackIndex].audioLink 
-    ? <div><ExternalLink href={songs[currentTrackIndex].audioLink}           className="text-primary z-[1] block" newTab={true} /></div>
-    : <div><ExternalLink href={'/#'}           className="z-[1] block" newTab={true} /></div>
+    ? <div><ExternalLink href={songs[currentTrackIndex].audioLink}           className="text-primary z-[1] block" /></div>
+    : <div><ExternalLink href={'/#'}           className="z-[1] block" /></div>
 }
               </button>
             </div>
@@ -406,63 +384,58 @@ const handleSongLinkClick = () => {
         </div>
       </div>
       {/* Mobile Styles */}
-      <div className="relative w-full h-full flex flex-col bento-lg:hidden">
-        <div className="flex flex-col h-full gap-2 m-2 justify-between">
-          <div className="flex gap-2 items-center">
-            <div className="text-black uppercase font-bold">Song</div>
-            <div className="text-[10px] text-muted-foreground">Artist</div>
-          </div>
-
-          {/* Full-width Divider */}
-
-          <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
-            <button className="text-black text-2xl py-2 px-2">
-              <HiBackward
-                size={40}
-                className="rounded-3xl object-cover text-primary"
-              />
-
-              {/* <NextImage
-                src={isDark ? nextLight : nextDark}
-                alt="Next"
-                width={40}
-                height={40}
-                className="rounded-3xl object-cover"
-                unoptimized
-              /> */}
-            </button>
-            <button className="text-black text-2xl py-2 px-2 text-primary">
+      <div className="bento-lg:hidden relative w-full h-full flex flex-col">
+        <div className="m-2">
+          {/* Album Cover and Song Info centered at the top */}
+          <div className="flex flex-col items-center gap-1">
+            <NextImage
+              src={currentSong.albumCoverUrl}
+              alt={currentSong.title}
+              width={mobileAlbumCoverSize}
+              height={mobileAlbumCoverSize}
+              className="rounded-xl object-cover"
+            />
+                        <button onClick={togglePlay}     className="absolute top-[30px] left-1/2 transform -translate-x-1/2">
               <LottiePlayPauseWithNoSSR
                 togglePlay={togglePlay}
                 isPlaying={isPlaying}
                 isDark={isDark}
               />
             </button>
-            <button
-              className="text-black text-2xl py-2 px-2"
-              onClick={skipToNextTrack}
-            >
-              <HiForward
-                size={40}
-                className="rounded-3xl object-cover text-primary"
-              />
-
-              {/* <NextImage
-                src={
-                  isDark ? "/svg/player/next-dark.svg" : "/svg/player/next.svg"
-                }
-                alt="Bento Box 2"
-                width={36}
-                height={36}
-                className="rounded-3xl object-cover"
-                unoptimized
-                priority
-              /> */}
-            </button>{" "}
+            <div className="text-center">
+              <div className="font-bold text-lg bento-sm:text-sm">{currentSong.title}</div>
+              <div className="text-sm text-muted-foreground bento-sm:text-xs">{currentSong.artist}</div>
+            </div>
           </div>
+
+          {/* Progress Bar */}
+          <div className="mx-1">
+          <div className="my-4 sm: my-3" style={progressBarStyle} onClick={handleProgressBarClick}>
+            <div style={progressIndicatorStyle(progressPercentage)}></div>
+            <div style={dotIndicatorStyle(progressPercentage)}></div>
+          </div>
+          </div>
+
+
+          {/* Control Buttons
+          <div className="flex justify-center gap-4">
+            <button onClick={playLastTrack} className="text-primary">
+              <HiBackward size={mobileControlButtonSize} />
+            </button>
+            <button onClick={togglePlay}>
+              <LottiePlayPauseWithNoSSR
+                togglePlay={togglePlay}
+                isPlaying={isPlaying}
+                isDark={isDark}
+              />
+            </button>
+            <button onClick={skipToNextTrack} className="text-primary">
+              <HiForward size={mobileControlButtonSize} />
+            </button>
+          </div> */}
         </div>
       </div>
-    </>
+          </>
   );
 };
 

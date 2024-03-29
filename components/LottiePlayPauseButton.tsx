@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import lottieDarkSrc from "../public/lottie-light.json";
-import lottieLightSrc from "../public/lottie-light.json";
+import lottieLightSrc from "../public/lottie-light-old.json";
 
 const LottiePlayPauseButton: React.FC<{
   isDark: boolean,

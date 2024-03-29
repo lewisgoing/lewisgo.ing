@@ -1,10 +1,5 @@
 import React from "react";
 
-import { AiFillAlert, AiFillBell, AiFillCamera, AiFillCar } from 'react-icons/ai';
-import { BiBus, BiCoffee, BiCycling, BiAbacus } from 'react-icons/bi';
-import { CgGym, CgSun, CgMoon, CgMusic } from 'react-icons/cg';
-import { DiAndroid, DiApple, DiAppstore, DiAppcelerator } from 'react-icons/di';
-
 import { FaPython } from "react-icons/fa";
 import { FaJava } from "react-icons/fa";
 import { SiNextdotjs } from "react-icons/si";
@@ -52,12 +47,13 @@ const icons = [
 const SkillsBox = () => {
     return (
         <TooltipProvider>
-            <div className="grid grid-cols-4 gap-4 transition-all duration-300  ">
+            <div className="grid grid-cols-1 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 transition-all duration-300">
                 {icons.map(({ Icon, description }, index) => (
                     <Tooltip key={index}>
                         <TooltipTrigger asChild>
-                        <div className="bg-tertiary/50 rounded-3xl flex justify-center items-center p-3.5  transition-all duration-300 grayscale hover:bg-tertiary hover:grayscale-0 ">
-                                <Icon size={24} className="text-primary " />                            </div>
+                            <div className="bg-tertiary/50 rounded-3xl flex justify-center items-center p-3.5 transition-all duration-300 grayscale hover:bg-tertiary hover:grayscale-0">
+                                <Icon size={24} className="text-primary" />
+                            </div>
                         </TooltipTrigger>
                         <TooltipContent className="z-50 overflow-visible" side="top" align="center">
                             <span>{description}</span>

@@ -12,7 +12,7 @@ const SoundcloudBox = () => {
   return (
     <div className="relative flex h-full w-full items-center justify-center rounded-lg"         onMouseEnter={() => setIsHovered(true)}
     onMouseLeave={() => setIsHovered(false)}>
-      <FaSoundcloud className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24" style={iconStyle} />
+      <FaSoundcloud className="absolute z-[1] text-primary w-16 h-16 bento-md:w-24 bento-md:h-24" style={iconStyle} />
       <ExternalLink href="https://soundcloud.com/lewisgoing" />
     </div>
   );
