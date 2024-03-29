@@ -118,7 +118,7 @@ const AudioBox = () => {
         title: "Midsummer '22 Clips",
         artist: "lewisgoing",
         albumCoverUrl: "/albumart/summer22.jpeg", // Adjust paths as necessary
-        audioSrc: "./audio/midsummer22.mp3",
+        audioSrc: "./audio/summer22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
       },
 
