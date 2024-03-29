@@ -191,7 +191,8 @@ export default function Bento() {
       >
         <div key="intro">
           {/* <ShaderParkReactiveBox /> */}
-        <ShaderGradientBox
+          
+        {/* <ShaderGradientBox
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
@@ -224,36 +225,36 @@ export default function Bento() {
             grain="on" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
-          />
+          /> */}
           {/* <p className="pl-10">intro</p> */}
-        </div>
-        {/*<div key="intro">*/}
-        {/*  <Image*/}
-        {/*      src="gradient-bg.jpg"*/}
-        {/*      alt="Bento Intro Silhouette"*/}
-        {/*      fill*/}
-        {/*      className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
-        {/*          introSilhouette ? "opacity-100" : "opacity-0 delay-75"*/}
-        {/*      }`}*/}
-        {/*      skeletonClassName="rounded-3xl"*/}
-        {/*      noRelative*/}
-        {/*      unoptimized*/}
-        {/*      priority*/}
-        {/*  />*/}
+          <Image
+                src="/svg/lewis-card.svg"
+                alt="Bento Intro Silhouette"
+                fill
+                className={`rounded-3xl object-cover transition-opacity duration-300 ${
+                  introSilhouette ? "opacity-100" : "opacity-0 delay-75"
+                }`}
+                skeletonClassName="rounded-3xl"
+                noRelative
+                unoptimized
+                priority
+              />
 
-        {/*  <Image*/}
-        {/*      src="gradient-bg.jpg"*/}
-        {/*      alt="Bento Intro"*/}
-        {/*      fill*/}
-        {/*      className={`rounded-3xl object-cover transition-opacity duration-300 ${*/}
-        {/*          introSilhouette ? "opacity-0 delay-75" : "opacity-100"*/}
-        {/*      }`}*/}
-        {/*      skeletonClassName="rounded-3xl"*/}
-        {/*      noRelative*/}
-        {/*      unoptimized*/}
-        {/*      priority*/}
-        {/*  />*/}
-        {/*</div>*/}
+              <Image
+                src="/svg/lewis-card.svg"
+                alt="Bento Intro"
+                fill
+                className={`rounded-3xl object-cover transition-opacity duration-300 ${
+                  introSilhouette ? "opacity-0 delay-75" : "opacity-100"
+                }`}
+                skeletonClassName="rounded-3xl"
+                noRelative
+                unoptimized
+                priority
+              />
+              </div>
+
+
 
         {/* <div key="intro"><IntroBox introSilhouette={introSilhouette}/></div> */}
 
@@ -271,21 +272,21 @@ export default function Bento() {
             alt="Bento Box 1"
             fill
             // noRelative
-            className="rounded-3xl object-cover grayscale scale-150"
+            className="rounded-3xl object-cover scale-150"
             // skeletonClassName="rounded-3xl"
             unoptimized
             priority
           />
-          {/* <Image
-            src="/static/images/bento/bento-image-1.svg"
+          <Image
+            src="svg/gradient.svg"
             alt="Bento Box 1"
             fill
             noRelative
-            className="rounded-3xl object-cover"
+            className="rounded-3xl object-cover scale-150"
             skeletonClassName="rounded-3xl"
             unoptimized
             priority
-          /> */}
+          />
         </div>
         <div key="discord">
           {lanyard.data && !lanyard.isValidating ? ( // lanyard.data && !lanyard.isValidating ? (
@@ -342,6 +343,13 @@ export default function Bento() {
             <span className="text-right">AudioPlayer</span>
 
           </div>
+          {/* <SilhouetteHover
+            silhouetteSrc=""
+            silhouetteAlt=""
+            mainSrc="/svg/intro-paragraph.svg"
+            mainAlt="Bento Latest Post"
+            className="rounded-3xl object-cover"
+          ></SilhouetteHover> */}
           {/* <>
             <div className="flex flex-row w-full h-full" style={{border: '1px solid red'}}>
               <div className="flex flex-col items-center w-1/4 h-full" style={{border: '1px solid red' }}>
