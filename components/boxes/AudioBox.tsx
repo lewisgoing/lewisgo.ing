@@ -4,12 +4,14 @@ import React, {
   useMemo,
   useCallback,
   CSSProperties,
+  useRef,
 } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import NextImage from "next/image";
 import { HiForward, HiBackward, HiQueueList, HiInformationCircle } from "react-icons/hi2";
 import { FaCompactDisc } from "react-icons/fa";
+import { audioContextManager } from "src/context/AudioContextManager";
 
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
@@ -31,7 +33,7 @@ const progressIndicatorStyle = (percentage: number): CSSProperties => ({
   left: 0,
   height: "100%",
   width: `${percentage}%`,
-  backgroundColor: "#e6d2b8",
+  backgroundColor: "#FFFFFF",
 });
 
 const dotIndicatorStyle = (percentage: number): CSSProperties => ({
@@ -42,7 +44,7 @@ const dotIndicatorStyle = (percentage: number): CSSProperties => ({
   width: "4px", // Size of the dot
   height: "4px", // Size of the dot
   borderRadius: "50%",
-  backgroundColor: "#e6d2b8", // Color of the dot
+  backgroundColor: "#FFFFFF", // Color of the dot
 });
 
 const AudioBox = () => {
@@ -51,6 +53,7 @@ const AudioBox = () => {
   const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -67,83 +70,87 @@ const AudioBox = () => {
     ],
     []
   );
-
-  const playNextTrackAutomatically = useCallback(() => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
-  }, [audioSources.length]);
-
   const handleProgressBarClick = (e) => {
     const clickX = e.nativeEvent.offsetX;
     const totalWidth = e.currentTarget.offsetWidth;
     const clickPercentage = (clickX / totalWidth) * 100;
     const newTime = (clickPercentage / 100) * duration;
-    if (audioPlayer) {
-      audioPlayer.currentTime = newTime;
+    if (audioElementRef.current) {
+    audioElementRef.current.currentTime = newTime; // Use the ref here
+  }
+  };
+
+  useEffect(() => {
+    // Initialize the audio element on the client side
+    if (typeof window !== 'undefined' && !audioElementRef.current) {
+      audioElementRef.current = new Audio(audioSources[currentTrackIndex]);
     }
-
-    };
+  }, []);
 
   useEffect(() => {
-    const audio = new Audio(audioSources[currentTrackIndex]);
-    setAudioPlayer(audio);
-    audio.addEventListener("ended", playNextTrackAutomatically);
-    audio.addEventListener("loadedmetadata", () => {
+    const audio = audioElementRef.current;
+    if (!audio) return;
+
+    const onLoadedMetadata = () => {
       setDuration(audio.duration);
-    });
-    audio.addEventListener("timeupdate", () => {
-      setCurrentTime(audio.currentTime);
-    });
-
-    return () => {
-      audio.removeEventListener("ended", playNextTrackAutomatically);
-      audio.removeEventListener("loadedmetadata", () => {});
-      audio.removeEventListener("timeupdate", () => {});
     };
-  }, [audioSources, currentTrackIndex, playNextTrackAutomatically]);
 
-  useEffect(() => {
-    if (audioPlayer) {
-      audioPlayer.src = audioSources[currentTrackIndex];
-      audioPlayer.load();
-      setDuration(audioPlayer.duration);
+    const onTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const onEnded = () => {
+      const nextIndex = (currentTrackIndex + 1) % audioSources.length;
+      setCurrentTrackIndex(nextIndex);
+    };
+
+    audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('ended', onEnded);
+
+    // Load new source if track changes
+    if (audio.src !== audioSources[currentTrackIndex]) {
+      audio.src = audioSources[currentTrackIndex];
+      audio.load();
       if (isPlaying) {
-        audioPlayer.play().catch(console.error);
+        audio.play().catch(console.error);
       }
     }
-  }, [currentTrackIndex, audioPlayer, audioSources, isPlaying]);
+    return () => {
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('ended', onEnded);
+    };
+  }, [currentTrackIndex, audioSources]);
+
+  useEffect(() => {
+    const audio = audioElementRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.play().catch(console.error);
+    } else {
+      // Do not load the audio again; just pause
+      audio.pause();
+    }
+  }, [isPlaying]);
 
   const togglePlay = () => {
-    if (audioPlayer) {
-      if (isPlaying) {
-        audioPlayer.pause();
-      } else {
-        audioPlayer.play().catch(console.error);
+    setIsPlaying(!isPlaying);
+  };  
+    const skipToNextTrack = () => {
+      setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
+            if (!isPlaying) {
+        setIsPlaying(true); // Ensure that playback starts if it was paused
       }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const skipToNextTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % audioSources.length);
-  };
-
-  const playLastTrack = () => {
-    if (audioPlayer) {
-      if (audioPlayer.currentTime < 5) {
-        setCurrentTrackIndex((prevIndex) =>
-          prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1
-        );
-      } else {
-        audioPlayer.currentTime = 0;
-        if (!isPlaying) {
-          audioPlayer.play().catch(console.error);
-          setIsPlaying(true);
-        }
+    };
+  
+    const playLastTrack = () => {
+      setCurrentTrackIndex((prevIndex) => prevIndex - 1 < 0 ? audioSources.length - 1 : prevIndex - 1);      if (!isPlaying) {
+        setIsPlaying(true); // Ensure that playback starts if it was paused
       }
-    }
-  };
-
-  // Format time to display
+    };
+      // Format time to display
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -200,20 +207,20 @@ const AudioBox = () => {
           {/* Middle Elements */}
           {/* Album Cover and Song Info */}
           <div
-            className="flex flex-col h-full gap-2  items-center justify-center mt-[-66px]"
+            className="flex flex-col h-full gap-1  items-center justify-center mt-[-66px]"
             // style={{ border: "1px solid red" }}
           >
             <div>
               <NextImage
                 src="/albumart/feb22.jpeg"
                 alt="Bento Box 2"
-                width={104}
-                height={104}
+                width={120}
+                height={120}
                 className="rounded-2xl object-cover "
               />
             </div>
             <div
-              className="text-sm h-fit w-full px-2 rounded-lg leading-snug text-center"
+              className="text-sm h-fit w-full px-2 py-1 rounded-lg leading-snug text-center"
               // style={{ border: "1px solid red" }}
             >
               <div>Closer</div>
@@ -224,10 +231,10 @@ const AudioBox = () => {
 
             {/* Song duration and progress bar */}
             <div
-              className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2"
+              className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2 mb-1"
               // style={{ border: "1px solid red" }}
             >
-              <div style={progressBarStyle} onClick={handleProgressBarClick} >
+              <div style={progressBarStyle} onClick={handleProgressBarClick}>
                 <div
                   style={progressIndicatorStyle((currentTime / duration) * 100)}
                 ></div>
@@ -384,136 +391,6 @@ const AudioBox = () => {
     </>
   );
 
-  // return (
-  //   <>
-  //     {/* Desktop Styles */}
-  //     <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
-  //       {/* Top Bar */}
-  //       <div className="absolute top-5 left-4"></div>
-  //       <div className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full bg-primary">
-  //         <FaCompactDisc
-  //           size={50}
-  //           className={"text-secondary p-1"}
-  //           style={{
-  //             animation: "spin 2s linear infinite",
-  //             animationPlayState: isPlaying ? "running" : "paused",
-  //           }}
-  //           // className={`text-secondary p-1 ${isPlaying ? "spin" : ""}`}
-  //         />{" "}
-  //       </div>
-
-  //       <div className="bg-tertiary/50 w-full h-[80px] rounded-t-3xl flex-shrink-0" />
-  //       <div className="m-3 flex flex-col h-full gap-3">
-  //         {/* Middle Elements */}
-  //         <div className="flex flex-row h-full gap-3">
-  //           <div className="text-sm h-full w-1/2 px-2 py-2 rounded-lg bg-tertiary/50 leading-snug">
-  //             <div>Song</div>
-  //             <div className="text-[10px] text-muted-foreground">Artist(s)</div>
-  //           </div>
-
-  //           <div className="text-sm h-full w-1/2 px-2 py-2 rounded-lg bg-tertiary/50 leading-snug">
-  //           </div>
-  //         </div>
-
-  //         {/* <div className="text-sm h-fit px-2 py-2 rounded-lg bg-tertiary/50 leading-snug">
-  //           <div>Song</div>
-  //           <div className="text-[10px] text-muted-foreground">Artist(s)</div>
-  //         </div> */}
-  //         {/* <div className="border-b border-black w-full"></div> */}
-  //         {/* Buttons */}
-  //         <div className="flex flex-row w-full h-fit rounded-lg gap-2 items-center justify-between bg-tertiary/50">
-  //           <div
-  //             className="flex grow justify-center  rounded-lg"
-  //             onClick={playLastTrack}
-  //           >
-  //             <button className="text-black text-2xl py-2 px-2">
-  //               <NextImage
-  //                 src={backSrc}
-  //                 alt="Bento Box 2"
-  //                 width={40}
-  //                 height={40}
-  //                 className="rounded-3xl object-cover"
-  //               />
-  //             </button>
-  //           </div>
-
-  //           <div className="flex grow justify-center rounded-lg">
-  //             <button className="text-black text-2xl py-2 px-2">
-  //               <LottiePlayPauseWithNoSSR
-  //                 togglePlay={togglePlay}
-  //                 isPlaying={isPlaying}
-  //                 isDark={isDark}
-  //               />
-  //             </button>
-  //           </div>
-
-  //           <div className="flex grow justify-center rounded-lg">
-  //             <button
-  //               className="text-black text-2xl py-2 px-2"
-  //               onClick={skipToNextTrack}
-  //             >
-  //               <NextImage
-  //                 src={nextSrc}
-  //                 alt="Next"
-  //                 width={40}
-  //                 height={40}
-  //                 className="rounded-3xl object-cover"
-  //                 unoptimized
-  //               />
-  //             </button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //     {/* Mobile Styles */}
-  //     <div className="relative w-full h-full flex flex-col bento-lg:hidden">
-  //       <div className="flex flex-col h-full gap-2 m-2 justify-between">
-  //         <div className="flex gap-2 items-center">
-  //           <div className="text-black uppercase font-bold">Song</div>
-  //           <div className="text-[10px] text-muted-foreground">Artist</div>
-  //         </div>
-
-  //         {/* Full-width Divider */}
-
-  //         <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
-  //           <button className="text-black text-2xl py-2 px-2">
-  //             <NextImage
-  //               src={isDark ? nextLight : nextDark}
-  //               alt="Next"
-  //               width={40}
-  //               height={40}
-  //               className="rounded-3xl object-cover"
-  //               unoptimized
-  //             />
-  //           </button>
-  //           <button className="text-black text-2xl py-2 px-2">
-  //             <LottiePlayPauseWithNoSSR
-  //               togglePlay={togglePlay}
-  //               isPlaying={isPlaying}
-  //               isDark={isDark}
-  //             />
-  //           </button>
-  //           <button
-  //             className="text-black text-2xl py-2 px-2"
-  //             onClick={skipToNextTrack}
-  //           >
-  //             <NextImage
-  //               src={
-  //                 isDark ? "/svg/player/next-dark.svg" : "/svg/player/next.svg"
-  //               }
-  //               alt="Bento Box 2"
-  //               width={36}
-  //               height={36}
-  //               className="rounded-3xl object-cover"
-  //               unoptimized
-  //               priority
-  //             />
-  //           </button>{" "}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </>
-  // );
 };
 
 export default AudioBox;

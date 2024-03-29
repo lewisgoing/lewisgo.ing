@@ -1,47 +1,39 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Player, PlayerDirection } from "@lottiefiles/react-lottie-player";
-import { dir } from "console";
-import lottieDarkSrc from "../public/lottie-dark.json";
+import React, { useEffect, useRef } from "react";
+import { Player } from "@lottiefiles/react-lottie-player";
+import lottieDarkSrc from "../public/lottie-light.json";
 import lottieLightSrc from "../public/lottie-light.json";
-import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 const LottiePlayPauseButton: React.FC<{
-  isDark: boolean;
-  isPlaying: boolean;
-  togglePlay: () => void;
+  isDark: boolean,
+  isPlaying: boolean,
+  togglePlay: () => void
 }> = ({ isDark, isPlaying, togglePlay }) => {
-  const [direction, setDirection] = useState<PlayerDirection>(-1);
   const playerRef = useRef<Player>(null);
 
-  // URLs for light and dark mode Lottie animations
-  // const lightModeSrc = "https://lottie.host/0c031d29-23f9-46ec-8987-64bb837f1ced/G5VwoOdh07.json";
-  const lightModeSrc = "../public/lottie-light.json";
-  // const darkModeSrc = "https://lottie.host/398957f9-0589-4a70-a8c4-4267b07c7449/x82XthhdfI.json";
-  const darkModeSrc = "../public/lottie-dark.json";
+  // Choose the correct Lottie animation based on theme
+  const lottieSrc = isDark ? lottieDarkSrc : lottieLightSrc;
 
+  // Control play and pause based on isPlaying prop
   useEffect(() => {
-    if (playerRef.current) {
-      playerRef.current.setPlayerDirection(direction);
-      playerRef.current.play();
+    const player = playerRef.current;
+    if (!player) return;
+
+    // Directly play or pause the animation based on isPlaying
+    if (isPlaying) {
+      // Ensure the animation plays from the beginning when played
+      player.setPlayerDirection(1);
+      player.play();
+    } else {
+      player.setPlayerDirection(-1);
+      player.play();
+      // When pausing, ensure the animation stops at the last frame for pause icon
+      // player.stop(); // Stopping the animation may be more appropriate here to ensure it resets correctly
+      // Optionally, you could seek to a specific frame if needed for visual consistency
     }
-  }, [direction]);
-
-  const toggleDirection = () => {
-    setDirection((prevDirection) => (prevDirection === 1 ? -1 : 1));
-  };
-
-  // TODO: Implement dark mode detection
-
-  const lottieSrc = isDark ?  lottieLightSrc : lottieDarkSrc;
+  }, [isPlaying]);
 
   return (
-    <div
-      onClick={() => {
-        toggleDirection();
-        togglePlay();
-      }}
-      style={{ cursor: "pointer", width: 40, height: 40 }}
-    >
+    <div onClick={togglePlay} style={{ cursor: "pointer", width: 40, height: 40 }}>
       <Player
         ref={playerRef}
         autoplay={false}

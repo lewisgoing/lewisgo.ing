@@ -42,7 +42,7 @@ const NavBar = () => {
                     <Link href="/" aria-label={siteMetadata.headerTitle}>
                         <div className="flex items-center justify-between">
                             <NextImage src={logo} alt="Logo" width="40" height="40" unoptimized />
-                            <p className="px-3 py-2 text-lg font-medium text-muted-foreground hover:text-foreground">lewisgoing</p>
+                            <p className="px-3 py-2 text-md font-medium text-muted-foreground hover:text-foreground">lewis<i>going</i></p>
                         </div>
                     </Link>
                 </div>

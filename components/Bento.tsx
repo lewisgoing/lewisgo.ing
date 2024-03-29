@@ -277,7 +277,7 @@ export default function Bento() {
             unoptimized
             priority
           /> */}
-          <Image
+          {/* <Image
             src="svg/image-4.svg"
             alt="Bento Box 1"
             fill
@@ -286,7 +286,44 @@ export default function Bento() {
             skeletonClassName="rounded-3xl"
             unoptimized
             priority
-          />
+          /> */}
+                    <ShaderGradientBox
+            className="rounded-3xl object-cover"
+            animate="on" // Disable animation to make the component non-reactive to interactions.
+            control="props" // Control the component entirely through props.
+            positionX={0}
+            positionY={0}
+            positionZ={0}
+            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            rotationY={10}
+            rotationZ={50}
+            // color1="#893D63"
+            // color2="#9E59B6"
+            // color3="#7060CF"
+            color1="#FF0006"
+            color2="#003FFF"
+            color3="#4AA6FF"
+            wireframe={false}
+            shader="defaults" // Use a default shader that does not react to user input.
+            type="plane" // Example; adjust as needed.
+            uAmplitude={1.4}
+            uDensity={1.2}
+            uFrequency={1.5}
+            uSpeed={0.04}
+            uStrength={1.4}
+            cDistance={10}
+            cameraZoom={20}
+            cAzimuthAngle={0}
+            cPolarAngle={90}
+            uTime={2} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="3d" // Example lighting; adjust as needed.
+            envPreset="dawn"
+            reflection={0.4}
+            brightness={1.9}
+            grain="off" // Disable grain effect for static appearance.
+            toggleAxis={false} // Ensure axis toggling does not react to user input.
+            hoverState="off"
+            />
         </div>
         <div key="discord">
           {lanyard.data && !lanyard.isValidating ? ( // lanyard.data && !lanyard.isValidating ? (
@@ -310,37 +347,40 @@ export default function Bento() {
             className="rounded-3xl object-cover"
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
-            positionX={-1.4}
+            positionX={0}
             positionY={0}
             positionZ={0}
             rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
             rotationY={10}
             rotationZ={50}
-            color1="#893D63"
-            color2="#9E59B6"
-            color3="#7060CF"
+            // color1="#893D63"
+            // color2="#9E59B6"
+            // color3="#7060CF"
+            color1="#FF0006"
+            color2="#003FFF"
+            color3="#4AA6FF"
             wireframe={false}
             shader="defaults" // Use a default shader that does not react to user input.
             type="sphere" // Example; adjust as needed.
             uAmplitude={1.4}
-            uDensity={1.3}
+            uDensity={1.2}
             uFrequency={1.5}
-            uSpeed={0.1}
-            uStrength={4}
-            cDistance={3.6}
-            cameraZoom={10.4}
+            uSpeed={0.04}
+            uStrength={1.4}
+            cDistance={10}
+            cameraZoom={20}
             cAzimuthAngle={0}
             cPolarAngle={90}
-            uTime={1} // Static time value to ensure the gradient's appearance is fixed.
-            lightType="env" // Example lighting; adjust as needed.
+            uTime={2} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="3d" // Example lighting; adjust as needed.
             envPreset="dawn"
             reflection={0.4}
-            brightness={0.9}
+            brightness={1.9}
             grain="off" // Disable grain effect for static appearance.
             toggleAxis={false} // Ensure axis toggling does not react to user input.
             hoverState="off"
             />
-            <span className="text-right">AudioPlayer</span>
+            {/* <span className="text-right">AudioPlayer</span> */}
 
           </div>
           {/* <SilhouetteHover
@@ -431,7 +471,7 @@ export default function Bento() {
           {/* <ExternalLink href={posts[0].path} newTab={false} /> */}
         </div>
         <div key="image-2">
-          <Image
+          {/* <Image
             src="/svg/image-2.svg"
             alt="Bento Box 2"
             fill
@@ -440,7 +480,44 @@ export default function Bento() {
             noRelative
             unoptimized
             priority
-          />
+          /> */}
+                    <ShaderGradientBox
+            className="rounded-3xl object-cover"
+            animate="on" // Disable animation to make the component non-reactive to interactions.
+            control="props" // Control the component entirely through props.
+            positionX={0}
+            positionY={0}
+            positionZ={0}
+            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            rotationY={10}
+            rotationZ={50}
+            // color1="#893D63"
+            // color2="#9E59B6"
+            // color3="#7060CF"
+            color1="#FF0006"
+            color2="#003FFF"
+            color3="#4AA6FF"
+            wireframe={false}
+            shader="defaults" // Use a default shader that does not react to user input.
+            type="plane" // Example; adjust as needed.
+            uAmplitude={1.4}
+            uDensity={1.2}
+            uFrequency={1.5}
+            uSpeed={0.1}
+            uStrength={2.4}
+            cDistance={10}
+            cameraZoom={10}
+            cAzimuthAngle={0}
+            cPolarAngle={90}
+            uTime={2} // Static time value to ensure the gradient's appearance is fixed.
+            lightType="3d" // Example lighting; adjust as needed.
+            envPreset="dawn"
+            reflection={0.4}
+            brightness={1.9}
+            grain="off" // Disable grain effect for static appearance.
+            toggleAxis={false} // Ensure axis toggling does not react to user input.
+            hoverState="off"
+            />
           {/* 
           <ShaderGradientCanvas
             importedFiber={{ ...fiber, ...drei, ...reactSpring }}
