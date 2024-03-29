@@ -366,7 +366,7 @@ export default function Bento() {
             uSpeed={0.08}
             uStrength={1.4}
             cDistance={10}
-            cameraZoom={25}
+            cameraZoom={29}
             cAzimuthAngle={30}
             cPolarAngle={90}
             uTime={2} // Static time value to ensure the gradient's appearance is fixed.
