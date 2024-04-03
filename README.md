@@ -24,6 +24,8 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
   - [ ] Complete About Me Page
 - [ ] Complete projects page
 - [ ] Fix SpotifyBox clientside rendering error
+- [ ] Make audiobox more interactive/clickable
+- [ ] Make lower audiobar popup on play
 
 ## Learn More
 
