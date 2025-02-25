@@ -66,7 +66,7 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
             data={selectLastNDays(data.contributions)}
             theme={{
                 dark: ['#1A1A1A', '#E9D3B6'],
-                light: ['#E9D3B6', '#1A1A1A'],
+                light: ['#1A1A1A', '#E9D3B6'],
             }}
             {...props}
             maxLevel={4}
