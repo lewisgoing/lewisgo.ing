@@ -5,6 +5,8 @@ import React, {
   useCallback,
   CSSProperties,
   useRef,
+  lazy,
+  Suspense,
 } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
@@ -16,10 +18,9 @@ import {
   HiInformationCircle,
 } from "react-icons/hi2";
 import { FaCompactDisc } from "react-icons/fa";
-import { audioContextManager } from "src/context/AudioContextManager";
-import { current } from "tailwindcss/colors";
 import { ExternalLink, Volume2, VolumeX } from "lucide-react";
 
+// Lazy load the Lottie component
 const LottiePlayPauseWithNoSSR = dynamic(
   () => import("../../components/LottiePlayPauseButton"),
   { ssr: false }
@@ -45,13 +46,13 @@ const progressIndicatorStyle = (percentage: number): CSSProperties => ({
 
 const dotIndicatorStyle = (percentage: number): CSSProperties => ({
   position: "absolute",
-  top: "0px", // Adjust this value based on the size of the dot to center it vertically
+  top: "0px",
   left: `${percentage}%`,
-  transform: "translateX(-50%)", // This ensures the center of the dot aligns with the current progress
-  width: "4px", // Size of the dot
-  height: "4px", // Size of the dot
+  transform: "translateX(-50%)",
+  width: "4px",
+  height: "4px",
   borderRadius: "50%",
-  backgroundColor: "#FFFFFF", // Color of the dot
+  backgroundColor: "#FFFFFF",
 });
 
 interface Song {
@@ -60,110 +61,158 @@ interface Song {
   albumCoverUrl: string;
   audioSrc: string;
   audioLink?: string;
+  preload?: "none" | "metadata" | "auto"; // Add preload option
 }
 
 const AudioBox = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [loadedSongs, setLoadedSongs] = useState<Set<number>>(new Set([0])); // Track which songs are loaded
+  const [isLoading, setIsLoading] = useState(false);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  // Define songs with preload strategy
   const songs: Song[] = useMemo(
     () => [
       {
         title: "Closer",
         artist: "lewisgoing & Avi8",
-        albumCoverUrl: "/albumart/closer.jpg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/closer.jpg",
         audioSrc: "./audio/closer.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/closer",
+        preload: "auto", // First song loads immediately
       },
       {
         title: "Winter '22 Samples",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/winter22.jpeg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/winter22.jpeg",
         audioSrc: "./audio/winter22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/winter22?si=6464126a1a6d4fbdad72cda1978ba8b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        preload: "metadata", // Just load metadata for next track
       },
       {
         title: "2023 Samples",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/2023clips.jpeg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/2023clips.jpeg",
         audioSrc: "./audio/2023samples.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/whereimat?si=b18a4a36f49540789802800d35bc63c7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        preload: "none", // Don't preload until needed
       },
-
       {
         title: "New Paths",
         artist: "Pradaalife produced by lewisgoing",
-        albumCoverUrl: "/albumart/newpaths.jpeg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/newpaths.jpeg",
         audioSrc: "./audio/newpaths.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/newpaths?si=cd069d336dcf4059840ede43a5d69a47&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        preload: "none",
       },
-
-      // {
-      //   title: "Harvey Specter",
-      //   artist: "Pradaalife produced by lewisgoing",
-      //   albumCoverUrl: "/albumart/harvey.jpeg", // Adjust paths as necessary
-      //   audioSrc: "./audio/harvey.mp3",
-      //   audioLink: "https://soundcloud.com/doss/extended-mix?si=21bcfd70b8094943b120d47fc4568b1b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
-      // },
-
       {
         title: "Midsummer '22 Clips",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/summer22.jpeg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/summer22.jpeg",
         audioSrc: "./audio/summer22.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"
+        audioLink: "https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        preload: "none",
       },
-
       {
         title: "May '22 Clips",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/may22.jpeg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/may22.jpeg",
         audioSrc: "./audio/may22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/may?si=4880056ad4e94c3fa4b6285d08951427&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        preload: "none",
       },
-
       {
         title: "February '22 Clips",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/feb22.jpeg", // Adjust paths as necessary
+        albumCoverUrl: "/albumart/feb22.jpeg",
         audioSrc: "./audio/feb22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/feb22?si=9a9c188a73a84cb78d6ac17fc76de175&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+        preload: "none",
       },
     ],
     []
   );
 
-  const handleProgressBarClick = (e) => {
+  // Progressive loading of audio files
+  const preloadNextTrack = useCallback(() => {
+    const nextIndex = (currentTrackIndex + 1) % songs.length;
+    if (!loadedSongs.has(nextIndex)) {
+      const preloadAudio = new Audio();
+      preloadAudio.src = songs[nextIndex].audioSrc;
+      preloadAudio.preload = "metadata"; // Just load metadata
+      preloadAudio.load();
+      
+      // Mark as loaded
+      setLoadedSongs(prev => new Set([...prev, nextIndex]));
+      
+      // Remove the audio element reference once loaded
+      preloadAudio.onloadedmetadata = () => {
+        preloadAudio.onloadedmetadata = null;
+      };
+    }
+  }, [currentTrackIndex, songs, loadedSongs]);
+
+  // FIXED: Handle progress bar interaction
+  const handleProgressBarClick = useCallback((e: React.MouseEvent) => {
+    // Use e.currentTarget instead of progressBarRef to ensure we're getting the correct element that was clicked
     const clickX = e.nativeEvent.offsetX;
     const totalWidth = e.currentTarget.offsetWidth;
+    
+    // Ensure we have valid dimensions and duration
+    if (totalWidth <= 0 || !duration || duration <= 0) return;
+    
     const clickPercentage = (clickX / totalWidth) * 100;
     const newTime = (clickPercentage / 100) * duration;
-    if (audioElementRef.current) {
-      audioElementRef.current.currentTime = newTime; // Use the ref here
+    
+    // Add safety check but keep it minimal
+    if (audioElementRef.current && isFinite(newTime)) {
+      audioElementRef.current.currentTime = newTime;
+      
+      // Debug logging to see what's happening
+      console.log("Seeking to:", newTime, "seconds");
     }
-  };
+  }, [duration]);
 
+  // Initialize audio on mount
   useEffect(() => {
-    // Initialize the audio element on the client side
-    if (typeof window !== "undefined" && !audioElementRef.current) {
-      audioElementRef.current = new Audio(songs[currentTrackIndex].audioSrc);
-    }
-  }, []);
+    if (typeof window === 'undefined' || audioElementRef.current) return;
 
+    const audio = new Audio();
+    audio.preload = songs[0].preload || "metadata";
+    audioElementRef.current = audio;
+    
+    // Mark the first track as loaded
+    setLoadedSongs(new Set([0]));
+    
+    // Only set the source once the component is mounted
+    audio.src = songs[0].audioSrc;
+    audio.load();
+    
+    return () => {
+      // Cleanup
+      if (audioElementRef.current) {
+        audioElementRef.current.pause();
+        audioElementRef.current.src = '';
+      }
+    };
+  }, [songs]);
+
+  // Handle track changes and audio events
   useEffect(() => {
     const audio = audioElementRef.current;
     if (!audio) return;
 
     const onLoadedMetadata = () => {
       setDuration(audio.duration);
+      setIsLoading(false);
     };
 
     const onTimeUpdate = () => {
@@ -175,147 +224,159 @@ const AudioBox = () => {
       setCurrentTrackIndex(nextIndex);
     };
 
+    const onWaiting = () => {
+      setIsLoading(true);
+    };
+
+    const onCanPlay = () => {
+      setIsLoading(false);
+    };
+
     audio.addEventListener("loadedmetadata", onLoadedMetadata);
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("ended", onEnded);
+    audio.addEventListener("waiting", onWaiting);
+    audio.addEventListener("canplay", onCanPlay);
 
     // Load new source if track changes
-    if (audio.src !== songs[currentTrackIndex].audioSrc) {
+    if (audio.src !== new URL(songs[currentTrackIndex].audioSrc, window.location.href).href) {
+      setIsLoading(true);
       audio.src = songs[currentTrackIndex].audioSrc;
       audio.load();
+      
       if (isPlaying) {
-        audio.play().catch(console.error);
+        audio.play().catch(error => {
+          console.error("Error playing audio:", error);
+          setIsLoading(false);
+        });
+      }
+      
+      // Preload the next track
+      if (typeof window !== 'undefined') {
+        // Use requestIdleCallback if available
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(() => preloadNextTrack());
+        } else {
+          setTimeout(preloadNextTrack, 1000);
+        }
       }
     }
+    
     return () => {
       audio.removeEventListener("loadedmetadata", onLoadedMetadata);
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("waiting", onWaiting);
+      audio.removeEventListener("canplay", onCanPlay);
     };
-  }, [currentTrackIndex, songs, isPlaying]);
+  }, [currentTrackIndex, songs, isPlaying, preloadNextTrack]);
 
+  // Handle play/pause state changes
   useEffect(() => {
     const audio = audioElementRef.current;
     if (!audio) return;
 
     if (isPlaying) {
-      audio.play().catch(console.error);
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.error("Error playing audio:", error);
+          setIsPlaying(false);
+        });
+      }
     } else {
-      // Do not load the audio again; just pause
       audio.pause();
     }
   }, [isPlaying]);
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
-  const skipToNextTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % songs.length);
-    if (!isPlaying) {
-      setIsPlaying(true); // Ensure that playback starts if it was paused
-    }
-  };
+  // Toggle play/pause
+  const togglePlay = useCallback(() => {
+    setIsPlaying(prev => !prev);
+  }, []);
 
-  const playLastTrack = () => {
-    setCurrentTrackIndex((prevIndex) =>
+  // Skip to next track
+  const skipToNextTrack = useCallback(() => {
+    setCurrentTrackIndex(prevIndex => (prevIndex + 1) % songs.length);
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+  }, [songs.length, isPlaying]);
+
+  // Play previous track
+  const playLastTrack = useCallback(() => {
+    setCurrentTrackIndex(prevIndex => 
       prevIndex - 1 < 0 ? songs.length - 1 : prevIndex - 1
     );
     if (!isPlaying) {
-      setIsPlaying(true); // Ensure that playback starts if it was paused
+      setIsPlaying(true);
     }
-  };
+  }, [songs.length, isPlaying]);
 
-  const currentSong = songs[currentTrackIndex];
+  // Handle opening song link
+  const handleSongLinkClick = useCallback(() => {
+    const songLink = songs[currentTrackIndex].audioLink;
+    if (songLink) {
+      window.open(songLink, "_blank");
+    }
+  }, [songs, currentTrackIndex]);
 
-const handleSongLinkClick = () => {
-  const songLink = songs[currentTrackIndex].audioLink;
-  if (songLink) {
-    window.open(songLink, "_blank");
-  }
-}
-
-const toggleMute = () => {
-  const audio = audioElementRef.current;
-  if (audio) {
-    setIsMuted(!isMuted);
-    audio.muted = !isMuted; // Mute or unmute the audio
-  }
-};
-
+  // Toggle mute
+  const toggleMute = useCallback(() => {
+    const audio = audioElementRef.current;
+    if (audio) {
+      setIsMuted(prev => {
+        const newMutedState = !prev;
+        audio.muted = newMutedState;
+        return newMutedState;
+      });
+    }
+  }, []);
 
   // Format time to display
-  const formatTime = (time) => {
+  const formatTime = useCallback((time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  }, []);
 
   const progressPercentage = (currentTime / duration) * 100;
-  // Define SVG paths
-  const backLight = "/svg/player/back.svg";
-  const backDark = "/svg/player/back-dark.svg";
-  const nextLight = "/svg/player/next.svg";
-  const nextDark = "/svg/player/next-dark.svg";
-  // console.log("pre-render theme:" + theme + isDark);
-  const backSrc = isDark ? backDark : backLight;
-  const nextSrc = isDark ? nextDark : nextLight;
-
-  const mobileAlbumCoverSize = 80; // Adjust the size of the album cover on mobile
-  const mobileControlButtonSize = 24; // Adjust control button sizes on mobile
+  const currentSong = songs[currentTrackIndex];
 
   return (
     <>
       {/* Desktop Styles */}
-
-      <div
-        className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col"
-        // style={{ border: "1px red solid" }}
-      >
+      <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
         {/* Top Bar */}
         <div className="absolute left-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"></div>
-          {/* // bg-primary */}
-          <button onClick={toggleMute} className="absolute right-0 top-0 z-[1] w-10 h-10 flex items-center justify-center m-3 rounded-full bg-tertiary/50">
-        {isMuted ? (
-          <VolumeX size={24} className="text-primary" />
-        ) : (
-          <Volume2 size={24} className="text-primary" />
-        )}
-      </button>
-          {/* <FaCompactDisc
-            size={40}
-            className={"text-primary p-1"}
-            style={{
-              animation: "spin 2s linear infinite",
-              animationPlayState: isPlaying ? "running" : "paused",
-            }}
-          />{" "} */}
+        <button onClick={toggleMute} className="absolute right-0 top-0 z-[1] w-10 h-10 flex items-center justify-center m-3 rounded-full bg-tertiary/50">
+          {isMuted ? (
+            <VolumeX size={24} className="text-primary" />
+          ) : (
+            <Volume2 size={24} className="text-primary" />
+          )}
+        </button>
 
-        <div
-          className="w-full h-[80px] rounded-t-3xl flex-shrink-0" // bg-tertiary/50
-        />
-        <div
-          className="m-3 flex flex-col h-full gap-2"
-          // style={{ border: "1px solid blue" }}
-        >
+        <div className="w-full h-[80px] rounded-t-3xl flex-shrink-0" />
+        <div className="m-3 flex flex-col h-full gap-2">
           {/* Middle Elements */}
           {/* Album Cover and Song Info */}
-          <div
-            className="flex flex-col h-full gap-1 items-center justify-center mt-[-48px]"
-            // style={{ border: "1px solid red" }}
-          >
-            <div>
+          <div className="flex flex-col h-full gap-1 items-center justify-center mt-[-48px]">
+            <div className="relative">
               <NextImage
                 src={currentSong.albumCoverUrl}
                 alt={currentSong.title}
                 width={120}
                 height={120}
-                className="rounded-2xl object-cover "
+                className={`rounded-2xl object-cover ${isLoading ? 'opacity-70' : 'opacity-100'} transition-opacity`}
+                priority={currentTrackIndex === 0} // Prioritize first album art
               />
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-2xl">
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
             </div>
-            <div
-              className="text-sm h-fit w-full px-2 py-1 rounded-lg leading-snug text-center"
-              // style={{ border: "1px solid red" }}
-            >
+            <div className="text-sm h-fit w-full px-2 py-1 rounded-lg leading-snug text-center">
               <div className="text-center">{currentSong.title}</div>
               <div className="text-center text-[10px] pt-0.5 text-muted-foreground">
                 {currentSong.artist}
@@ -323,21 +384,16 @@ const toggleMute = () => {
             </div>
 
             {/* Song duration and progress bar */}
-            <div
-              className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2 "
-              // style={{ border: "1px solid red" }}
-            >
-              <div style={progressBarStyle} onClick={handleProgressBarClick}>
-                <div
-                  style={progressIndicatorStyle((currentTime / duration) * 100)}
-                ></div>
+            <div className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2">
+              <div 
+                style={progressBarStyle} 
+                onClick={handleProgressBarClick}
+              >
+                <div style={progressIndicatorStyle(progressPercentage)}></div>
                 <div style={dotIndicatorStyle(progressPercentage)}></div>
               </div>
               <div className="flex flex-row pt-2">
-                <div
-                  className="text-[10px] text-primary text-left w-1/2"
-                  // style={{ border: "1px solid red" }}
-                >
+                <div className="text-[10px] text-primary text-left w-1/2">
                   {formatTime(currentTime)}
                 </div>
                 <div className="text-[10px] text-primary text-right w-1/2">
@@ -345,93 +401,94 @@ const toggleMute = () => {
                 </div>
               </div>
             </div>
-                      {/* Buttons */}
-          <div
-            className="flex flex-row w-full h-full rounded-lg items-center justify-between gap-1"
-            // style={{ border: "1px red solid" }}
-          >
-            <div className="flex grow justify-center rounded-lg">
-            <button className="info-icon cursor-pointer"
-                >
-                            <FaCompactDisc
-            size={28}
-            className={"text-primary"}
-            style={{
-              animation: "spin 2s linear infinite",
-              animationPlayState: isPlaying ? "running" : "paused",
-            }}
-          />{" "}
-                {/* <HiQueueList size={28} className={"text-secondary"} /> */}
-                              </button>
-            </div>
-            {/* Back */}
-            <div
-              className="flex grow justify-center  rounded-lg"
-              onClick={playLastTrack}
-            >
-              <button className="cursor-pointer">
-                <HiBackward size={36} className="text-primary" />
+            {/* Buttons */}
+            <div className="flex flex-row w-full h-full rounded-lg items-center justify-between gap-1">
+              <div className="flex grow justify-center rounded-lg">
+                <button className="info-icon cursor-pointer">
+                  <FaCompactDisc
+                    size={28}
+                    className={"text-primary"}
+                    style={{
+                      animation: "spin 2s linear infinite",
+                      animationPlayState: isPlaying ? "running" : "paused",
+                    }}
+                  />
+                </button>
+              </div>
+              {/* Back */}
+              <div className="flex grow justify-center rounded-lg" onClick={playLastTrack}>
+                <button className="cursor-pointer">
+                  <HiBackward size={36} className="text-primary" />
+                </button>
+              </div>
 
+              {/* Play/Pause */}
+              <div className="flex grow justify-center rounded-lg">
+                <button>
+                  <Suspense fallback={<div className="w-12 h-12 flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                  </div>}>
+                    <LottiePlayPauseWithNoSSR
+                      togglePlay={togglePlay}
+                      isPlaying={isPlaying}
+                      isDark={isDark}
+                    />
+                  </Suspense>
+                </button>
+              </div>
 
-              </button>
-            </div>
+              {/* Next */}
+              <div className="flex grow justify-center rounded-lg">
+                <button onClick={skipToNextTrack} className="cursor-pointer">
+                  <HiForward
+                    size={36}
+                    className="rounded-3xl object-cover text-primary"
+                  />
+                </button>
+              </div>
 
-            {/* Play/Pause */}
-            <div className="flex grow justify-center rounded-lg">
-              <button>
-                <LottiePlayPauseWithNoSSR
-                  togglePlay={togglePlay}
-                  isPlaying={isPlaying}
-                  isDark={isDark}
-                />
-              </button>
-            </div>
-
-            {/* Next */}
-            <div className="flex grow justify-center rounded-lg">
-              <button onClick={skipToNextTrack} className="cursor-pointer">
-                <HiForward
-                  size={36}
-                  className="rounded-3xl object-cover text-primary"
-                />
-
-
-              </button>
-            </div>
-
-            <div className="flex grow justify-center rounded-lg">
-            <button className="info-icon cursor-pointer"
-                onClick={handleSongLinkClick}>
-              {
-  songs[currentTrackIndex].audioLink 
-    ? <div><ExternalLink href={songs[currentTrackIndex].audioLink}           className="text-primary z-[1] block" /></div>
-    : <div><ExternalLink href={'/#'}           className="z-[1] block" /></div>
-}
-              </button>
+              <div className="flex grow justify-center rounded-lg">
+                <button className="info-icon cursor-pointer" onClick={handleSongLinkClick}>
+                  {songs[currentTrackIndex].audioLink ? (
+                    <div><ExternalLink size={24} className="text-primary" /></div>
+                  ) : (
+                    <div><ExternalLink size={24} className="text-gray-400" /></div>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-          </div>
-
         </div>
       </div>
+      
       {/* Mobile Styles */}
       <div className="bento-lg:hidden relative w-full h-full flex flex-col">
         <div className="m-2">
           {/* Album Cover and Song Info centered at the top */}
           <div className="flex flex-col items-center gap-1">
-            <NextImage
-              src={currentSong.albumCoverUrl}
-              alt={currentSong.title}
-              width={mobileAlbumCoverSize}
-              height={mobileAlbumCoverSize}
-              className="rounded-xl object-cover"
-            />
-                        <button onClick={togglePlay}     className="absolute top-[30px] left-1/2 transform -translate-x-1/2">
-              <LottiePlayPauseWithNoSSR
-                togglePlay={togglePlay}
-                isPlaying={isPlaying}
-                isDark={isDark}
+            <div className="relative">
+              <NextImage
+                src={currentSong.albumCoverUrl}
+                alt={currentSong.title}
+                width={80}
+                height={80}
+                className={`rounded-xl object-cover ${isLoading ? 'opacity-70' : 'opacity-100'} transition-opacity`}
+                priority={currentTrackIndex === 0}
               />
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+            </div>
+            <button onClick={togglePlay} className="absolute top-[30px] left-1/2 transform -translate-x-1/2">
+              <Suspense fallback={<div className="w-10 h-10"></div>}>
+                <LottiePlayPauseWithNoSSR
+                  togglePlay={togglePlay}
+                  isPlaying={isPlaying}
+                  isDark={isDark}
+                />
+              </Suspense>
             </button>
             <div className="text-center">
               <div className="font-bold text-lg bento-sm:text-sm">{currentSong.title}</div>
@@ -441,32 +498,18 @@ const toggleMute = () => {
 
           {/* Progress Bar */}
           <div className="mx-1">
-          <div className="my-4 sm: my-3" style={progressBarStyle} onClick={handleProgressBarClick}>
-            <div style={progressIndicatorStyle(progressPercentage)}></div>
-            <div style={dotIndicatorStyle(progressPercentage)}></div>
+            <div 
+              className="my-4 sm:my-3" 
+              style={progressBarStyle} 
+              onClick={handleProgressBarClick}
+            >
+              <div style={progressIndicatorStyle(progressPercentage)}></div>
+              <div style={dotIndicatorStyle(progressPercentage)}></div>
+            </div>
           </div>
-          </div>
-
-
-          {/* Control Buttons
-          <div className="flex justify-center gap-4">
-            <button onClick={playLastTrack} className="text-primary">
-              <HiBackward size={mobileControlButtonSize} />
-            </button>
-            <button onClick={togglePlay}>
-              <LottiePlayPauseWithNoSSR
-                togglePlay={togglePlay}
-                isPlaying={isPlaying}
-                isDark={isDark}
-              />
-            </button>
-            <button onClick={skipToNextTrack} className="text-primary">
-              <HiForward size={mobileControlButtonSize} />
-            </button>
-          </div> */}
         </div>
       </div>
-          </>
+    </>
   );
 };
 
