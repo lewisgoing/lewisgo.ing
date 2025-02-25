@@ -17,7 +17,7 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
   const setLastPlayed = async () => {
     try {
       await set({
-        apiKey: process.env.NEXT_PUBLIC_LANYARD_KV_KEY!,
+        apiKey: process.env.LANYARD_KV_KEY!,
         userId: "661068667781513236",
         key: "spotify_last_played",
         value: JSON.stringify(lanyard.data.spotify),
@@ -44,7 +44,7 @@ const SpotifyBox = ({ lanyard, onLoad }) => {
   useEffect(() => {
     if (spotifyData) {
       try {
-        const apiKey = process.env.NEXT_PUBLIC_LANYARD_KV_KEY;
+        const apiKey = process.env.LANYARD_KV_KEY;
         const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID;
 
         if (!apiKey) {
