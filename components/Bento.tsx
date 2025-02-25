@@ -181,7 +181,7 @@ export default function Bento() {
         cols={{ lg: 4, md: 4, sm: 2 }}
         rowHeight={rowHeight}
         isResizable={false}
-        // isDraggable={false} 
+        // isDraggable={true} 
         onWidthChange={handleWidthChange}
         isBounded
         margin={[16, 16]}
@@ -194,42 +194,6 @@ export default function Bento() {
         }
       >
         <div key="intro">
-          {/* <ShaderParkReactiveBox /> */}
-          
-        {/* <ShaderGradientBox
-            className="rounded-3xl object-cover"
-            animate="on" // Disable animation to make the component non-reactive to interactions.
-            control="props" // Control the component entirely through props.
-            positionX={-1.4}
-            positionY={0}
-            positionZ={0}
-            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
-            rotationY={10}
-            rotationZ={50}
-            color1="#893D63"
-            color2="#9E59B6"
-            color3="#7060CF"
-            wireframe={false}
-            shader="defaults" // Use a default shader that does not react to user input.
-            type="sphere" // Example; adjust as needed.
-            uAmplitude={1.4}
-            uDensity={1.3}
-            uFrequency={5.5}
-            uSpeed={0.4}
-            uStrength={4}
-            cDistance={3.6}
-            cameraZoom={0.4}
-            cAzimuthAngle={0}
-            cPolarAngle={90}
-            uTime={1} // Static time value to ensure the gradient's appearance is fixed.
-            lightType="env" // Example lighting; adjust as needed.
-            envPreset="dawn"
-            reflection={0.4}
-            brightness={0.9}
-            grain="on" // Disable grain effect for static appearance.
-            toggleAxis={false} // Ensure axis toggling does not react to user input.
-            hoverState="off"
-          /> */}
           {/* <p className="pl-10">intro</p> */}
                                 <Image
                 src="/svg/lewis-card-hover-4.svg"
@@ -281,39 +245,11 @@ export default function Bento() {
             hoverState="off"
             // skeletonClassName="rounded-3xl"
             />
-
-
-
-              {/* <Image
-                src="/svg/lewis-card.svg"
-                alt="Bento Intro"
-                fill
-                className={`rounded-3xl object-cover transition-opacity duration-300 ${
-                  introSilhouette ? "opacity-0 delay-75" : "opacity-100"
-                }`}
-                skeletonClassName="rounded-3xl"
-                noRelative
-                unoptimized
-                priority
-              /> */}
-              
-              {/* <Image
-                src="/svg/lewis-card.svg"
-                alt="Bento Intro"
-                fill
-                className={`rounded-3xl object-cover transition-opacity duration-300 ${
-                  introSilhouette ? "opacity-0 delay-75" : "opacity-100"
-                }`}
-                skeletonClassName="rounded-3xl"
-                noRelative
-                unoptimized
-                priority
-              /> */}
               </div>
 
 
 
-        {/* <div key="intro"><IntroBox introSilhouette={introSilhouette}/></div> */}
+
 
         <div
           key="github"
@@ -324,26 +260,6 @@ export default function Bento() {
           <GithubBox />
         </div>
         <div key="image-1" className="h-full w-full overflow-hidden">
-          {/* <Image
-            src="svg/gradient.svg"
-            alt="Bento Box 1"
-            fill
-            // noRelative
-            className="rounded-3xl object-cover scale-150"
-            // skeletonClassName="rounded-3xl"
-            unoptimized
-            priority
-          /> */}
-          {/* <Image
-            src="svg/image-4.svg"
-            alt="Bento Box 1"
-            fill
-            noRelative
-            className="rounded-3xl object-cover"
-            skeletonClassName="rounded-3xl"
-            unoptimized
-            priority
-          /> */}
             <ShaderGradientBox
                 className={`rounded-3xl object-cover transition-opacity duration-300 skeleton rounded-3xl`}
             animate="on" // Disable animation to make the component non-reactive to interactions.
