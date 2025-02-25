@@ -31,32 +31,82 @@ interface SpotifyBoxProps {
   onLoad?: () => void;
 }
 
+// Combined state interface to reduce useState calls
+interface SpotifyBoxState {
+  isHovered: boolean;
+  spotifyData: SpotifyData | null;
+  loading: {
+    isLoading: boolean;
+    showMessage: boolean;
+  };
+  isCurrentlyPlaying: boolean;
+  debugInfo: string[];
+}
+
 const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [spotifyData, setSpotifyData] = useState<SpotifyData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false); // Start with false to avoid flash
-  const [showLoadingMessage, setShowLoadingMessage] = useState<boolean>(false);
-  const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState<boolean>(false);
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  // Combined state for better management
+  const [state, setState] = useState<SpotifyBoxState>({
+    isHovered: false,
+    spotifyData: null,
+    loading: {
+      isLoading: false,
+      showMessage: false
+    },
+    isCurrentlyPlaying: false,
+    debugInfo: []
+  });
+  
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Derived styles based on hover state
   const iconStyle = {
     transition: "color 0.3s ease",
-    color: isHovered ? "#1db954" : "#e5d3b8",
+    color: state.isHovered ? "#1db954" : "#e5d3b8",
   };
 
-  const imageStyle = isHovered
+  const imageStyle = state.isHovered
     ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
     : { filter: 'grayscale(1)', transition: 'filter 0.3s ease' };
 
-  // Add debug message
-  const addDebug = (message: string) => {
+  // Helper functions for state updates
+  const addDebug = (message: string): void => {
     console.log(`[SpotifyBox] ${message}`);
-    setDebugInfo(prev => [...prev, message]);
+    setState(prev => ({
+      ...prev,
+      debugInfo: [...prev.debugInfo, message]
+    }));
+  };
+
+  const setSpotifyData = (data: SpotifyData | null, isPlaying: boolean = false): void => {
+    setState(prev => ({
+      ...prev,
+      spotifyData: data,
+      isCurrentlyPlaying: isPlaying
+    }));
+  };
+
+  const startLoading = (): void => {
+    setState(prev => ({
+      ...prev,
+      loading: { isLoading: true, showMessage: false }
+    }));
+    // No need for timeout anymore since we're not showing text
+  };
+
+  const stopLoading = (): void => {
+    setState(prev => ({
+      ...prev,
+      loading: { isLoading: false, showMessage: false }
+    }));
+    
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+      loadingTimeoutRef.current = null;
+    }
   };
 
   // Update the KV store with track data
-  const updateKVStore = async (trackData: SpotifyData) => {
+  const updateKVStore = async (trackData: SpotifyData): Promise<boolean> => {
     try {
       addDebug(`Updating KV store with track: ${trackData.song}`);
       
@@ -81,26 +131,8 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     }
   };
 
-  // Delayed loading message
-  const startLoading = () => {
-    setIsLoading(true);
-    // Only show loading message if it takes more than 300ms
-    loadingTimeoutRef.current = setTimeout(() => {
-      setShowLoadingMessage(true);
-    }, 300);
-  };
-
-  const stopLoading = () => {
-    setIsLoading(false);
-    setShowLoadingMessage(false);
-    if (loadingTimeoutRef.current) {
-      clearTimeout(loadingTimeoutRef.current);
-      loadingTimeoutRef.current = null;
-    }
-  };
-
-  // Fetch Spotify data from our API
-  const fetchSpotifyData = async () => {
+  // Fetch Spotify data from API
+  const fetchSpotifyData = async (): Promise<boolean> => {
     try {
       addDebug('Fetching Spotify data from API');
       
@@ -115,8 +147,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       // Check if user is currently listening to Spotify
       if (data.listeningToSpotify && data.spotify) {
         addDebug('User is currently listening to Spotify');
-        setSpotifyData(data.spotify);
-        setIsCurrentlyPlaying(true);
+        setSpotifyData(data.spotify, true);
         
         // Update KV store with current track
         updateKVStore(data.spotify);
@@ -126,8 +157,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       // Otherwise, use last played from KV
       if (data.lastPlayedFromKV) {
         addDebug('Using last played track from KV store');
-        setSpotifyData(data.lastPlayedFromKV);
-        setIsCurrentlyPlaying(false);
+        setSpotifyData(data.lastPlayedFromKV, false);
         return true;
       }
       
@@ -139,53 +169,46 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     }
   };
 
-  // Initialize component
+  // Main initialization effect
   useEffect(() => {
-    const initSpotify = async () => {
-      // Start loading state
+    const initSpotify = async (): Promise<void> => {
       startLoading();
       addDebug('Initializing SpotifyBox component');
       
-      // Pre-check lanyard prop to avoid flash if data is already available
+      // Check lanyard prop first for immediate data
       if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
         addDebug('Using immediate lanyard data');
-        setSpotifyData(lanyard.data.spotify);
-        setIsCurrentlyPlaying(true);
+        setSpotifyData(lanyard.data.spotify, true);
         
-        // Still update KV store in the background
+        // Update KV store in the background
         updateKVStore(lanyard.data.spotify).then(() => {
           stopLoading();
-          if (onLoad) onLoad();
+          onLoad?.();
         });
         
-        // Stop loading immediately since we have data
         stopLoading();
         return;
       }
       
       try {
-        // Try to get data from our API endpoint
+        // Try API endpoint next
         const success = await fetchSpotifyData();
         
         if (!success) {
-          // Fallback to direct Lanyard data if needed
+          // Final fallback to direct Lanyard data
           addDebug('Falling back to direct Lanyard data');
           
           if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
             addDebug('User is listening to Spotify (from Lanyard prop)');
-            setSpotifyData(lanyard.data.spotify);
-            setIsCurrentlyPlaying(true);
-            
-            // Update KV store with current track
+            setSpotifyData(lanyard.data.spotify, true);
             await updateKVStore(lanyard.data.spotify);
           } else if (lanyard?.data?.kv?.spotify_last_played) {
             addDebug('Found last played in Lanyard KV prop');
             try {
               const kvData = JSON.parse(lanyard.data.kv.spotify_last_played);
-              setSpotifyData(kvData);
-              setIsCurrentlyPlaying(false);
-            } catch (parseErr) {
-              addDebug(`Error parsing KV data: ${parseErr}`);
+              setSpotifyData(kvData, false);
+            } catch (parseErr: any) {
+              addDebug(`Error parsing KV data: ${parseErr.message}`);
             }
           } else {
             addDebug('No Spotify data available');
@@ -206,14 +229,13 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
         clearTimeout(loadingTimeoutRef.current);
       }
     };
-  }, []);
+  }, [lanyard]);
   
   // Handle changes in Lanyard Spotify status
   useEffect(() => {
     if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
       addDebug('Spotify status changed - now playing');
-      setSpotifyData(lanyard.data.spotify);
-      setIsCurrentlyPlaying(true);
+      setSpotifyData(lanyard.data.spotify, true);
       
       // Update KV store with current track
       updateKVStore(lanyard.data.spotify);
@@ -222,29 +244,30 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   
   // Call onLoad callback when data is available
   useEffect(() => {
-    if (spotifyData && onLoad) {
+    if (state.spotifyData && onLoad) {
       addDebug('Calling onLoad callback');
       onLoad();
     }
-  }, [spotifyData, onLoad]);
+  }, [state.spotifyData, onLoad]);
 
-  // Placeholder component while loading
-  if (isLoading && showLoadingMessage) {
-    return <div className="flex items-center justify-center h-full">
-      <span className="text-sm text-gray-500">Loading Spotify data...</span>
-    </div>;
+  // Event handlers
+  const handleMouseEnter = (): void => setState(prev => ({ ...prev, isHovered: true }));
+  const handleMouseLeave = (): void => setState(prev => ({ ...prev, isHovered: false }));
+
+  // Empty, invisible placeholder during loading
+  if (state.loading.isLoading && !state.spotifyData) {
+    return <div className="h-full w-full"></div>;
   }
   
-  // If we have no data after loading
-  if (!isLoading && !spotifyData) {
+  // Minimal "no data" state without loading text
+  if (!state.spotifyData) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-sm text-gray-500">No Spotify data available</p>
+      <div className="h-full w-full opacity-0">
         {process.env.NODE_ENV === 'development' && (
-          <details className="text-xs text-gray-500 mt-2">
+          <details className="fixed bottom-2 right-2 text-xs text-gray-500 z-10">
             <summary>Debug info</summary>
             <pre className="whitespace-pre-wrap text-xs">
-              {debugInfo.join('\n')}
+              {state.debugInfo.join('\n')}
             </pre>
           </details>
         )}
@@ -252,13 +275,8 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     );
   }
 
-  // Empty placeholder if we're loading without data
-  if (isLoading && !spotifyData) {
-    return <div className="h-full"></div>;
-  }
-
-  // If we have data, show it (even while loading, to avoid flashes)
-  const { song, artist, album, album_art_url, track_id } = spotifyData || {
+  // Extract Spotify data with default empty values
+  const { song, artist, album, album_art_url, track_id } = state.spotifyData || {
     song: "",
     artist: "",
     album: "",
@@ -269,9 +287,9 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   return (
     <>
       <div 
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className={`transition-opacity duration-300 ${isLoading ? 'opacity-70' : 'opacity-100'}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={`transition-all duration-500 ease-in-out ${state.loading.isLoading ? 'opacity-0' : 'opacity-100'}`}
       >
         <div className="flex bento-md:hidden z-[1] bento-lg:flex h-full w-full flex-col justify-between p-6">
           <Image
@@ -292,7 +310,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
                 height={16}
                 style={iconStyle}
               />
-              {isCurrentlyPlaying ? (
+              {state.isCurrentlyPlaying ? (
                 <span className="text-sm">Now playing...</span>
               ) : (
                 <span className="text-sm">Last played...</span>
@@ -334,7 +352,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
                 height={16}
                 style={iconStyle}
               />
-              {isCurrentlyPlaying ? (
+              {state.isCurrentlyPlaying ? (
                 <span className="text-sm text-primary">Now playing...</span>
               ) : (
                 <span className="text-sm text-primary">Last played...</span>
@@ -357,9 +375,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
             </span>
           </div>
         </div>
-        <div
-          className="absolute right-0 top-0 z-[1] m-3 text-primary"
-        >
+        <div className="absolute right-0 top-0 z-[1] m-3 text-primary">
           <FaSpotify size={56} style={iconStyle} />
         </div>
         {track_id && (

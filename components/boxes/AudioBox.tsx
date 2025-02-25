@@ -26,13 +26,26 @@ const LottiePlayPauseWithNoSSR = dynamic(
   { ssr: false }
 );
 
-const progressBarStyle: CSSProperties = {
+const progressBarContainerStyle: CSSProperties = {
   position: "relative",
+  height: "6px", // Fixed height container
+  display: "flex",
+  alignItems: "center"
+};
+
+const progressBarStyle: CSSProperties = {
+  position: "absolute",
   height: "4px",
   width: "100%",
   backgroundColor: "#8d9092",
   cursor: "pointer",
   borderRadius: "2px",
+  transition: "height 0.2s ease-in-out"
+};
+
+const progressBarHoverStyle: CSSProperties = {
+  ...progressBarStyle,
+  height: "6px"
 };
 
 const progressIndicatorStyle = (percentage: number): CSSProperties => ({
@@ -72,6 +85,7 @@ const AudioBox = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [loadedSongs, setLoadedSongs] = useState<Set<number>>(new Set([0])); // Track which songs are loaded
   const [isLoading, setIsLoading] = useState(false);
+  const [isProgressBarHovered, setIsProgressBarHovered] = useState(false);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
@@ -141,6 +155,11 @@ const AudioBox = () => {
     []
   );
 
+  // Helper function to prevent dragging
+  const preventDrag = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+  }, []);
+
   // Progressive loading of audio files
   const preloadNextTrack = useCallback(() => {
     const nextIndex = (currentTrackIndex + 1) % songs.length;
@@ -161,7 +180,7 @@ const AudioBox = () => {
   }, [currentTrackIndex, songs, loadedSongs]);
 
   // FIXED: Handle progress bar interaction
-  const handleProgressBarClick = useCallback((e: React.MouseEvent) => {
+  const handleProgressBarClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     // Use e.currentTarget instead of progressBarRef to ensure we're getting the correct element that was clicked
     const clickX = e.nativeEvent.offsetX;
     const totalWidth = e.currentTarget.offsetWidth;
@@ -342,17 +361,41 @@ const AudioBox = () => {
   const progressPercentage = (currentTime / duration) * 100;
   const currentSong = songs[currentTrackIndex];
 
+  /* Add this CSS to the global styles or component */
+  const noGrabStyles = `
+    .no-drag {
+      -webkit-user-drag: none;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+  `;
+
   return (
     <>
+      <style jsx global>{`
+        ${noGrabStyles}
+        
+        /* Only disable dragging on interactive elements */
+        .react-grid-item button,
+        .react-grid-item .drag-blocker {
+          pointer-events: auto !important;
+        }
+      `}</style>
       {/* Desktop Styles */}
       <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
         {/* Top Bar */}
         <div className="absolute left-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"></div>
-        <button onClick={toggleMute} className="absolute right-0 top-0 z-[1] w-10 h-10 flex items-center justify-center m-3 rounded-full bg-tertiary/50">
+        <button 
+          onClick={toggleMute} 
+          onMouseDown={preventDrag}
+          className="absolute right-0 top-0 z-[1] w-10 h-10 flex items-center justify-center m-3 bg-tertiary/50 cursor-pointer no-drag drag-blocker rounded-full"
+        >
           {isMuted ? (
-            <VolumeX size={24} className="text-primary" />
+            <VolumeX size={24} className="text-primary hover:text-blue-400 transition-colors" />
           ) : (
-            <Volume2 size={24} className="text-primary" />
+            <Volume2 size={24} className="text-primary hover:text-blue-400 transition-colors" />
           )}
         </button>
 
@@ -385,12 +428,18 @@ const AudioBox = () => {
 
             {/* Song duration and progress bar */}
             <div className="text-sm h-full w-full px-2 rounded-lg leading-snug mt-2">
-              <div 
-                style={progressBarStyle} 
-                onClick={handleProgressBarClick}
-              >
-                <div style={progressIndicatorStyle(progressPercentage)}></div>
-                <div style={dotIndicatorStyle(progressPercentage)}></div>
+              <div style={progressBarContainerStyle} className="no-drag drag-blocker">
+                <div 
+                  style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
+                  onClick={handleProgressBarClick}
+                  onMouseDown={preventDrag}
+                  onMouseEnter={() => setIsProgressBarHovered(true)}
+                  onMouseLeave={() => setIsProgressBarHovered(false)}
+                  className="w-full"
+                >
+                  <div style={progressIndicatorStyle(progressPercentage)}></div>
+                  <div style={dotIndicatorStyle(progressPercentage)}></div>
+                </div>
               </div>
               <div className="flex flex-row pt-2">
                 <div className="text-[10px] text-primary text-left w-1/2">
@@ -404,10 +453,10 @@ const AudioBox = () => {
             {/* Buttons */}
             <div className="flex flex-row w-full h-full rounded-lg items-center justify-between gap-1">
               <div className="flex grow justify-center rounded-lg">
-                <button className="info-icon cursor-pointer">
+                <button className="info-icon cursor-pointer no-drag drag-blocker p-1" onMouseDown={preventDrag}>
                   <FaCompactDisc
                     size={28}
-                    className={"text-primary"}
+                    className="text-primary"
                     style={{
                       animation: "spin 2s linear infinite",
                       animationPlayState: isPlaying ? "running" : "paused",
@@ -416,17 +465,17 @@ const AudioBox = () => {
                 </button>
               </div>
               {/* Back */}
-              <div className="flex grow justify-center rounded-lg" onClick={playLastTrack}>
-                <button className="cursor-pointer">
+              <div className="flex grow justify-center" onClick={playLastTrack} onMouseDown={preventDrag}>
+                <button className="cursor-pointer no-drag p-1 drag-blocker">
                   <HiBackward size={36} className="text-primary" />
                 </button>
               </div>
 
               {/* Play/Pause */}
-              <div className="flex grow justify-center rounded-lg">
-                <button>
+              <div className="flex grow justify-center" onMouseDown={preventDrag}>
+                <button className="no-drag p-1 drag-blocker">
                   <Suspense fallback={<div className="w-12 h-12 flex items-center justify-center">
-                    <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent animate-spin"></div>
                   </div>}>
                     <LottiePlayPauseWithNoSSR
                       togglePlay={togglePlay}
@@ -438,21 +487,25 @@ const AudioBox = () => {
               </div>
 
               {/* Next */}
-              <div className="flex grow justify-center rounded-lg">
-                <button onClick={skipToNextTrack} className="cursor-pointer">
+              <div className="flex grow justify-center" onMouseDown={preventDrag}>
+                <button onClick={skipToNextTrack} className="cursor-pointer no-drag p-1 drag-blocker">
                   <HiForward
                     size={36}
-                    className="rounded-3xl object-cover text-primary"
+                    className="text-primary"
                   />
                 </button>
               </div>
 
-              <div className="flex grow justify-center rounded-lg">
-                <button className="info-icon cursor-pointer" onClick={handleSongLinkClick}>
+              <div className="flex grow justify-center" onMouseDown={preventDrag}>
+                <button className="info-icon cursor-pointer no-drag p-1 drag-blocker" onClick={handleSongLinkClick}>
                   {songs[currentTrackIndex].audioLink ? (
-                    <div><ExternalLink size={24} className="text-primary" /></div>
+                    <div className="cursor-pointer">
+                      <ExternalLink size={24} className="text-primary hover:text-blue-400 transition-colors" />
+                    </div>
                   ) : (
-                    <div><ExternalLink size={24} className="text-gray-400" /></div>
+                    <div>
+                      <ExternalLink size={24} className="text-gray-400" />
+                    </div>
                   )}
                 </button>
               </div>
@@ -481,7 +534,7 @@ const AudioBox = () => {
                 </div>
               )}
             </div>
-            <button onClick={togglePlay} className="absolute top-[30px] left-1/2 transform -translate-x-1/2">
+            <button onClick={togglePlay} onMouseDown={preventDrag} className="absolute top-[30px] left-1/2 transform -translate-x-1/2 no-drag drag-blocker z-10">
               <Suspense fallback={<div className="w-10 h-10"></div>}>
                 <LottiePlayPauseWithNoSSR
                   togglePlay={togglePlay}
@@ -498,13 +551,18 @@ const AudioBox = () => {
 
           {/* Progress Bar */}
           <div className="mx-1">
-            <div 
-              className="my-4 sm:my-3" 
-              style={progressBarStyle} 
-              onClick={handleProgressBarClick}
-            >
-              <div style={progressIndicatorStyle(progressPercentage)}></div>
-              <div style={dotIndicatorStyle(progressPercentage)}></div>
+            <div className="my-4 sm:my-3 no-drag drag-blocker" style={progressBarContainerStyle}>
+              <div 
+                style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
+                onClick={handleProgressBarClick}
+                onMouseDown={preventDrag}
+                onMouseEnter={() => setIsProgressBarHovered(true)}
+                onMouseLeave={() => setIsProgressBarHovered(false)}
+                className="w-full"
+              >
+                <div style={progressIndicatorStyle(progressPercentage)}></div>
+                <div style={dotIndicatorStyle(progressPercentage)}></div>
+              </div>
             </div>
           </div>
         </div>
