@@ -1,3 +1,4 @@
+// scripts/utils/CreateSculptureWithGeometry.js
 /* Version: 0.2.6 - September 7, 2023 16:28:42 */
 function _AsyncGenerator(e) {
     var r, t;

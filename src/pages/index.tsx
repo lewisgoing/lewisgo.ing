@@ -1,3 +1,4 @@
+// src/pages/index.tsx
 import Head from "next/head";
 import NavBar from "../../components/NavBar";
 import Bento from "../../components/Bento";

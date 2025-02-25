@@ -1,3 +1,4 @@
+// components/assets/ExternalLink.tsx
 import { MoveUpRight } from 'lucide-react'
 
 import Link from './Link'

@@ -1,3 +1,4 @@
+// components/boxes/IntroBox.tsx
 import React, { useState } from "react";
 import ImageBox from "../assets/ImageBox";
 // import Cursor from "../oldcursor";

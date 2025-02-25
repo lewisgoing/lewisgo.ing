@@ -1,3 +1,5 @@
+// components/NavBar.tsx
+
 'use client'
 
 import headerNavLinks from '../public/data/headerNavLinks'

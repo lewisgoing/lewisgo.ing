@@ -1,3 +1,4 @@
+// components/boxes/ShaderGradientBox.tsx
 import React from 'react';
 import { ShaderGradientCanvas, ShaderGradient } from 'shadergradient';
 import * as reactSpring from '@react-spring/three';

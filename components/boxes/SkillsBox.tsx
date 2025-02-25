@@ -1,3 +1,5 @@
+// components/boxes/SkillsBox.tsx
+
 import React from "react";
 
 import { FaPython } from "react-icons/fa";

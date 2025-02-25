@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from "react";
+// components/LottiePlayPauseButton.tsx
+
+import React, { useRef, useEffect } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import lottieDarkSrc from "../public/lottie-light.json";
 import lottieLightSrc from "../public/lottie-light-old.json";
@@ -9,6 +11,7 @@ const LottiePlayPauseButton: React.FC<{
   togglePlay: () => void
 }> = ({ isDark, isPlaying, togglePlay }) => {
   const playerRef = useRef<Player>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Choose the correct Lottie animation based on theme
   const lottieSrc = isDark ? lottieDarkSrc : lottieLightSrc;
@@ -18,22 +21,39 @@ const LottiePlayPauseButton: React.FC<{
     const player = playerRef.current;
     if (!player) return;
 
-    // Directly play or pause the animation based on isPlaying
     if (isPlaying) {
-      // Ensure the animation plays from the beginning when played
-      player.setPlayerDirection(1);
       player.play();
     } else {
-      player.setPlayerDirection(-1);
-      player.play();
-      // When pausing, ensure the animation stops at the last frame for pause icon
-      // player.stop(); // Stopping the animation may be more appropriate here to ensure it resets correctly
-      // Optionally, you could seek to a specific frame if needed for visual consistency
+      player.pause();
     }
   }, [isPlaying]);
 
+  // Prevent default and stop propagation to ensure click works
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    togglePlay();
+  };
+
   return (
-    <div onClick={togglePlay} style={{ cursor: "pointer", width: 36, height: 36 }}>
+    <div 
+      ref={containerRef}
+      onClick={handleClick} 
+      onMouseDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      style={{ 
+        cursor: "pointer", 
+        width: 36, 
+        height: 36, 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+      }}
+    >
       <Player
         ref={playerRef}
         autoplay={false}

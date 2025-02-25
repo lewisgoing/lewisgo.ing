@@ -1,3 +1,4 @@
+// src/pages/_app.tsx
 import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import SectionContainer from "../../components/SectionContainer";

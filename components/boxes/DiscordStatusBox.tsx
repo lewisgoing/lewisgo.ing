@@ -1,3 +1,4 @@
+//components/boxes/DiscordStatusBox.tsx
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { FaDiscord } from 'react-icons/fa'

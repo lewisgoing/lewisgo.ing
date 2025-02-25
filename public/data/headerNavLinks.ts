@@ -1,3 +1,5 @@
+// public/data/headerNavLinks.ts
+
 const headerNavLinks = [
     { href: '/', title: 'Home' },
     // { href: '/projects', title: 'Projects' },

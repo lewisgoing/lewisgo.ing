@@ -1,3 +1,5 @@
+// components/SocialButton.tsx
+
 import React, { ReactNode } from "react";
 
 interface Props {

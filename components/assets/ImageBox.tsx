@@ -1,3 +1,4 @@
+// components/assets/ImageBox.tsx
 'use client'
 
 import { Skeleton } from '../shadcn/skeleton'

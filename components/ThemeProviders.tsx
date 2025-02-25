@@ -1,3 +1,5 @@
+// components/ThemeProviders.tsx
+
 'use client'
 
 import siteMetadata from '../public/data/siteMetaData'

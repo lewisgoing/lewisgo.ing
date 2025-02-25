@@ -1,3 +1,4 @@
+// src/pages/about.tsx
 // import Card from '@/components/Card'
 // import projectsData from '@/data/projectsData'
 // import { genPageMetadata } from 'app/seo'

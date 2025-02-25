@@ -1,3 +1,5 @@
+// components/LayoutWrapper.tsx
+
 import { Inter } from 'next/font/google'
 import { ReactNode } from 'react'
 

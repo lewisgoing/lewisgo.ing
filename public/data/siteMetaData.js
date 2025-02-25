@@ -1,3 +1,4 @@
+// public/data/siteMetaData.js
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
     title: 'lewisgo.ing',

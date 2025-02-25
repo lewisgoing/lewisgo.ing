@@ -1,3 +1,4 @@
+// components/boxes/SilhouetteHover.tsx
 import Image from '../assets/ImageBox'
 
 interface SilhouetteHoverProps {

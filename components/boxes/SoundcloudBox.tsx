@@ -1,3 +1,5 @@
+// components/boxes/SoundcloudBox.tsx
+
 import React, { useState } from "react";
 import ExternalLink from "../assets/ExternalLink";
 import { FaSoundcloud } from "react-icons/fa";

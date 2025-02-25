@@ -1,4 +1,5 @@
 // spCode.ts
+// components/boxes/spCode.ts
 export const spCode = (): string => {
     return `
       let audio = input();

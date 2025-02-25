@@ -1,3 +1,4 @@
+//components/boxes/GithubBox.tsx
 import React, { useState } from "react";
 import ExternalLink from "../assets/ExternalLink";
 import { FaGithub } from "react-icons/fa";

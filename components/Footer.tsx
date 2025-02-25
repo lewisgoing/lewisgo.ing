@@ -1,3 +1,5 @@
+// components/Footer.tsx
+
 'use client'
 
 

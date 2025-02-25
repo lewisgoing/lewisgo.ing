@@ -1,3 +1,4 @@
+// components/boxes/SpotifyBox.tsx
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 import { FaSpotify } from "react-icons/fa";

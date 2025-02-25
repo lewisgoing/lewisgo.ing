@@ -1,3 +1,5 @@
+// components/Bento.tsx
+
 "use client";
 
 import ShaderGradientBox from "./boxes/ShaderGradientBox";

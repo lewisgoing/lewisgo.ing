@@ -1,3 +1,4 @@
+// src/context/AudioContextManager.tsx
 class AudioContextManager {
   private static instance: AudioContextManager;
   private audioContext: AudioContext | null = null;

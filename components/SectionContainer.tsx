@@ -1,3 +1,5 @@
+// components/SectionContainer.tsx
+
 import { ReactNode } from 'react'
 
 interface Props {
