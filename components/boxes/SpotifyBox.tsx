@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaSpotify } from "react-icons/fa";
 import ExternalLink from "../assets/ExternalLink";
 
@@ -34,9 +34,11 @@ interface SpotifyBoxProps {
 const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [spotifyData, setSpotifyData] = useState<SpotifyData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Start with false to avoid flash
+  const [showLoadingMessage, setShowLoadingMessage] = useState<boolean>(false);
   const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState<boolean>(false);
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const iconStyle = {
     transition: "color 0.3s ease",
@@ -79,6 +81,24 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     }
   };
 
+  // Delayed loading message
+  const startLoading = () => {
+    setIsLoading(true);
+    // Only show loading message if it takes more than 300ms
+    loadingTimeoutRef.current = setTimeout(() => {
+      setShowLoadingMessage(true);
+    }, 300);
+  };
+
+  const stopLoading = () => {
+    setIsLoading(false);
+    setShowLoadingMessage(false);
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+      loadingTimeoutRef.current = null;
+    }
+  };
+
   // Fetch Spotify data from our API
   const fetchSpotifyData = async () => {
     try {
@@ -91,7 +111,6 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       }
       
       const data = await response.json();
-      addDebug(`API returned data: ${JSON.stringify(data)}`);
       
       // Check if user is currently listening to Spotify
       if (data.listeningToSpotify && data.spotify) {
@@ -123,11 +142,29 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   // Initialize component
   useEffect(() => {
     const initSpotify = async () => {
-      setIsLoading(true);
+      // Start loading state
+      startLoading();
       addDebug('Initializing SpotifyBox component');
       
+      // Pre-check lanyard prop to avoid flash if data is already available
+      if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
+        addDebug('Using immediate lanyard data');
+        setSpotifyData(lanyard.data.spotify);
+        setIsCurrentlyPlaying(true);
+        
+        // Still update KV store in the background
+        updateKVStore(lanyard.data.spotify).then(() => {
+          stopLoading();
+          if (onLoad) onLoad();
+        });
+        
+        // Stop loading immediately since we have data
+        stopLoading();
+        return;
+      }
+      
       try {
-        // First try to get data from our API endpoint
+        // Try to get data from our API endpoint
         const success = await fetchSpotifyData();
         
         if (!success) {
@@ -157,11 +194,18 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       } catch (err: any) {
         addDebug(`Initialization error: ${err.message}`);
       } finally {
-        setIsLoading(false);
+        stopLoading();
       }
     };
     
     initSpotify();
+    
+    // Cleanup on unmount
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
   }, []);
   
   // Handle changes in Lanyard Spotify status
@@ -184,31 +228,50 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     }
   }, [spotifyData, onLoad]);
 
-  if (isLoading) {
-    return <p>Loading Spotify data...</p>;
+  // Placeholder component while loading
+  if (isLoading && showLoadingMessage) {
+    return <div className="flex items-center justify-center h-full">
+      <span className="text-sm text-gray-500">Loading Spotify data...</span>
+    </div>;
   }
   
-  if (!spotifyData) {
+  // If we have no data after loading
+  if (!isLoading && !spotifyData) {
     return (
-      <div>
-        <p>No Spotify data available</p>
-        <details className="text-xs text-gray-500 mt-2">
-          <summary>Debug info</summary>
-          <pre className="whitespace-pre-wrap text-xs">
-            {debugInfo.join('\n')}
-          </pre>
-        </details>
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-sm text-gray-500">No Spotify data available</p>
+        {process.env.NODE_ENV === 'development' && (
+          <details className="text-xs text-gray-500 mt-2">
+            <summary>Debug info</summary>
+            <pre className="whitespace-pre-wrap text-xs">
+              {debugInfo.join('\n')}
+            </pre>
+          </details>
+        )}
       </div>
     );
   }
 
-  const { song, artist, album, album_art_url, track_id } = spotifyData;
+  // Empty placeholder if we're loading without data
+  if (isLoading && !spotifyData) {
+    return <div className="h-full"></div>;
+  }
+
+  // If we have data, show it (even while loading, to avoid flashes)
+  const { song, artist, album, album_art_url, track_id } = spotifyData || {
+    song: "",
+    artist: "",
+    album: "",
+    album_art_url: "",
+    track_id: ""
+  };
 
   return (
     <>
       <div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        className={`transition-opacity duration-300 ${isLoading ? 'opacity-70' : 'opacity-100'}`}
       >
         <div className="flex bento-md:hidden z-[1] bento-lg:flex h-full w-full flex-col justify-between p-6">
           <Image

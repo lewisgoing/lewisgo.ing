@@ -42,6 +42,6 @@
       ".contentlayer/generated",
       ".contentlayer/generated/**/*.json",
       ".next/types/**/*.ts"
-, "../marchWebsite/assets/ShaderParkBoxReactive copy.tsx", "../marchWebsite/assets/ShaderParkBoxReactive.tsx", "../marchWebsite/assets/SpotifyBox copy 2.tsx", "../marchWebsite/assets/SpotifyBox copy.tsx"  ],
+, "../marchWebsite/assets/ShaderParkBoxReactive copy.tsx", "../marchWebsite/assets/ShaderParkBoxReactive.tsx", "../marchWebsite/assets/SpotifyBox copy 2.tsx", "../marchWebsite/assets/SpotifyBox copy.tsx", "src/pages/api/spotify/reset.ss"  ],
   "exclude": ["node_modules"]
 }
