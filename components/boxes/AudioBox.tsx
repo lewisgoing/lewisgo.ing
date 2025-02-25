@@ -16,8 +16,9 @@ import {
   HiForward,
   HiBackward,
 } from "react-icons/hi2";
-import { FaCompactDisc } from "react-icons/fa";
-import { ExternalLink, Volume2, VolumeX } from "lucide-react";
+import { FaCompactDisc, FaSoundcloud } from "react-icons/fa";
+import { ExternalLink } from "lucide-react";
+import ExternalLinkComponent from "../assets/ExternalLink"
 
 // Lazy load the Lottie component with explicit props type
 const LottiePlayPauseWithNoSSR = dynamic(
@@ -25,8 +26,11 @@ const LottiePlayPauseWithNoSSR = dynamic(
   { 
     ssr: false,
     loading: () => (
-      <div className="w-10 h-10 flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-primary border-t-transparent animate-spin"></div>
+      <div className="w-10 h-10 flex items-center justify-center opacity-80">
+        <div className="w-6 h-6 text-primary">
+          {/* Simple play/pause placeholder instead of spinner */}
+          ▶
+        </div>
       </div>
     )
   }
@@ -51,7 +55,8 @@ const progressBarStyle: CSSProperties = {
 
 const progressBarHoverStyle: CSSProperties = {
   ...progressBarStyle,
-  height: "5px"
+  height: "5px",
+  backgroundColor: "#a0a0a0"
 };
 
 const progressIndicatorStyle = (percentage: number): CSSProperties => ({
@@ -63,15 +68,17 @@ const progressIndicatorStyle = (percentage: number): CSSProperties => ({
   backgroundColor: "#FFFFFF",
 });
 
-const dotIndicatorStyle = (percentage: number): CSSProperties => ({
+const dotIndicatorStyle = (percentage: number, isHovered: boolean): CSSProperties => ({
   position: "absolute",
-  top: "0px",
+  top: "50%",
   left: `${percentage}%`,
-  transform: "translateX(-50%)",
-  width: "4px",
-  height: "4px",
+  transform: "translate(-50%, -50%)",
+  width: isHovered ? "8px" : "5px",
+  height: isHovered ? "8px" : "5px",
   borderRadius: "50%",
   backgroundColor: "#FFFFFF",
+  transition: "width 0.2s ease, height 0.2s ease",
+  boxShadow: isHovered ? "0 0 3px rgba(255, 255, 255, 0.7)" : "none"
 });
 
 interface Song {
@@ -95,6 +102,18 @@ const AudioBox = () => {
   const [isPlayButtonHovered, setIsPlayButtonHovered] = useState(false);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const lottieRef = useRef<any>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Hover styles
+  const imageStyle = isHovered
+    ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
+    : { filter: 'grayscale(1)', transition: 'filter 0.3s ease' };
+
+  const iconStyle = {
+    transition: "color 0.3s ease",
+    color: isHovered ? "#ff7700" : "#e5d3b8",
+  };
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -128,7 +147,7 @@ const AudioBox = () => {
       },
       {
         title: "New Paths",
-        artist: "Pradaalife produced by lewisgoing",
+        artist: "Pradaaslife produced by lewisgoing",
         albumCoverUrl: "/albumart/newpaths.jpeg",
         audioSrc: "./audio/newpaths.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/newpaths?si=cd069d336dcf4059840ede43a5d69a47&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -314,10 +333,28 @@ const AudioBox = () => {
     }
   }, [isPlaying]);
 
-  // Toggle play/pause - Simplified to ensure direct state change
+  // Toggle play/pause with animation control
   const togglePlay = useCallback(() => {
-    setIsPlaying(prevState => !prevState);
-  }, []);
+    // Direct audio control
+    const audio = audioElementRef.current;
+    if (audio) {
+      if (isPlaying) {
+        audio.pause();
+      } else {
+        audio.play().catch(error => {
+          console.error('Error playing audio:', error);
+        });
+      }
+    }
+
+    // Update playing state
+    setIsPlaying(prev => !prev);
+    
+    // If we have a reference to the Lottie component, ensure animation state matches
+    if (lottieRef.current && typeof lottieRef.current.setPlaying === 'function') {
+      lottieRef.current.setPlaying(!isPlaying);
+    }
+  }, [isPlaying]);
 
   // Skip to next track
   const skipToNextTrack = useCallback(() => {
@@ -379,64 +416,117 @@ const AudioBox = () => {
 
   return (
     <>
-      <style jsx global>{`
-        ${noGrabStyles}
-        
-        /* Only disable dragging on interactive elements */
-        .react-grid-item button,
-        .react-grid-item .drag-blocker {
-          pointer-events: auto !important;
-        }
-      `}</style>
-      {/* Desktop Styles */}
-      <div className="hidden bento-md:hidden bento-lg:flex relative w-full h-full flex-col">
-        {/* Top Bar */}
-        <div className="absolute left-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"></div>
-        <button 
-          onClick={toggleMute} 
-          onMouseDown={preventDrag}
-          className="absolute right-0 top-0 z-[1] w-10 h-10 flex items-center justify-center m-2 bg-tertiary/40 cursor-pointer no-drag drag-blocker rounded-full"
-        >
-          {isMuted ? (
-            <VolumeX size={22} className="text-primary hover:text-blue-400 transition-colors" />
-          ) : (
-            <Volume2 size={22} className="text-primary hover:text-blue-400 transition-colors" />
-          )}
-        </button>
+      <div 
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`transition-all duration-500 ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+      >
+        {/* Desktop Layout */}
+        <div className="flex bento-md:hidden z-[1] bento-lg:flex h-full w-full flex-col justify-between p-6 mt-2">
+          <NextImage
+            src={currentSong.albumCoverUrl}
+            alt="Album art"
+            width={0}
+            height={0}
+            className="mb-2 w-[55%] rounded-xl border border-border"
+            unoptimized
+            style={imageStyle}
+          />
+          <div className="flex flex-col">
+            <span className="text-md mb-1 line-clamp-2 font-bold leading-none">
+              {currentSong.title}
+            </span>
+            <span className="line-clamp-1 text-xs text-muted-foreground mb-2">
+              <span className="text-secondary-foreground font-semibold">by</span>{" "}
+              {currentSong.artist}
+            </span>
 
-        <div className="w-full h-[30px] flex-shrink-0" />
-        <div className="flex flex-col h-full justify-between p-5 pt-0 pb-12">
-          {/* Middle Elements */}
-          {/* Album Cover and Song Info */}
-          <div className="flex flex-col h-full items-center justify-between mt-0">
-            <div className="relative mb-3">
-              <NextImage
-                src={currentSong.albumCoverUrl}
-                alt={currentSong.title}
-                width={120}
-                height={120}
-                className="rounded-xl object-cover border border-border"
-                priority={currentTrackIndex === 0} // Prioritize first album art
-                unoptimized
-              />
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
-                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            {/* Progress Bar */}
+            <div className="w-full">
+              <div style={progressBarContainerStyle} className="no-drag drag-blocker">
+                <div 
+                  style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
+                  onClick={handleProgressBarClick}
+                  onMouseDown={preventDrag}
+                  onMouseEnter={() => setIsProgressBarHovered(true)}
+                  onMouseLeave={() => setIsProgressBarHovered(false)}
+                  className="w-full"
+                >
+                  <div style={progressIndicatorStyle(progressPercentage)}></div>
+                  <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
                 </div>
-              )}
+              </div>
+              
+              {/* Time Display */}
+              <div className="flex justify-between text-[12px] text-muted-foreground">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+
+              {/* Playback Controls */}
+              <div className="flex justify-center items-center gap-3 w-full h-full">
+                <button 
+                  onClick={playLastTrack}
+                  className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
+                  // onMouseDown={preventDrag}
+                >
+                  <HiBackward size={42} className="text-primary" style={{cursor: "pointer"}}/>
+                </button>
+                
+                <button 
+                  className="cursor-pointer no-drag drag-blocker relative transition-transform duration-200 ease-in-out hover:brightness-125"
+                  onClick={togglePlay}
+                  onMouseDown={preventDrag}
+                  onMouseEnter={() => setIsPlayButtonHovered(true)}
+                  onMouseLeave={() => setIsPlayButtonHovered(false)}
+                  style={{ 
+                    transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                >
+                  <Suspense fallback={<div className="w-12 h-12 flex items-center justify-center">▶</div>}>
+                    <LottiePlayPauseWithNoSSR
+                      ref={lottieRef}
+                      togglePlay={togglePlay}
+                      isPlaying={isPlaying}
+                      isDark={isDark}
+                    />
+                  </Suspense>
+                </button>
+                
+                <button 
+                  onClick={skipToNextTrack}
+                  className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
+                  onMouseDown={preventDrag}
+                >
+                  <HiForward size={42} className="text-primary" style={{cursor: "pointer"}}/>
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col w-full mb-2">
-              <div className="text-md line-clamp-2 font-bold leading-tight">
-                {currentSong.title}
-              </div>
-              <div className="line-clamp-1 w-[85%] text-xs text-muted-foreground">
-                <span className="text-secondary-foreground font-semibold">by</span>{" "}
-                {currentSong.artist}
-              </div>
+          </div>
+        </div>
+
+        {/* Tablet Layout */}
+        <div className="hidden bento-md:flex z-[1] bento-lg:hidden h-full w-full px-4 items-center gap-4">
+          <NextImage
+            src={currentSong.albumCoverUrl}
+            alt="Album art"
+            width={0}
+            height={0}
+            className="w-32 rounded-xl border border-border"
+            unoptimized
+            style={imageStyle}
+          />
+          <div className="flex flex-col w-[42%]">
+            <div className="text-md mb-2 line-clamp-3 font-bold leading-none">
+              {currentSong.title}
+            </div>
+            <div className="line-clamp-2 text-xs text-muted-foreground mb-2">
+              <span className="text-secondary-foreground font-semibold">by</span>{" "}
+              {currentSong.artist}
             </div>
 
-            {/* Song duration and progress bar */}
-            <div className="text-sm w-full rounded-lg mt-0">
+            {/* Progress Bar */}
+            <div className="w-full mb-2">
               <div style={progressBarContainerStyle} className="no-drag drag-blocker mb-1">
                 <div 
                   style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
@@ -447,206 +537,165 @@ const AudioBox = () => {
                   className="w-full"
                 >
                   <div style={progressIndicatorStyle(progressPercentage)}></div>
-                  <div style={dotIndicatorStyle(progressPercentage)}></div>
+                  <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
                 </div>
               </div>
-              <div className="flex flex-row justify-between items-center w-full mb-0">
-                <div className="text-[12px] text-muted-foreground">
-                  {formatTime(currentTime)}
-                </div>
-                <div className="text-[12px] text-muted-foreground">
-                  {formatTime(duration)}
-                </div>
-              </div>
-            </div>
-            {/* Buttons */}
-            <div className="flex flex-row w-full h-full rounded-lg items-center justify-between gap-1 mt-0">
-              <div className="flex grow justify-center rounded-lg">
-                <button className="info-icon cursor-pointer no-drag drag-blocker pb-1 pl-1 pr-1" onMouseDown={preventDrag}>
-                  <FaCompactDisc
-                    size={28}
-                    className="text-primary"
-                    style={{
-                      animation: "spin 2s linear infinite",
-                      animationPlayState: isPlaying ? "running" : "paused",
-                    }}
-                  />
-                </button>
-              </div>
-              {/* Back */}
-              <div className="flex grow justify-center" onClick={playLastTrack} onMouseDown={preventDrag}>
-                <button className="cursor-pointer no-drag pb-1 pl-1 pr-1 drag-blocker">
-                  <HiBackward size={36} className="text-primary" />
-                </button>
+              
+              {/* Time Display */}
+              <div className="flex justify-between text-[12px] text-muted-foreground mb-2">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
               </div>
 
-              {/* Play/Pause */}
-              <div className="flex grow justify-center" onMouseDown={preventDrag}>
+              {/* Playback Controls */}
+              <div className="flex space-x-4">
                 <button 
-                  className="no-drag pb-1 pl-1 pr-1 drag-blocker relative"
+                  className="cursor-pointer no-drag p-1 drag-blocker transition-all duration-200 hover:brightness-125" 
+                  onClick={playLastTrack} 
+                  onMouseDown={preventDrag}
+                >
+                  <HiBackward size={24} className="text-primary" />
+                </button>
+                
+                <button 
+                  className="no-drag p-1 drag-blocker transition-all duration-200 ease-in-out hover:brightness-125" 
+                  onClick={togglePlay} 
+                  onMouseDown={preventDrag}
                   onMouseEnter={() => setIsPlayButtonHovered(true)}
                   onMouseLeave={() => setIsPlayButtonHovered(false)}
-                  onClick={togglePlay}
+                  style={{ 
+                    transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
+                  }}
                 >
-                  <Suspense fallback={<div className="w-12 h-12 flex items-center justify-center">
-                    <div className="w-6 h-6 border-2 border-primary border-t-transparent animate-spin"></div>
-                  </div>}>
+                  <Suspense fallback={<div className="w-8 h-8 flex items-center justify-center text-primary">▶</div>}>
                     <LottiePlayPauseWithNoSSR
+                      ref={lottieRef}
                       togglePlay={togglePlay}
                       isPlaying={isPlaying}
                       isDark={isDark}
                     />
                   </Suspense>
-                  {isPlayButtonHovered && (
-                    <div className="absolute inset-0 bg-blue-400 bg-opacity-30 rounded-full" style={{ mixBlendMode: 'overlay' }}></div>
-                  )}
                 </button>
-              </div>
-
-              {/* Next */}
-              <div className="flex grow justify-center" onMouseDown={preventDrag}>
-                <button onClick={skipToNextTrack} className="cursor-pointer no-drag pb-1 pl-1 pr-1 drag-blocker">
-                  <HiForward
-                    size={36}
-                    className="text-primary"
-                  />
-                </button>
-              </div>
-
-              <div className="flex grow justify-center" onMouseDown={preventDrag}>
-                <button className="info-icon cursor-pointer no-drag pb-1 pl-1 pr-1 drag-blocker" onClick={handleSongLinkClick}>
-                  {songs[currentTrackIndex].audioLink ? (
-                    <div className="cursor-pointer">
-                      <ExternalLink size={24} className="text-primary hover:text-blue-400 transition-colors" />
-                    </div>
-                  ) : (
-                    <div>
-                      <ExternalLink size={24} className="text-gray-400" />
-                    </div>
-                  )}
+                
+                <button 
+                  className="cursor-pointer no-drag p-1 drag-blocker transition-all duration-200 hover:brightness-125" 
+                  onClick={skipToNextTrack} 
+                  onMouseDown={preventDrag}
+                >
+                  <HiForward size={24} className="text-primary" />
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Tablet Styles */}
-      <div className="hidden bento-md:flex bento-lg:hidden relative w-full h-full items-center px-4 gap-4">
-        <div className="relative">
-          <NextImage
-            src={currentSong.albumCoverUrl}
-            alt={currentSong.title}
-            width={120}
-            height={120}
-            className="w-32 rounded-xl border border-border object-cover"
-            unoptimized
-            priority={currentTrackIndex === 0}
-          />
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col w-[42%]">
-          <div className="text-md mb-2 line-clamp-3 font-bold leading-none">
-            {currentSong.title}
-          </div>
-          <div className="line-clamp-2 w-[85%] text-xs text-muted-foreground">
-            <span className="text-secondary-foreground font-semibold">by</span>{" "}
-            {currentSong.artist}
-          </div>
-          
-          <div className="flex mt-3 space-x-4">
-            <button className="cursor-pointer no-drag p-1 drag-blocker" onClick={playLastTrack} onMouseDown={preventDrag}>
-              <HiBackward size={24} className="text-primary" />
-            </button>
-            
-            <button 
-              className="no-drag p-1 drag-blocker" 
-              onClick={togglePlay} 
-              onMouseDown={preventDrag}
-            >
-              <Suspense fallback={<div className="w-8 h-8 flex items-center justify-center">
-                <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin"></div>
-              </div>}>
-                <LottiePlayPauseWithNoSSR
-                  togglePlay={togglePlay}
-                  isPlaying={isPlaying}
-                  isDark={isDark}
+
+        {/* Mobile Layout */}
+        <div className="bento-md:hidden relative w-full h-full flex flex-col">
+          <div className="m-2 flex flex-col items-center">
+            <div className="flex flex-col items-center gap-2 mt-4">
+              <div className="relative">
+                <NextImage
+                  src={currentSong.albumCoverUrl}
+                  alt={currentSong.title}
+                  width={80}
+                  height={80}
+                  className={`rounded-xl object-cover ${isLoading ? 'opacity-70' : 'opacity-100'} transition-opacity`}
+                  priority={currentTrackIndex === 0}
+                  style={imageStyle}
                 />
-              </Suspense>
-            </button>
-            
-            <button className="cursor-pointer no-drag p-1 drag-blocker" onClick={skipToNextTrack} onMouseDown={preventDrag}>
-              <HiForward size={24} className="text-primary" />
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      {/* Mobile Styles */}
-      <div className="bento-md:hidden relative w-full h-full flex flex-col">
-        <div className="m-2">
-          {/* Album Cover and Song Info centered at the top */}
-          <div className="flex flex-col items-center gap-1 mb-10">
-            <div className="relative">
-              <NextImage
-                src={currentSong.albumCoverUrl}
-                alt={currentSong.title}
-                width={80}
-                height={80}
-                className={`rounded-xl object-cover ${isLoading ? 'opacity-70' : 'opacity-100'} transition-opacity`}
-                priority={currentTrackIndex === 0}
-              />
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-xl">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="text-center mt-2">
+                <div className="font-bold text-md">{currentSong.title}</div>
+                <div className="text-xs text-muted-foreground">{currentSong.artist}</div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full my-3">
+                <div className="no-drag drag-blocker" style={progressBarContainerStyle}>
+                  <div 
+                    style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
+                    onClick={handleProgressBarClick}
+                    onMouseDown={preventDrag}
+                    onMouseEnter={() => setIsProgressBarHovered(true)}
+                    onMouseLeave={() => setIsProgressBarHovered(false)}
+                    className="w-full"
+                  >
+                    <div style={progressIndicatorStyle(progressPercentage)}></div>
+                    <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
+                  </div>
                 </div>
-              )}
-            </div>
-            <button 
-              onClick={togglePlay} 
-              onMouseDown={preventDrag} 
-              onMouseEnter={() => setIsPlayButtonHovered(true)}
-              onMouseLeave={() => setIsPlayButtonHovered(false)}
-              className="absolute top-[26px] left-1/2 transform -translate-x-1/2 no-drag drag-blocker z-10 relative"
-            >
-              <Suspense fallback={<div className="w-10 h-10"></div>}>
-                <LottiePlayPauseWithNoSSR
-                  togglePlay={togglePlay}
-                  isPlaying={isPlaying}
-                  isDark={isDark}
-                />
-              </Suspense>
-              {isPlayButtonHovered && (
-                <div className="absolute inset-0 bg-blue-400 bg-opacity-30 rounded-full" style={{ mixBlendMode: 'overlay' }}></div>
-              )}
-            </button>
-            <div className="text-center">
-              <div className="font-bold text-lg bento-sm:text-sm">{currentSong.title}</div>
-              <div className="text-sm text-muted-foreground bento-sm:text-xs">{currentSong.artist}</div>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="mx-1 -mt-1 mb-10">
-            <div className="my-2 sm:my-2 no-drag drag-blocker" style={progressBarContainerStyle}>
-              <div 
-                style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
-                onClick={handleProgressBarClick}
-                onMouseDown={preventDrag}
-                onMouseEnter={() => setIsProgressBarHovered(true)}
-                onMouseLeave={() => setIsProgressBarHovered(false)}
-                className="w-full"
-              >
-                <div style={progressIndicatorStyle(progressPercentage)}></div>
-                <div style={dotIndicatorStyle(progressPercentage)}></div>
+                
+                {/* Time Display */}
+                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <span>{formatTime(currentTime)}</span>
+                  <span>{formatTime(duration)}</span>
+                </div>
+              </div>
+              
+              {/* Playback Controls */}
+              <div className="flex justify-center items-center gap-4">
+                <button 
+                  onClick={playLastTrack}
+                  className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
+                  onMouseDown={preventDrag}
+                >
+                  <HiBackward size={24} className="text-primary" />
+                </button>
+                
+                <button 
+                  onClick={togglePlay} 
+                  onMouseDown={preventDrag} 
+                  onMouseEnter={() => setIsPlayButtonHovered(true)}
+                  onMouseLeave={() => setIsPlayButtonHovered(false)}
+                  className="no-drag drag-blocker z-10 relative transition-all duration-200 ease-in-out hover:brightness-125"
+                  style={{ 
+                    transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                >
+                  <Suspense fallback={<div className="w-10 h-10 flex items-center justify-center text-primary">▶</div>}>
+                    <LottiePlayPauseWithNoSSR
+                      ref={lottieRef}
+                      togglePlay={togglePlay}
+                      isPlaying={isPlaying}
+                      isDark={isDark}
+                    />
+                  </Suspense>
+                </button>
+                
+                <button 
+                  onClick={skipToNextTrack}
+                  className="cursor-picker no-drag drag-blocker transition-all duration-200 hover:brightness-125"
+                  onMouseDown={preventDrag}
+                >
+                  <HiForward size={24} className="text-primary" />
+                </button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* SoundCloud Logo in top right for all layouts */}
+        <div 
+          className="absolute right-0 top-0 z-[1] p-3"
+        >
+          <FaSoundcloud 
+            size={56} 
+            className="text-primary transition-colors hover:text-[#ff7700] mb-10" 
+            style={iconStyle}
+          />
+          {/* <ExternalLinkComponent href={songs[currentTrackIndex].audioLink}/> */}
+        </div>
+
+        {/* External Link in bottom right */}
+        {songs[currentTrackIndex].audioLink && (
+          <ExternalLinkComponent href={songs[currentTrackIndex].audioLink} />
+        )}
       </div>
     </>
   );

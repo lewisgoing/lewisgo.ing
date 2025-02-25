@@ -1,30 +1,54 @@
 // components/LottiePlayPauseButton.tsx
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
-import lottieDarkSrc from "../public/lottie-light.json";
-import lottieLightSrc from "../public/lottie-light-old.json";
+import lottieDarkSrc from "../public/lottie-dark.json";
+import lottieLightSrc from "../public/lottie-light.json";
 
-const LottiePlayPauseButton: React.FC<{
-  isDark: boolean,
-  isPlaying: boolean,
-  togglePlay: () => void
-}> = ({ isDark, isPlaying, togglePlay }) => {
+interface LottiePlayPauseButtonProps {
+  isDark: boolean;
+  isPlaying: boolean;
+  togglePlay: () => void;
+}
+
+const LottiePlayPauseButton = forwardRef<
+  { setPlaying: (isPlaying: boolean) => void },
+  LottiePlayPauseButtonProps
+>(({ isDark, isPlaying, togglePlay }, ref) => {
   const playerRef = useRef<Player>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   // Choose the correct Lottie animation based on theme
   const lottieSrc = isDark ? lottieDarkSrc : lottieLightSrc;
 
-  // Control play and pause based on isPlaying prop
+  // Expose methods to parent component via ref
+  useImperativeHandle(ref, () => ({
+    setPlaying: (playing: boolean) => {
+      const player = playerRef.current;
+      if (!player) return;
+      
+      if (playing) {
+        player.setPlayerDirection(1);
+        player.play();
+      } else {
+        player.setPlayerDirection(-1);
+        player.play();
+      }
+    }
+  }));
+
+  // Handle animation direction based on playing state
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
-
+    
+    // Directly play or pause the animation based on isPlaying
     if (isPlaying) {
+      // Ensure the animation plays from the beginning when played
+      player.setPlayerDirection(1);
       player.play();
     } else {
-      player.pause();
+      player.setPlayerDirection(-1);
+      player.play();
     }
   }, [isPlaying]);
 
@@ -37,7 +61,6 @@ const LottiePlayPauseButton: React.FC<{
 
   return (
     <div 
-      ref={containerRef}
       onClick={handleClick} 
       onMouseDown={(e) => {
         e.preventDefault();
@@ -53,6 +76,7 @@ const LottiePlayPauseButton: React.FC<{
         userSelect: 'none',
         WebkitUserSelect: 'none',
       }}
+      className="transition-all duration-200 hover:brightness-125"
     >
       <Player
         ref={playerRef}
@@ -64,6 +88,8 @@ const LottiePlayPauseButton: React.FC<{
       />
     </div>
   );
-};
+});
+
+LottiePlayPauseButton.displayName = 'LottiePlayPauseButton';
 
 export default LottiePlayPauseButton;
