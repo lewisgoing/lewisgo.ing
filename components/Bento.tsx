@@ -347,10 +347,10 @@ export default function Bento() {
                 className={`rounded-3xl object-cover transition-opacity duration-300 skeleton rounded-3xl`}
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
-            positionX={0}
+            positionX={1}
             positionY={0}
-            positionZ={0}
-            rotationX={0} // Ensure the gradient does not rotate in response to user clicks.
+            positionZ={2}
+            rotationX={1} // Ensure the gradient does not rotate in response to user clicks.
             rotationY={10}
             rotationZ={50}
             // color1="#893D63"
