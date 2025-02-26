@@ -1,54 +1,31 @@
-// components/Bento.tsx
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { useLanyard } from "react-use-lanyard";
 import { Skeleton } from "./shadcn/skeleton";
+import dynamic from "next/dynamic";
 
 // Component imports
 import Image from "./assets/ImageBox";
-import ShaderGradientBox from "./boxes/ShaderGradientBox";
+// Use the simple gradient component instead of ShaderGradient
+import SimpleGradient from "./SimpleGradient";
 import AudioBox from "./boxes/AudioBox";
 import DiscordPresence from "./boxes/DiscordStatusBox";
 import GithubBox from "./boxes/GithubBox";
 import GithubCalendar from "./boxes/GithubCalendar";
-import SkillsBox from "./boxes/SkillsBox";
+// Handle SkillsBox tooltip issue by dynamically importing it
+const SkillsBox = dynamic(() => import("./boxes/SkillsBox"), {
+  ssr: false,
+  loading: () => <Skeleton className="w-full h-full rounded-3xl" />
+});
 import SoundcloudBox from "./boxes/SoundcloudBox";
-import SpotifyStatusBox from "./boxes/SpotifyBox";
+
+// Import the server component from app directory as a client component
+import SpotifyBox from "components/spotify/SpotifyBox"; 
 
 // Layout utilities
 import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
-
-// TypeScript interfaces
-interface DiscordUser {
-  id: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-  bot: boolean;
-  // Add other properties as needed
-}
-
-interface LanyardData {
-  active_on_discord_desktop: boolean;
-  active_on_discord_mobile: boolean;
-  active_on_discord_web: boolean;
-  activities: any[]; // Adjust the type according to your data structure
-  discord_status: string; // Include discord_status here
-  discord_user: DiscordUser;
-  kv: {
-    spotify_last_played: string; // or any other type as per your data structure
-  };
-  listening_to_spotify: boolean;
-  spotify: null; // or the correct type if spotify data is available
-}
-
-interface LanyardResponse {
-  data: LanyardData;
-  // Include any other top-level properties of the Lanyard response
-}
 
 // Apply WidthProvider to Responsive Grid Layout
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -107,6 +84,20 @@ export default function Bento() {
     };
   }, []);
 
+  // Only render after client-side hydration to avoid errors
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <ResponsiveGridLayout
       className="mx-auto max-w-[375px] bento-md:max-w-[800px] bento-lg:max-w-[1200px]"
@@ -127,44 +118,18 @@ export default function Bento() {
         handleDragStop(element)
       }
     >
-      {/* Intro Box with Shader Gradient */}
+      {/* Intro Box with Simple Gradient */}
       <div key="intro" className="relative">
-        <ShaderGradientBox
-          className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
-          animate="on"
-          control="props"
-          positionX={0}
-          positionY={0}
-          positionZ={0}
-          rotationX={0}
-          rotationY={10}
-          rotationZ={50}
+        <SimpleGradient
+          className="rounded-3xl"
           color1="#FF0006"
           color2="#003FFF"
           color3="#4AA6FF"
-          wireframe={false}
-          shader="defaults"
           type="sphere"
-          uAmplitude={1.4}
-          uDensity={1.2}
-          uFrequency={1.5}
-          uSpeed={0.04}
-          uStrength={1.4}
-          cDistance={10}
-          cameraZoom={20}
-          cAzimuthAngle={0}
-          cPolarAngle={90}
-          uTime={2}
-          lightType="3d"
-          envPreset="dawn"
-          reflection={0.4}
-          brightness={1.9}
-          grain="off"
-          toggleAxis={false}
-          hoverState="off"
+          animate="on"
         />
         
-        {/* SVG Overlay - placed after ShaderGradientBox to appear on top */}
+        {/* SVG Overlay */}
         <Image
           src="/svg/lewis-card-hover-4.svg"
           alt="Bento Intro Silhouette"
@@ -174,7 +139,6 @@ export default function Bento() {
           noRelative
           unoptimized
           priority
-          
         />
       </div>
 
@@ -190,39 +154,13 @@ export default function Bento() {
 
       {/* Tall Gradient Box */}
       <div key="tall-gradient" className="h-full w-full overflow-hidden">
-        <ShaderGradientBox
-          className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
-          animate="on"
-          control="props"
-          positionX={1}
-          positionY={0}
-          positionZ={2}
-          rotationX={1}
-          rotationY={10}
-          rotationZ={50}
+        <SimpleGradient
+          className="rounded-3xl"
           color1="#FF0006"
           color2="#003FFF"
           color3="#4AA6FF"
-          wireframe={false}
-          shader="defaults"
           type="plane"
-          uAmplitude={1.4}
-          uDensity={1.2}
-          uFrequency={1.5}
-          uSpeed={0.08}
-          uStrength={1.4}
-          cDistance={10}
-          cameraZoom={29}
-          cAzimuthAngle={30}
-          cPolarAngle={90}
-          uTime={2}
-          lightType="3d"
-          envPreset="dawn"
-          reflection={0.4}
-          brightness={1.5}
-          grain="off"
-          toggleAxis={false}
-          hoverState="off"
+          animate="on"
         />
       </div>
 
@@ -266,10 +204,13 @@ export default function Bento() {
         onMouseLeave={() => setIntroSilhouette(false)}
       >
         {lanyard.data && !lanyard.isValidating ? (
-          <SpotifyStatusBox
-            lanyard={lanyard.data}
-            onLoad={() => setIsSpotifyLoaded(true)}
-          />
+          <Suspense fallback={<Skeleton className="w-full h-full rounded-3xl z-[1]" />}>
+            {/* @ts-expect-error Server Component */}
+            <SpotifyBox
+              lanyard={lanyard.data}
+              onLoad={() => setIsSpotifyLoaded(true)}
+            />
+          </Suspense>
         ) : (
           <Skeleton className="w-full h-full rounded-3xl z-[1]" />
         )}

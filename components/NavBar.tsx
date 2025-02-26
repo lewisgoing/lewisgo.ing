@@ -1,36 +1,32 @@
-// components/NavBar.tsx
+'use client';
 
-'use client'
+import headerNavLinks from '../public/data/headerNavLinks';
+import siteMetadata from '../public/data/siteMetaData';
+import { cn } from '../scripts/utils/tailwind-helpers';
+import NextImage from 'next/image';
+import { useEffect, useState } from 'react';
 
-import headerNavLinks from '../public/data/headerNavLinks'
-import siteMetadata from 'public/data/siteMetaData'
-import { cn } from '../scripts/utils/tailwind-helpers'
-import NextImage from 'next/image'
-import { useEffect, useState } from 'react'
-
-import Link from './assets/Link'
-// import MobileNav from './MobileNav'
-// import SearchButton from './SearchButton'
-import ThemeSwitch from './assets/ThemeSwitch'
-import { Button } from './shadcn/button'
+import Link from './assets/Link';
+import ThemeSwitch from './assets/ThemeSwitch';
+import { Button } from './shadcn/button';
 
 const NavBar = () => {
-    const logo = './logo.png'
-    const [isScrolled, setIsScrolled] = useState(false)
+    const logo = '/logo.png';
+    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const changeBackground = () => {
             if (window.scrollY > 10) {
-                setIsScrolled(true)
+                setIsScrolled(true);
             } else {
-                setIsScrolled(false)
+                setIsScrolled(false);
             }
-        }
+        };
 
-        document.addEventListener('scroll', changeBackground)
+        document.addEventListener('scroll', changeBackground);
 
-        return () => document.removeEventListener('scroll', changeBackground)
-    }, [])
+        return () => document.removeEventListener('scroll', changeBackground);
+    }, []);
 
     return (
         <header
@@ -43,7 +39,7 @@ const NavBar = () => {
                 <div>
                     <Link href="/" aria-label={siteMetadata.headerTitle}>
                         <div className="flex items-center justify-between">
-                            <NextImage src={logo} alt="Logo" width="40" height="40" unoptimized  />
+                            <NextImage src={logo} alt="Logo" width={40} height={40} unoptimized />
                             <p className="px-3 py-2 text-md font-medium text-muted-foreground hover:text-foreground">lewis<i>going</i></p>
                         </div>
                     </Link>
@@ -56,23 +52,18 @@ const NavBar = () => {
                                     variant="ghost"
                                     className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                                 >
-                                    <Link
-                                        // className="rounded px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-300 hover:bg-secondary hover:brightness-125"
-                                        href={link.href}
-                                    >
+                                    <Link href={link.href}>
                                         {link.title}
                                     </Link>
                                 </Button>
                             </li>
                         ))}
                     </ul>
-                    {/* <SearchButton /> */}
-                    {/* <ThemeSwitch /> */}
-                    {/* <MobileNav /> */}
+                    <ThemeSwitch />
                 </div>
             </div>
         </header>
-    )
-}
+    );
+};
 
-export default NavBar
+export default NavBar;

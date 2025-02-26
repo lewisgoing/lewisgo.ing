@@ -2,27 +2,34 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: [
+      'api.lanyard.rest',
+      'cdn.discordapp.com',
+      'i.scdn.co', // For Spotify images
+    ],
+  },
   webpack(config) {
-    config.resolve.fallback = { fs: false, net: false, tls: false };
     config.module.rules.push({
       test: /\.svg$/,
-      use: [{ loader: "@svgr/webpack", options: { icon: true } }],
+      use: ["@svgr/webpack"]
     });
     return config;
   },
-  images: {
-    domains: [
-      "api.lanyard.rest",
-      "cdn.discordapp.com",
-      "pbs.twimg.com",
-      "i.scdn.co",
-      "www.gravatar.com",
-      "avatars.githubusercontent.com",
-    ],
-  },
   experimental: {
+    // Enable App Router features
+    // appDir: true,
+    // Enable NextJS 15 caching features
+    dynamicIO: true,
     useCache: true,
-  }
+    cacheLife: {
+      spotify: {
+        stale: 300,     // 5 minutes
+        revalidate: 60, // 1 minute
+        expire: 3600,   // 1 hour
+      },
+    },
+  },
 };
 
 module.exports = nextConfig;

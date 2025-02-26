@@ -1,5 +1,6 @@
-import React from "react";
+'use client';
 
+import React from "react";
 import { FaPython } from "react-icons/fa";
 import { FaJava } from "react-icons/fa";
 import { SiNextdotjs } from "react-icons/si";
@@ -16,12 +17,9 @@ import { SiPowerautomate } from "react-icons/si";
 import { FaMarkdown } from "react-icons/fa";
 import { SiGnubash } from "react-icons/si";
 import { FaSmileBeam } from "react-icons/fa";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from '../shadcn/tooltip'
+
+// Fixed version that doesn't use Tooltip components to avoid React 19 ref issues
+// Instead, we use regular HTML title attributes
 
 // Prepare your icons in an array for easy mapping
 const icons = [
@@ -45,55 +43,51 @@ const icons = [
 
 const SkillsBox = () => {
     return (
-        <TooltipProvider>
-            <div className="grid grid-cols-4 
-                            bento-sm:grid-cols-4 
-                            bento-md:grid-cols-8
-                            lg: grid-cols-4
-                            
-                            bento-lg:grid-cols-8 
-                            xl:grid-cols-4 
-                            gap-2 
-                            sm: gap-4
-                            md:gap-1 
-                            xl:gap-4
-                            overflow-hidden 
-                            transition-all 
-                            duration-300">
-                {icons.map(({ Icon, description }, index) => (
-                    <Tooltip key={index}>
-                        <TooltipTrigger asChild>
-                            <div className="bg-tertiary/50 
-                                            rounded-3xl 
-                                            flex 
-                                            justify-center 
-                                            items-center 
-                                            p-2
-                                            sm:p-4
-                                            md:p-2 
-                                            xl:p-3
-                                            transition-all 
-                                            duration-300 
-                                            grayscale 
-                                            xl:mt-0
-                                            xl:mb-0
-                                            lg:mt-1
-                                            lg:mb-1
-                                            md:mt-1
-                                            md:mb-1
-                                            sm:mt-0
-                                            sm:mb-0
-                                            hover:bg-tertiary 
-                                            hover:grayscale-0">
-                                <Icon size={24} className="text-primary sm:h-full sm:w-full md:w-6 md:h-12  lg:w-6 lg:h-12 xl:w-full xl:h-full"/>                            </div>
-                        </TooltipTrigger>
-                        <TooltipContent className="z-50 overflow-visible" side="top" align="center">
-                            <span>{description}</span>
-                        </TooltipContent>
-                    </Tooltip>
-                ))}
-            </div>
-        </TooltipProvider>
+        <div className="grid grid-cols-4 
+                        bento-sm:grid-cols-4 
+                        bento-md:grid-cols-8
+                        lg: grid-cols-4
+                        
+                        bento-lg:grid-cols-8 
+                        xl:grid-cols-4 
+                        gap-2 
+                        sm: gap-4
+                        md:gap-1 
+                        xl:gap-4
+                        overflow-hidden 
+                        transition-all 
+                        duration-300">
+            {icons.map(({ Icon, description }, index) => (
+                <div 
+                    key={index}
+                    className="bg-tertiary/50 
+                                rounded-3xl 
+                                flex 
+                                justify-center 
+                                items-center 
+                                p-2
+                                sm:p-4
+                                md:p-2 
+                                xl:p-3
+                                transition-all 
+                                duration-300 
+                                grayscale 
+                                xl:mt-0
+                                xl:mb-0
+                                lg:mt-1
+                                lg:mb-1
+                                md:mt-1
+                                md:mb-1
+                                sm:mt-0
+                                sm:mb-0
+                                hover:bg-tertiary 
+                                hover:grayscale-0"
+                    title={description} // Simple HTML tooltip
+                >
+                    <Icon size={24} className="text-primary sm:h-full sm:w-full md:w-6 md:h-12 lg:w-6 lg:h-12 xl:w-full xl:h-full"/>
+                </div>
+            ))}
+        </div>
     );
 };
 

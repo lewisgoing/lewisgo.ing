@@ -160,7 +160,7 @@ export default function App(
             <Footer />
           </div>
         </SectionContainer>
-        <Analytics />
+        {/* <Analytics /> */}
       </ThemeProviders>
       {/* </body> */}
     </>

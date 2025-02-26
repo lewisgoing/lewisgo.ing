@@ -1,16 +1,13 @@
-// components/Footer.tsx
+'use client';
 
-'use client'
+import siteMetadata from '../public/data/siteMetaData';
+import { Github, Linkedin, Mail } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
-
-import siteMetadata from 'public/data/siteMetaData'
-import { Github, Linkedin, Mail, Twitter } from 'lucide-react'
-import { usePathname } from 'next/navigation'
-
-import Link from './assets/Link'
+import Link from './assets/Link';
 
 export default function Footer() {
-    const pathName = usePathname()
+    const pathname = usePathname();
 
     return (
         <footer>
@@ -41,7 +38,7 @@ export default function Footer() {
                         </a>
                     )}
                 </div>
-                {pathName == '/' && (
+                {pathname === '/' && (
                     <div className="mb-2 text-xs text-muted-foreground/50 text-center">
                         Homepage assets by{' '}
                         <Link
@@ -63,5 +60,5 @@ export default function Footer() {
                 </div>
             </div>
         </footer>
-    )
+    );
 }
