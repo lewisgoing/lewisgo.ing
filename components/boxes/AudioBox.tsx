@@ -435,7 +435,7 @@ const AudioBox = () => {
             style={imageStyle}
           />
           <div className="flex flex-col">
-            <span className="text-md mb-1 line-clamp-2 font-bold leading-none">
+            <span className="text-md mb-1 mt-1 line-clamp-2 font-bold leading-none">
               {currentSong.title}
             </span>
             <span className="line-clamp-1 text-xs text-muted-foreground mb-2">
@@ -444,7 +444,7 @@ const AudioBox = () => {
             </span>
 
             {/* Progress Bar */}
-            <div className="w-full">
+            <div className="w-full mt-1">
               <div style={progressBarContainerStyle} className="no-drag drag-blocker">
                 <div 
                   style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
@@ -466,7 +466,7 @@ const AudioBox = () => {
               </div>
 
               {/* Playback Controls */}
-              <div className="flex justify-center items-center gap-3 w-full h-full -translate-y-1">
+              <div className="flex justify-center items-center gap-4 w-full h-full lg:-translate-y-1 xl:-translate-y-1 sm:translate-y-0">
                 <button 
                   onClick={playLastTrack}
                   className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
@@ -693,7 +693,7 @@ const AudioBox = () => {
 
         {/* SoundCloud Logo in top right for all layouts */}
         <div 
-          className="absolute right-0 top-0 z-[1] p-3 visible bento-lg:opacity-100 bento-xl:opacity-100 bento-md:opacity-0 sm:opacity-100"
+          className="absolute right-1 top-0 z-[1] p-3 visible bento-lg:opacity-100 bento-xl:opacity-100 bento-md:opacity-0 sm:opacity-100"
         >
           <FaSoundcloud 
             size={56} 
@@ -702,15 +702,19 @@ const AudioBox = () => {
           />
 
         </div>
-        <div className="absolute right-2 top-14 z-[1] p-8 bento-md:right-0 bento-md:top-1 bento-lg:top-14 bento-lg:right-2 bento-sm:top-14 bento-sm:right-2">
-        <ExternalLinkComponent href={songs[currentTrackIndex].audioLink}/>
-        <></>
-        </div>
+        <div className="absolute right-2 top-14 z-[1] p-8 bento-md:right-0 bento-md:top-2 bento-lg:top-14 bento-lg:right-3 bento-sm:top-14 bento-sm:right-2">
+  {songs[currentTrackIndex].audioLink && (
+    <ExternalLinkComponent href={songs[currentTrackIndex].audioLink} />
+  )}
+
+</div>
 
         {/* External Link in bottom right */}
         {songs[currentTrackIndex].audioLink && (
-          <></>
-          // <ExternalLinkComponent href={songs[currentTrackIndex].audioLink} />
+          <div className="absolute bottom-0.5 right-0"  style={{transform: 'scale(.95'}}>
+<></>
+          {/* <ExternalLinkComponent href={songs[currentTrackIndex].audioLink} /> */}
+        </div>
         )}
       </div>
     </>
