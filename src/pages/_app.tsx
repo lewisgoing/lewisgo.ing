@@ -156,10 +156,11 @@ export default function App(
             <Component {...pageProps} />
             {/* <main className="mb-auto">{children}</main> */}
             {/* </SearchProvider> */}
-            <Analytics />
+
             <Footer />
           </div>
         </SectionContainer>
+        <Analytics />
       </ThemeProviders>
       {/* </body> */}
     </>
