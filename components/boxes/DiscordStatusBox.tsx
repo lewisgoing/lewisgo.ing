@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { FaDiscord } from 'react-icons/fa'
 
 const DiscordStatusBox = ({ lanyard, onLoad }) => {
+  'use cache';
     const mainActivity = lanyard.data.activities.filter(
         (activity) => activity.type === 0 && activity.assets
     )[0]

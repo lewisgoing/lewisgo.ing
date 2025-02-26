@@ -9,19 +9,23 @@ const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 
 const getAccessToken = async () => {
-  const response = await fetch(TOKEN_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${basic}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: querystring.stringify({
-      grant_type: 'refresh_token',
-      refresh_token,
-    }),
-  });
+  'use cache'; // Add the 'use cache' directive at the function level
 
-  return response.json();
+  const response = await fetch('/api/spotify/data');
+  const { items } = await response.json();
+  // const response = await fetch(TOKEN_ENDPOINT, {
+  //   method: 'POST',
+  //   headers: {
+  //     Authorization: `Basic ${basic}`,
+  //     'Content-Type': 'application/x-www-form-urlencoded',
+  //   },
+  //   body: querystring.stringify({
+  //     grant_type: 'refresh_token',
+  //     refresh_token,
+  //   }),
+  // });
+
+  return items
 };
 
 const TOP_TRACKS_ENDPOINT = `https://api.spotify.com/v1/me/top/tracks`;

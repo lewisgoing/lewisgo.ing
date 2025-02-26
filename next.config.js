@@ -19,6 +19,9 @@ const nextConfig = {
       "avatars.githubusercontent.com",
     ],
   },
+  experimental: {
+    useCache: true,
+  }
 };
 
 module.exports = nextConfig;
