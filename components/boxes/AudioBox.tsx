@@ -443,7 +443,7 @@ const AudioBox = () => {
               </div>
               
               {/* Time Display */}
-              <div className="flex justify-between text-[12px] text-muted-foreground">
+              <div className="flex justify-between text-[12px] text-muted-foreground mt-.5">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>

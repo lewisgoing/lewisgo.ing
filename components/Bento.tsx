@@ -174,6 +174,7 @@ export default function Bento() {
           noRelative
           unoptimized
           priority
+          
         />
       </div>
 

@@ -1,5 +1,5 @@
 // components/LayoutWrapper.tsx
-
+'use cache'
 import { Inter } from 'next/font/google'
 import { ReactNode } from 'react'
 

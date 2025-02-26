@@ -1,4 +1,5 @@
 // components/boxes/SpotifyBox.tsx
+'use cache'
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
 import { FaSpotify } from "react-icons/fa";
@@ -45,6 +46,7 @@ interface SpotifyBoxState {
 }
 
 const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
+  'use cache';
   // Combined state for better management
   const [state, setState] = useState<SpotifyBoxState>({
     isHovered: false,
@@ -241,7 +243,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       // Update KV store with current track
       updateKVStore(lanyard.data.spotify);
     }
-  }, [lanyard?.data?.listening_to_spotify, lanyard?.data?.spotify]);
+  }, [lanyard?.data?.listening_to_spotify, lanyard?.data?.spotify, updateKVStore]);
   
   // Call onLoad callback when data is available
   useEffect(() => {
