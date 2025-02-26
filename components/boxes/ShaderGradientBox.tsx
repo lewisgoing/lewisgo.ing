@@ -41,42 +41,22 @@ interface ShaderGradientBoxProps {
   hoverState?: string;
 }
 
-// Default props for common configurations
-const defaultProps: Partial<ShaderGradientBoxProps> = {
-  animate: "on",
-  control: "props",
-  wireframe: false,
-  shader: "defaults",
-  grain: "off",
-  toggleAxis: false,
-  hoverState: "off",
-  positionX: 0,
-  positionY: 0,
-  positionZ: 0,
-  rotationX: 0,
-  rotationY: 0,
-  rotationZ: 0,
-};
-
 const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
-  // Merge props with defaults
-  const mergedProps = { ...defaultProps, ...props };
-  
   const {
     className,
-    animate,
-    control,
-    positionX,
-    positionY,
-    positionZ,
-    rotationX,
-    rotationY,
-    rotationZ,
+    animate = "on",
+    control = "props",
+    positionX = 0,
+    positionY = 0,
+    positionZ = 0,
+    rotationX = 0,
+    rotationY = 0,
+    rotationZ = 0,
     color1,
     color2,
     color3,
-    wireframe,
-    shader,
+    wireframe = false,
+    shader = "defaults",
     type,
     uAmplitude,
     uDensity,
@@ -92,12 +72,12 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
     envPreset,
     reflection,
     brightness,
-    grain,
-    toggleAxis,
-    hoverState
-  } = mergedProps;
+    grain = "off",
+    toggleAxis = false,
+    hoverState = "off"
+  } = props;
 
-  // Fixed canvas style for better performance
+  // Canvas styles - fixed and consistent
   const canvasStyle = {
     position: 'absolute' as const,
     top: 0,
@@ -109,7 +89,7 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
   
   return (
     <ShaderGradientCanvas
-      importedfiber={{ ...fiber, ...drei, ...reactSpring }}
+      importedFiber={{ ...fiber, ...drei, ...reactSpring }}
       className={className}
       style={canvasStyle}
     >
@@ -150,5 +130,5 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
   );
 };
 
-// Use React.memo to prevent unnecessary re-renders
+// Use memo to prevent unnecessary re-renders when props don't change
 export default memo(ShaderGradientBox);
