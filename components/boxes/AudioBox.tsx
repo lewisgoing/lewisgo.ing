@@ -466,7 +466,7 @@ const AudioBox = () => {
               </div>
 
               {/* Playback Controls */}
-              <div className="flex justify-center items-center gap-3 w-full h-full">
+              <div className="flex justify-center items-center gap-3 w-full h-full -translate-y-1">
                 <button 
                   onClick={playLastTrack}
                   className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
@@ -521,7 +521,7 @@ const AudioBox = () => {
   />
 
   {/* flex col for metadata */}
-  <div className="flex flex-col w-[140px] h-full">
+  <div className="flex flex-col w-[200px] h-full">
     <div className="h-12 flex flex-col justify-start overflow-hidden">
       <div className="text-md font-bold leading-none truncate mb-1">
         {currentSong.title}
@@ -554,7 +554,7 @@ const AudioBox = () => {
         </div>
 
         {/* Playback Controls */}
-        <div className="flex space-x-2.5 justify-center mt-0">
+        <div className="flex space-x-2.5 justify-center mt-0" style={{                  transform: 'scale(1.1)',}}>
           <button 
             className="cursor-pointer no-drag p-0 pr-0.5 drag-blocker transition-all duration-200 hover:brightness-125" 
             onClick={playLastTrack} 
@@ -693,19 +693,24 @@ const AudioBox = () => {
 
         {/* SoundCloud Logo in top right for all layouts */}
         <div 
-          className="absolute right-0 top-0 z-[1] p-3"
+          className="absolute right-0 top-0 z-[1] p-3 visible bento-lg:opacity-100 bento-xl:opacity-100 bento-md:opacity-0 sm:opacity-100"
         >
           <FaSoundcloud 
             size={56} 
             className="text-primary transition-colors hover:text-[#ff7700] mb-10" 
             style={iconStyle}
           />
-          {/* <ExternalLinkComponent href={songs[currentTrackIndex].audioLink}/> */}
+
+        </div>
+        <div className="absolute right-2 top-14 z-[1] p-8 bento-md:right-0 bento-md:top-1 bento-lg:top-14 bento-lg:right-2 bento-sm:top-14 bento-sm:right-2">
+        <ExternalLinkComponent href={songs[currentTrackIndex].audioLink}/>
+        <></>
         </div>
 
         {/* External Link in bottom right */}
         {songs[currentTrackIndex].audioLink && (
-          <ExternalLinkComponent href={songs[currentTrackIndex].audioLink} />
+          <></>
+          // <ExternalLinkComponent href={songs[currentTrackIndex].audioLink} />
         )}
       </div>
     </>
