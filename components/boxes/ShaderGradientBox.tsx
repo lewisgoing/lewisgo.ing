@@ -9,7 +9,7 @@ import { ExternalLink } from 'lucide-react';
 const ShaderGradientBox = ({ className, animate, control, positionX, positionY, positionZ, rotationX, rotationY, rotationZ, color1, color2, color3, wireframe, shader, type, uAmplitude, uDensity, uFrequency, uSpeed, uStrength, cDistance, cameraZoom, cAzimuthAngle, cPolarAngle, uTime, lightType, envPreset, reflection, brightness, grain, toggleAxis, hoverState }) => {
   return (
     <ShaderGradientCanvas
-      importedFiber={{ ...fiber, ...drei, ...reactSpring }}
+      importedfiber={{ ...fiber, ...drei, ...reactSpring }}
       className={className}
       style={{
         position: 'absolute',

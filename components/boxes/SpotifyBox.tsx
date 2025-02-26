@@ -71,7 +71,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
 
   // Helper functions for state updates
   const addDebug = (message: string): void => {
-    console.log(`[SpotifyBox] ${message}`);
+    // console.log(`[SpotifyBox] ${message}`);
     setState(prev => ({
       ...prev,
       debugInfo: [...prev.debugInfo, message]
