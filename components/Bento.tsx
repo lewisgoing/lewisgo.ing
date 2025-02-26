@@ -610,7 +610,7 @@ export default function Bento() {
           <AudioBox />
         </div>
         <div
-          key="soundcloud"
+          key="twitter"
           className="group"
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}

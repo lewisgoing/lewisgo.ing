@@ -70,7 +70,7 @@ const GithubCalendar: FunctionComponent<Props> = ({
                     blockMargin: 5,
                     blockRadius: 5,
                     scale: 0.8,
-                    daysToShow: 123
+                    daysToShow: 120
                 });
             } else if (width <= 1199) {
                 setCalendarParams({
