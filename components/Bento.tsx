@@ -28,20 +28,26 @@ interface DiscordUser {
   avatar: string;
   discriminator: string;
   bot: boolean;
+  // Add other properties as needed
 }
 
 interface LanyardData {
   active_on_discord_desktop: boolean;
   active_on_discord_mobile: boolean;
   active_on_discord_web: boolean;
-  activities: any[];
-  discord_status: string;
+  activities: any[]; // Adjust the type according to your data structure
+  discord_status: string; // Include discord_status here
   discord_user: DiscordUser;
   kv: {
-    spotify_last_played: string;
+    spotify_last_played: string; // or any other type as per your data structure
   };
   listening_to_spotify: boolean;
-  spotify: any;
+  spotify: null; // or the correct type if spotify data is available
+}
+
+interface LanyardResponse {
+  data: LanyardData;
+  // Include any other top-level properties of the Lanyard response
 }
 
 // Apply WidthProvider to Responsive Grid Layout
