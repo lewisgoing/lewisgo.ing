@@ -1,5 +1,5 @@
 // components/Bento.tsx
-// "use client";
+"use client";
 
 import dynamic from "next/dynamic";
 import React, { useEffect, useState, useRef } from "react";

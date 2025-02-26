@@ -89,7 +89,7 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
   
   return (
     <ShaderGradientCanvas
-      importedFiber={{ ...fiber, ...drei, ...reactSpring }}
+      importedfiber={{ ...fiber, ...drei, ...reactSpring }}
       className={className}
       style={canvasStyle}
     >
