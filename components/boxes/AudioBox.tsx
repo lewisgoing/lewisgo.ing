@@ -590,7 +590,7 @@ const AudioBox = () => {
         </div>
 
         {/* Mobile Layout */}
-        <div className="bento-md:hidden relative w-full h-full flex flex-col">
+        <div className="hidden bento-md:hidden relative w-full h-full flex flex-col">
           <div className="m-2 flex flex-col items-center">
             <div className="flex flex-col items-center gap-2 mt-4">
               <div className="relative">

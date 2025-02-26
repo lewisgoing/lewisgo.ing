@@ -259,9 +259,9 @@ export default function Bento() {
         >
           <GithubBox />
         </div>
-        <div key="image-1" className="h-full w-full overflow-hidden">
+        <div key="tall-gradient" className="h-full w-full overflow-hidden">
             <ShaderGradientBox
-                className={`rounded-3xl object-cover transition-opacity duration-300 skeleton rounded-3xl`}
+                className={`rounded-3xl object-cover transition-opacity duration-300 skeleton`}
             animate="on" // Disable animation to make the component non-reactive to interactions.
             control="props" // Control the component entirely through props.
             positionX={1}
@@ -602,7 +602,7 @@ export default function Bento() {
           /> */}
         {/* </div> */}
         <div
-          key="about-ctfs"
+          key="audiobox"
           className="group bg-[url('/static/images/bento/bento-about-ctfs-bg.svg')] bg-cover bg-center"
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
@@ -610,7 +610,7 @@ export default function Bento() {
           <AudioBox />
         </div>
         <div
-          key="twitter"
+          key="soundcloud"
           className="group"
           onMouseEnter={() => setIntroSilhouette(true)}
           onMouseLeave={() => setIntroSilhouette(false)}
@@ -693,7 +693,7 @@ export default function Bento() {
         {/* <div key="intro">
         <HeroBox key="intro" />
       </div>
-      <div key="about-ctfs">
+      <div key="audiobox">
         <PFPBox key="about-ctfs" />
       </div> */}
         {/* </section> */}
@@ -705,7 +705,7 @@ export default function Bento() {
           imageUrl="/project-1.png"
           bgColor="#e4e4e7"
           dark
-          key="image-1"
+          key="tall-gradient"
         />
         <ProjectPreviewBox
           name="Project 2"

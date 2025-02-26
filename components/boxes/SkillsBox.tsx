@@ -1,5 +1,3 @@
-// components/boxes/SkillsBox.tsx
-
 import React from "react";
 
 import { FaPython } from "react-icons/fa";
@@ -25,9 +23,7 @@ import {
     TooltipTrigger,
 } from '../shadcn/tooltip'
 
-
 // Prepare your icons in an array for easy mapping
-
 const icons = [
   { Icon: FaPython, description: "Python" },
   { Icon: SiNextdotjs, description: "Next.js" },
@@ -50,13 +46,46 @@ const icons = [
 const SkillsBox = () => {
     return (
         <TooltipProvider>
-            <div className="grid grid-cols-1 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 transition-all duration-300">
+            <div className="grid grid-cols-4 
+                            bento-sm:grid-cols-4 
+                            bento-md:grid-cols-8
+                            lg: grid-cols-4
+                            
+                            bento-lg:grid-cols-8 
+                            xl:grid-cols-4 
+                            gap-2 
+                            sm: gap-4
+                            md:gap-1 
+                            xl:gap-4
+                            overflow-hidden 
+                            transition-all 
+                            duration-300">
                 {icons.map(({ Icon, description }, index) => (
                     <Tooltip key={index}>
                         <TooltipTrigger asChild>
-                            <div className="bg-tertiary/50 rounded-3xl flex justify-center items-center p-3.5 transition-all duration-300 grayscale hover:bg-tertiary hover:grayscale-0">
-                                <Icon size={24} className="text-primary" />
-                            </div>
+                            <div className="bg-tertiary/50 
+                                            rounded-3xl 
+                                            flex 
+                                            justify-center 
+                                            items-center 
+                                            p-2
+                                            sm:p-4
+                                            md:p-2 
+                                            xl:p-3
+                                            transition-all 
+                                            duration-300 
+                                            grayscale 
+                                            xl:mt-0
+                                            xl:mb-0
+                                            lg:mt-1
+                                            lg:mb-1
+                                            md:mt-1
+                                            md:mb-1
+                                            sm:mt-0
+                                            sm:mb-0
+                                            hover:bg-tertiary 
+                                            hover:grayscale-0">
+                                <Icon size={24} className="text-primary sm:h-full sm:w-full md:w-6 md:h-12  lg:w-6 lg:h-12 xl:w-full xl:h-full"/>                            </div>
                         </TooltipTrigger>
                         <TooltipContent className="z-50 overflow-visible" side="top" align="center">
                             <span>{description}</span>
