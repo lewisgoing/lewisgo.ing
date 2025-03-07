@@ -39,7 +39,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   // State management
   const [state, setState] = useState({
     isHovered: false,
-    spotifyData: null as SpotifyData | null,
+    spotifyData: null as SpotifyData | null | undefined,
     isLoading: true,
     isCurrentlyPlaying: false,
   });
