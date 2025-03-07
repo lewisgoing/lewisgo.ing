@@ -1,5 +1,10 @@
-// Updated API endpoint: /pages/api/spotify/data.ts
+// src/pages/api/spotify/data.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+// Cache settings
+const CACHE_DURATION = 60 * 1000; // 1 minute in milliseconds
+let cachedData: any = null;
+let lastFetchTime = 0;
 
 interface SpotifyData {
   song: string;
@@ -23,7 +28,13 @@ export default async function handler(
   try {
     // GET request to fetch data
     if (req.method === 'GET') {
-      // Fetch user data from Lanyard
+      // Check if we have cached data that's still fresh
+      const now = Date.now();
+      if (cachedData && now - lastFetchTime < CACHE_DURATION) {
+        return res.status(200).json(cachedData);
+      }
+      
+      // Fetch fresh data from Lanyard
       const lanyardResponse = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
       
       if (!lanyardResponse.ok) {
@@ -47,6 +58,10 @@ export default async function handler(
           console.error('Error parsing KV data:', err);
         }
       }
+      
+      // Update cache
+      cachedData = data;
+      lastFetchTime = now;
       
       return res.status(200).json(data);
     }
@@ -81,6 +96,9 @@ export default async function handler(
           details: errorText
         });
       }
+      
+      // Invalidate cache after successful update
+      cachedData = null;
       
       return res.status(200).json({ success: true });
     }

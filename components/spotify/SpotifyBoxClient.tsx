@@ -1,10 +1,11 @@
-// components/spotify/SpotifyBox.tsx
-'use client'; // This will be useful when migrating to App Directory
+// components/boxes/SpotifyBox.tsx
+'use client';
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaSpotify } from "react-icons/fa";
 import ExternalLink from "../assets/ExternalLink";
+import { Skeleton } from "../shadcn/skeleton";
 
 // Define TypeScript interfaces
 interface SpotifyData {
@@ -34,17 +35,16 @@ interface SpotifyBoxProps {
   onLoad?: () => void;
 }
 
-// Main component
 const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   // State management
   const [state, setState] = useState({
     isHovered: false,
-    spotifyData: null as SpotifyData | null | undefined,
+    spotifyData: null as SpotifyData | null,
     isLoading: true,
     isCurrentlyPlaying: false,
   });
 
-  // Image styles
+  // Image styles based on hover state
   const imageStyle = state.isHovered
     ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
     : { filter: 'grayscale(1)', transition: 'filter 0.3s ease' };
@@ -54,43 +54,50 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     color: state.isHovered ? "#1db954" : "#e5d3b8",
   };
 
-  // Extract and process data from Lanyard
+  // Process Lanyard data only when it changes
   useEffect(() => {
+    // Early return if no lanyard data is available
+    if (!lanyard || !lanyard.data) {
+      setState(prev => ({ ...prev, isLoading: false }));
+      return;
+    }
+
     const processLanyardData = () => {
-      if (!lanyard?.data) return;
-
-      // Check if user is currently listening to Spotify
-      if (lanyard.data.listening_to_spotify && lanyard.data.spotify) {
-        setState(prev => ({
-          ...prev,
-          spotifyData: lanyard.data.spotify,
-          isCurrentlyPlaying: true,
-          isLoading: false
-        }));
-        
-        // Inform parent component that data is loaded
-        if (onLoad) onLoad();
-        return;
-      }
-
-      // If not currently playing, try to get last played from KV store
-      if (lanyard.data.kv?.spotify_last_played) {
-        try {
-          const kvData = JSON.parse(lanyard.data.kv.spotify_last_played);
+      try {
+        // Check if the user is currently listening to Spotify
+        if (lanyard.data?.listening_to_spotify && lanyard.data?.spotify) {
           setState(prev => ({
             ...prev,
-            spotifyData: kvData,
-            isCurrentlyPlaying: false,
+            spotifyData: lanyard.data.spotify,
+            isCurrentlyPlaying: true,
             isLoading: false
           }));
           
-          // Inform parent component that data is loaded
           if (onLoad) onLoad();
-        } catch (error) {
-          console.error('Error parsing KV data:', error);
+          return;
+        }
+
+        // If not currently playing, try to get the last played track from KV store
+        if (lanyard.data?.kv?.spotify_last_played) {
+          try {
+            const kvData = JSON.parse(lanyard.data.kv.spotify_last_played);
+            setState(prev => ({
+              ...prev,
+              spotifyData: kvData,
+              isCurrentlyPlaying: false,
+              isLoading: false
+            }));
+            
+            if (onLoad) onLoad();
+          } catch (error) {
+            console.error('Error parsing Spotify KV data:', error);
+            setState(prev => ({ ...prev, isLoading: false }));
+          }
+        } else {
           setState(prev => ({ ...prev, isLoading: false }));
         }
-      } else {
+      } catch (error) {
+        console.error('Error processing Lanyard data:', error);
         setState(prev => ({ ...prev, isLoading: false }));
       }
     };
@@ -102,12 +109,12 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   const handleMouseEnter = () => setState(prev => ({ ...prev, isHovered: true }));
   const handleMouseLeave = () => setState(prev => ({ ...prev, isHovered: false }));
 
-  // Loading state
+  // Loading state - show skeleton
   if (state.isLoading) {
-    return <div className="h-full w-full"></div>;
+    return <Skeleton className="w-full h-full rounded-3xl" />;
   }
   
-  // If no data is available
+  // If no data is available - empty state
   if (!state.spotifyData) {
     return <div className="h-full w-full opacity-0"></div>;
   }

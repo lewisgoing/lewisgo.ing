@@ -16,7 +16,7 @@ import GithubBox from "./boxes/GithubBox";
 import GithubCalendar from "./boxes/GithubCalendar";
 import SkillsBox from "./boxes/SkillsBox";
 import SoundcloudBox from "./boxes/SoundcloudBox";
-import SpotifyStatusBox from "./boxes/SpotifyBox";
+import SpotifyBox from "./boxes/SpotifyBox";
 
 // Layout utilities
 import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
@@ -65,7 +65,9 @@ export default function Bento() {
 
   // Lanyard data hook for Discord/Spotify integration
   const lanyard = useLanyard({
-    userId: "661068667781513236",
+    userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || "661068667781513236",
+    // Reduce polling to prevent excessive API calls
+    pollInterval: 30000, // Poll every 60 seconds instead of default 15 seconds
   });
 
   // Handle responsive layout changes
@@ -260,20 +262,20 @@ export default function Bento() {
 
       {/* Spotify Status Box */}
       <div
-        key="spotify"
-        className="group"
-        onMouseEnter={() => setIntroSilhouette(true)}
-        onMouseLeave={() => setIntroSilhouette(false)}
-      >
-        {lanyard.data && !lanyard.isValidating ? (
-          <SpotifyStatusBox
-            lanyard={lanyard.data}
-            onLoad={() => setIsSpotifyLoaded(true)}
-          />
-        ) : (
-          <Skeleton className="w-full h-full rounded-3xl z-[1]" />
-        )}
-      </div>
+  key="spotify"
+  className="group"
+  onMouseEnter={() => setIntroSilhouette(true)}
+  onMouseLeave={() => setIntroSilhouette(false)}
+>
+  {lanyard.data ? (
+    <SpotifyBox
+      lanyard={lanyard}
+      onLoad={() => setIsSpotifyLoaded(true)}
+    />
+  ) : (
+    <Skeleton className="w-full h-full rounded-3xl z-[1]" />
+  )}
+</div>
 
       {/* Skills Box */}
       <div key="tech" className="flex justify-center items-center">
