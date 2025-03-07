@@ -27,7 +27,8 @@ interface LanyardData {
 
 interface SpotifyBoxProps {
   spotifyData: SpotifyData;
-  lanyard: LanyardData;
+  isCurrentlyPlaying: boolean;
+  lanyard?: LanyardData;
   onLoad?: () => void;
 }
 
