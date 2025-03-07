@@ -2,6 +2,7 @@
 import React from 'react';
 import Image, { ImageProps } from 'next/image';
 import { Skeleton } from '../shadcn/skeleton';
+import { cn } from '@/scripts/utils/tailwind-helpers';
 
 interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {
   skeletonClassName?: string;
