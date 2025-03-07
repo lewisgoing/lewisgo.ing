@@ -44,7 +44,8 @@
     "shadergradient": "^1.2.5",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
-    "three": "^0.150.1"
+    "three": "^0.150.1",
+    "vercel": "^41.3.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",
