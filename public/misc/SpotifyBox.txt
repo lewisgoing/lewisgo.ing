@@ -4,8 +4,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { FaSpotify } from "react-icons/fa";
-import ExternalLink from "../assets/ExternalLink";
-import { Skeleton } from "../shadcn/skeleton";
+import ExternalLink from "../../components/assets/ExternalLink";
+import { Skeleton } from "../../components/shadcn/skeleton";
 
 // Define TypeScript interfaces
 interface SpotifyData {
