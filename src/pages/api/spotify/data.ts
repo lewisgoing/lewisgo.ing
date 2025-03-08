@@ -14,6 +14,7 @@ interface SpotifyData {
     start: number;
     end: number;
   };
+  _updated_at?: number;
 }
 
 interface ApiResponseData {
@@ -139,7 +140,7 @@ export default async function handler(
       }
       
       // Prepare data for Lanyard API
-      const spotifyData = {
+      const spotifyData: SpotifyData = {
         song: data.song,
         artist: data.artist,
         album: data.album,
