@@ -1,4 +1,4 @@
-// Updated API endpoint: /pages/api/spotify/data.ts
+// src/pages/api/spotify/data.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 interface SpotifyData {
@@ -11,6 +11,12 @@ interface SpotifyData {
     start: number;
     end: number;
   };
+}
+
+interface ApiResponse {
+  spotify: SpotifyData | null;
+  listeningToSpotify: boolean;
+  lastPlayedFromKV: SpotifyData | null;
 }
 
 export default async function handler(
@@ -33,19 +39,27 @@ export default async function handler(
       const lanyardData = await lanyardResponse.json();
       
       // Extract relevant data
-      const data = {
+      const data: ApiResponse = {
         spotify: lanyardData?.data?.spotify || null,
         listeningToSpotify: lanyardData?.data?.listening_to_spotify || false,
-        lastPlayedFromKV: null as SpotifyData | null
+        lastPlayedFromKV: null
       };
       
       // Try to parse last played data from KV store
       if (lanyardData?.data?.kv?.spotify_last_played) {
         try {
-          data.lastPlayedFromKV = JSON.parse(lanyardData.data.kv.spotify_last_played);
-          // Only log if data.lastPlayedFromKV is not null and has a song property
-          if (data.lastPlayedFromKV && data.lastPlayedFromKV.song) {
-            console.log('[Spotify API] Found last played track in KV store:', data.lastPlayedFromKV.song);
+          // Parse first, then verify it's a valid SpotifyData object
+          const parsedData = JSON.parse(lanyardData.data.kv.spotify_last_played);
+          
+          // Validate the parsed data has required properties
+          if (parsedData && 
+              typeof parsedData === 'object' && 
+              typeof parsedData.song === 'string') {
+            
+            data.lastPlayedFromKV = parsedData;
+            console.log('[Spotify API] Found last played track in KV store:', parsedData.song);
+          } else {
+            console.log('[Spotify API] KV data exists but has invalid format');
           }
         } catch (err) {
           console.error('[Spotify API] Error parsing KV data:', err);
