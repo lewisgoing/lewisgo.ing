@@ -1,6 +1,7 @@
 // src/pages/api/spotify/data.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+// Define interfaces with proper typing
 interface SpotifyData {
   song: string;
   artist: string;
@@ -13,16 +14,16 @@ interface SpotifyData {
   };
 }
 
-type ApiResponseData = {
+interface ApiResponseData {
   spotify: SpotifyData | null;
   listeningToSpotify: boolean;
   lastPlayedFromKV: SpotifyData | null;
-};
+}
 
-type ApiErrorResponse = {
+interface ApiErrorResponse {
   error: string;
   details?: string;
-};
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,65 +35,84 @@ export default async function handler(
   try {
     // GET request to fetch data
     if (req.method === 'GET') {
-      // Fetch user data from Lanyard
-      const lanyardResponse = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-      
-      if (!lanyardResponse.ok) {
-        throw new Error(`Lanyard API error: ${lanyardResponse.status}`);
-      }
-      
-      const lanyardData = await lanyardResponse.json();
-      
-      // Extract relevant data with strong typing
+      // Initialize response data with safe defaults
       const responseData: ApiResponseData = {
         spotify: null,
         listeningToSpotify: false,
         lastPlayedFromKV: null
       };
       
-      // Safely assign properties with optional chaining
-      if (lanyardData?.data) {
-        responseData.spotify = lanyardData.data.spotify || null;
-        responseData.listeningToSpotify = !!lanyardData.data.listening_to_spotify;
+      try {
+        // Fetch user data from Lanyard with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
         
-        // Parse KV data with extra safety checks
-        const kvData = lanyardData.data.kv?.spotify_last_played;
-        if (typeof kvData === 'string') {
-          try {
-            const parsed = JSON.parse(kvData);
+        const lanyardResponse = await fetch(`https://api.lanyard.rest/v1/users/${userId}`, {
+          signal: controller.signal
+        }).finally(() => clearTimeout(timeoutId));
+        
+        if (!lanyardResponse.ok) {
+          console.error(`[Spotify API] Lanyard API error: ${lanyardResponse.status}`);
+          return res.status(200).json(responseData); // Return empty data instead of error
+        }
+        
+        const lanyardData = await lanyardResponse.json();
+        
+        // Safely extract data with thorough validation
+        if (lanyardData?.data) {
+          // Current Spotify data
+          if (lanyardData.data.listening_to_spotify && lanyardData.data.spotify) {
+            const spotifyData = lanyardData.data.spotify;
             
-            // Validate parsed data structure
-            if (parsed && 
-                typeof parsed === 'object' && 
-                typeof parsed.song === 'string' &&
-                typeof parsed.artist === 'string' &&
-                typeof parsed.album === 'string' &&
-                typeof parsed.album_art_url === 'string' &&
-                typeof parsed.track_id === 'string') {
-              
-              // Construct a clean object with only the expected properties
-              responseData.lastPlayedFromKV = {
-                song: parsed.song,
-                artist: parsed.artist,
-                album: parsed.album,
-                album_art_url: parsed.album_art_url,
-                track_id: parsed.track_id
+            if (isValidSpotifyData(spotifyData)) {
+              responseData.spotify = {
+                song: spotifyData.song,
+                artist: spotifyData.artist,
+                album: spotifyData.album,
+                album_art_url: spotifyData.album_art_url,
+                track_id: spotifyData.track_id
               };
               
-              // Include timestamps if they exist
-              if (parsed.timestamps) {
-                responseData.lastPlayedFromKV.timestamps = parsed.timestamps;
+              // Add timestamps if they exist
+              if (spotifyData.timestamps) {
+                responseData.spotify.timestamps = spotifyData.timestamps;
               }
               
-              // Use safe logging to avoid potential issues
-              console.log('[Spotify API] Found last played track in KV store');
-            } else {
-              console.log('[Spotify API] KV data exists but has invalid format');
+              responseData.listeningToSpotify = true;
             }
-          } catch (err) {
-            console.error('[Spotify API] Error parsing KV data');
+          }
+          
+          // KV store data (last played)
+          if (lanyardData.data.kv?.spotify_last_played) {
+            try {
+              const kvData = typeof lanyardData.data.kv.spotify_last_played === 'string' 
+                ? JSON.parse(lanyardData.data.kv.spotify_last_played)
+                : lanyardData.data.kv.spotify_last_played;
+              
+              if (isValidSpotifyData(kvData)) {
+                responseData.lastPlayedFromKV = {
+                  song: kvData.song,
+                  artist: kvData.artist,
+                  album: kvData.album,
+                  album_art_url: kvData.album_art_url,
+                  track_id: kvData.track_id
+                };
+                
+                // Add timestamps if they exist
+                if (kvData.timestamps) {
+                  responseData.lastPlayedFromKV.timestamps = kvData.timestamps;
+                }
+              }
+            } catch (err) {
+              console.error('[Spotify API] Error parsing KV data');
+              // Don't rethrow - continue with null lastPlayedFromKV
+            }
           }
         }
+      } catch (fetchError) {
+        console.error('[Spotify API] Error fetching from Lanyard:', fetchError);
+        // Return empty data instead of error
+        return res.status(200).json(responseData);
       }
       
       return res.status(200).json(responseData);
@@ -101,62 +121,86 @@ export default async function handler(
     // POST request to update data
     if (req.method === 'POST') {
       if (!apiKey) {
-        return res.status(500).json({ error: 'API key not configured' });
+        console.warn('[Spotify API] API key not configured');
+        return res.status(200).json({ success: false, error: 'API key not configured' });
       }
       
       // Validate incoming data
-      const spotifyData = req.body as unknown;
+      const body = req.body;
       
-      // Type guard for SpotifyData
-      if (!spotifyData || 
-          typeof spotifyData !== 'object' || 
-          !('track_id' in spotifyData) ||
-          typeof spotifyData['track_id'] !== 'string' ||
-          !('song' in spotifyData) ||
-          typeof spotifyData['song'] !== 'string' ||
-          !('artist' in spotifyData) ||
-          typeof spotifyData['artist'] !== 'string' ||
-          !('album' in spotifyData) ||
-          typeof spotifyData['album'] !== 'string' ||
-          !('album_art_url' in spotifyData) ||
-          typeof spotifyData['album_art_url'] !== 'string') {
-        return res.status(400).json({ error: 'Invalid Spotify data' });
+      if (!isValidSpotifyData(body)) {
+        console.warn('[Spotify API] Invalid Spotify data received');
+        return res.status(200).json({ success: false, error: 'Invalid Spotify data' });
       }
       
-      // Safe casting after validation
-      const validatedData = spotifyData as SpotifyData;
+      // Construct a clean object to save
+      const spotifyData: SpotifyData = {
+        song: body.song,
+        artist: body.artist,
+        album: body.album,
+        album_art_url: body.album_art_url,
+        track_id: body.track_id
+      };
       
-      // Update the KV store
+      // Add timestamps if they exist
+      if (body.timestamps) {
+        spotifyData.timestamps = body.timestamps;
+      }
+      
       try {
+        // Update the KV store with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
         const updateResponse = await fetch(`https://api.lanyard.rest/v1/users/${userId}/kv/spotify_last_played`, {
           method: 'PUT',
           headers: {
             'Authorization': apiKey,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(validatedData)
-        });
+          body: JSON.stringify(spotifyData),
+          signal: controller.signal
+        }).finally(() => clearTimeout(timeoutId));
         
         if (!updateResponse.ok) {
-          const errorText = await updateResponse.text();
-          return res.status(500).json({ 
-            error: `Failed to update KV store: ${updateResponse.status}`,
-            details: errorText
+          console.error('[Spotify API] KV update failed:', updateResponse.status);
+          return res.status(200).json({ 
+            success: false, 
+            error: `Failed to update KV store: ${updateResponse.status}`
           });
         }
         
         return res.status(200).json({ success: true });
       } catch (error: any) {
-        return res.status(500).json({ 
-          error: 'Error updating KV store',
-          details: error.message 
+        console.error('[Spotify API] Error updating KV store:', error?.message || 'Unknown error');
+        return res.status(200).json({ 
+          success: false, 
+          error: 'Error updating KV store'
         });
       }
     }
     
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(200).json({ error: 'Method not allowed' });
   } catch (error: any) {
-    console.error('API error:', error?.message || 'Unknown error');
-    return res.status(500).json({ error: error?.message || 'Internal server error' });
+    console.error('[Spotify API] Unexpected error:', error?.message || 'Unknown error');
+    // Return empty data instead of error for production resilience
+    return res.status(200).json({
+      spotify: null,
+      listeningToSpotify: false,
+      lastPlayedFromKV: null
+    });
   }
+}
+
+// Helper function to validate SpotifyData
+function isValidSpotifyData(data: any): data is SpotifyData {
+  return (
+    data &&
+    typeof data === 'object' &&
+    typeof data.song === 'string' &&
+    typeof data.artist === 'string' &&
+    typeof data.album === 'string' &&
+    typeof data.album_art_url === 'string' &&
+    typeof data.track_id === 'string'
+  );
 }

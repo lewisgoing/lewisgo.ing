@@ -25,7 +25,7 @@ interface LanyardSWRResponse {
   data?: {
     success: boolean;
     data: {
-      listening_to_spotify: boolean;
+      listening_to_spotify?: boolean;
       spotify?: SpotifyData | null;
       kv?: {
         spotify_last_played?: string;
@@ -73,17 +73,21 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     color: state.isHovered ? "#1db954" : "#e5d3b8",
   };
 
-  const setSpotifyData = (data: SpotifyData | null, isPlaying: boolean = false): void => {
+  const setSpotifyData = useCallback((data: SpotifyData | null, isPlaying: boolean = false): void => {
     setState(prev => ({
       ...prev,
       spotifyData: data,
       isCurrentlyPlaying: isPlaying,
       isLoading: false
     }));
-  };
+  }, []);
 
   // Update the KV store with track data
   const updateKVStore = useCallback(async (trackData: SpotifyData): Promise<boolean> => {
+    if (!trackData || !trackData.track_id) {
+      return false;
+    }
+    
     try {
       const response = await fetch('/api/spotify/data', {
         method: 'POST',
@@ -93,127 +97,146 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
         body: JSON.stringify(trackData)
       });
       
-      if (!response.ok) {
-        return false;
-      }
-      
-      return true;
+      return response.ok;
     } catch (error) {
+      console.error("Error updating KV store:", error);
       return false;
     }
   }, []);
 
-  // Fetch Spotify data from API
-  const fetchSpotifyData = async (): Promise<boolean> => {
+  // Fetch Spotify data from API - more resilient implementation
+  const fetchSpotifyData = useCallback(async (): Promise<boolean> => {
     try {
       const response = await fetch('/api/spotify/data');
       
       if (!response.ok) {
+        console.error("API response not OK:", response.status);
         return false;
       }
       
       const data = await response.json();
       
       // Check if user is currently listening to Spotify
-      if (data.listeningToSpotify && data.spotify) {
+      if (data && data.listeningToSpotify && data.spotify) {
+        // Validate the data structure
+        if (!validateSpotifyData(data.spotify)) {
+          console.error("Invalid Spotify data structure from API");
+          return false;
+        }
+        
         setSpotifyData(data.spotify, true);
-        updateKVStore(data.spotify);
         return true;
       }
       
       // Otherwise, use last played from KV
-      if (data.lastPlayedFromKV) {
+      if (data && data.lastPlayedFromKV) {
+        // Validate the data structure
+        if (!validateSpotifyData(data.lastPlayedFromKV)) {
+          console.error("Invalid lastPlayedFromKV data structure from API");
+          return false;
+        }
+        
         setSpotifyData(data.lastPlayedFromKV, false);
         return true;
       }
       
       return false;
     } catch (error) {
+      console.error("Error fetching Spotify data:", error);
       return false;
     }
+  }, [setSpotifyData]);
+
+  // Helper function to validate SpotifyData structure
+  const validateSpotifyData = (data: any): data is SpotifyData => {
+    return (
+      data &&
+      typeof data === 'object' &&
+      typeof data.song === 'string' &&
+      typeof data.artist === 'string' &&
+      typeof data.album === 'string' &&
+      typeof data.album_art_url === 'string' &&
+      typeof data.track_id === 'string'
+    );
   };
 
-  // Process Lanyard data only when it changes
+  // Primary data loading effect - triggers on lanyard changes
   useEffect(() => {
-    // Early return if no lanyard data is available
-    if (!lanyard.data || !lanyard.data.data) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      return;
-    }
-
-    const lanyardData = lanyard.data.data;
-    
-    const processLanyardData = async () => {
+    const loadData = async () => {
       try {
-        // Check if the user is currently listening to Spotify
-        if (lanyardData.listening_to_spotify && lanyardData.spotify) {
-          setSpotifyData(lanyardData.spotify, true);
-          await updateKVStore(lanyardData.spotify);
+        // First, try to get data from lanyard directly if it's available
+        if (lanyard.data?.data?.listening_to_spotify && lanyard.data.data.spotify) {
+          const spotifyData = lanyard.data.data.spotify;
           
+          if (validateSpotifyData(spotifyData)) {
+            setSpotifyData(spotifyData, true);
+            await updateKVStore(spotifyData);
+            if (onLoad) onLoad();
+            return;
+          }
+        }
+        
+        // Next, try the API as a fallback
+        const success = await fetchSpotifyData();
+        
+        if (success) {
           if (onLoad) onLoad();
           return;
         }
-
-        // If not currently playing, try API endpoint
-        const success = await fetchSpotifyData();
         
-        if (!success) {
-          // If API fails, try to get the last played track from KV store
-          if (lanyardData.kv?.spotify_last_played) {
-            try {
-              const kvData = JSON.parse(lanyardData.kv.spotify_last_played);
+        // If API fails, try KV store from lanyard directly
+        if (lanyard.data?.data?.kv?.spotify_last_played) {
+          try {
+            const kvDataRaw = lanyard.data.data.kv.spotify_last_played;
+            const kvData = typeof kvDataRaw === 'string' ? JSON.parse(kvDataRaw) : kvDataRaw;
+            
+            if (validateSpotifyData(kvData)) {
               setSpotifyData(kvData, false);
-              
               if (onLoad) onLoad();
-            } catch (parseErr) {
-              setState(prev => ({ ...prev, isLoading: false }));
+              return;
             }
-          } else {
-            setState(prev => ({ ...prev, isLoading: false }));
+          } catch (parseErr) {
+            console.error("Error parsing KV data:", parseErr);
           }
         }
+        
+        // If everything fails, set loading to false
+        setState(prev => ({ ...prev, isLoading: false }));
       } catch (error) {
+        console.error("Error in loadData:", error);
         setState(prev => ({ ...prev, isLoading: false }));
       }
     };
-
-    processLanyardData();
+    
+    loadData();
     
     // Cleanup on unmount
     return () => {
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current);
-      }
-      if (kvUpdateTimeoutRef.current) {
-        clearTimeout(kvUpdateTimeoutRef.current);
-      }
+      if (loadingTimeoutRef.current) clearTimeout(loadingTimeoutRef.current);
+      if (kvUpdateTimeoutRef.current) clearTimeout(kvUpdateTimeoutRef.current);
     };
-  }, [lanyard, onLoad, updateKVStore]);
+  }, [lanyard.data, onLoad, setSpotifyData, updateKVStore, fetchSpotifyData]);
 
-  // CRITICAL: This useEffect specifically watches for changes in listening status
-  // This ensures the last played song is always saved
+  // Watch for changes in listening status to update KV store
   useEffect(() => {
     if (!lanyard.data?.data) return;
     
-    const lanyardData = lanyard.data.data;
+    // This ensure we don't try to access potentially undefined properties
+    const listeningToSpotify = !!lanyard.data.data.listening_to_spotify;
+    const spotifyData = lanyard.data.data.spotify;
     
-    if (
-      lanyardData.listening_to_spotify && 
-      lanyardData.spotify
-    ) {
-      // Use timeout to prevent multiple rapid updates
+    if (listeningToSpotify && spotifyData && validateSpotifyData(spotifyData)) {
+      // Debounce updates with timeout
       if (kvUpdateTimeoutRef.current) {
         clearTimeout(kvUpdateTimeoutRef.current);
       }
       
       kvUpdateTimeoutRef.current = setTimeout(() => {
-        if (lanyardData.spotify) {
-          updateKVStore(lanyardData.spotify);
-          setSpotifyData(lanyardData.spotify, true);
-        }
+        updateKVStore(spotifyData);
+        setSpotifyData(spotifyData, true);
       }, 1000);
     }
-  }, [lanyard.data?.data, updateKVStore]);
+  }, [lanyard.data?.data, setSpotifyData, updateKVStore]);
 
   // Call onLoad callback when data is available
   useEffect(() => {
