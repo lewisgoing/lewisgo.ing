@@ -60,6 +60,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     isLoading: true,
     isCurrentlyPlaying: false,
     lastUpdateTime: 0,
+    forceUpdate: false,
     error: null as string | null
   });
   
@@ -67,17 +68,24 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   const timeoutsRef = useRef<{
     kvUpdate: NodeJS.Timeout | null;
     retry: NodeJS.Timeout | null;
+    periodicUpdate: NodeJS.Timeout | null;
   }>({
     kvUpdate: null,
-    retry: null
+    retry: null,
+    periodicUpdate: null
   });
   
-  const requestsRef = useRef<{
-    kvUpdate: boolean;
-    apiFetch: boolean;
+  const dataRef = useRef<{
+    lastTrackId: string | null;
+    attempts: number;
+    lanyard?: {
+      isListening: boolean;
+      trackId: string | null;
+    }
   }>({
-    kvUpdate: false,
-    apiFetch: false
+    lastTrackId: null,
+    attempts: 0,
+    lanyard: undefined
   });
 
   // Derived styles based on hover state
@@ -91,14 +99,17 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   };
 
   // Update KV store with track data
-  const updateKVStore = useCallback(async (trackData: SpotifyData): Promise<boolean> => {
-    // Prevent concurrent requests
-    if (requestsRef.current.kvUpdate) {
+  const updateKVStore = useCallback(async (trackData: SpotifyData, force: boolean = false): Promise<boolean> => {
+    // Don't update if the track ID hasn't changed and we're not forcing
+    if (!force && trackData.track_id === dataRef.current.lastTrackId) {
+      console.log("[SpotifyBox] Skipping KV update, track unchanged:", trackData.song);
       return false;
     }
     
+    console.log(`[SpotifyBox] Updating KV store with track: ${trackData.song} (ID: ${trackData.track_id})`);
+    
     try {
-      requestsRef.current.kvUpdate = true;
+      setState(prev => ({ ...prev, isLoading: true }));
       
       // Add timestamp to track version
       const dataToSend = {
@@ -106,31 +117,47 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
         _updated_at: Date.now()
       };
       
-      const response = await fetch('/api/spotify/data', {
+      const timestamp = new Date().toISOString();
+      const cacheParam = `nocache=${Date.now()}${Math.random()}`;
+      
+      const response = await fetch(`/api/spotify/data?${cacheParam}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Timestamp': timestamp
         },
-        body: JSON.stringify(dataToSend),
-        // Set a timeout to prevent hanging requests
-        signal: AbortSignal.timeout(5000)
+        body: JSON.stringify(dataToSend)
       });
       
       const result = await response.json();
       
+      console.log("[SpotifyBox] KV update response:", result);
+      
       if (result.success) {
+        // Update refs and state
+        dataRef.current.lastTrackId = trackData.track_id;
+        dataRef.current.attempts = 0;
+        
         setState(prev => ({
           ...prev,
           lastUpdateTime: Date.now(),
+          isLoading: false,
           error: null
         }));
         
         return true;
       } else {
-        console.error("[SpotifyBox] KV update failed:", result.error);
+        console.error("[SpotifyBox] KV update failed:", result.error, result.debug);
+        
+        // Increment attempt counter
+        dataRef.current.attempts++;
         
         setState(prev => ({
           ...prev,
+          isLoading: false,
           error: `Failed to update KV store: ${result.error}`
         }));
         
@@ -139,44 +166,49 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     } catch (error) {
       console.error("[SpotifyBox] KV update error:", error);
       
+      // Increment attempt counter
+      dataRef.current.attempts++;
+      
       setState(prev => ({
         ...prev,
+        isLoading: false,
         error: error instanceof Error ? error.message : 'Unknown error'
       }));
       
       return false;
-    } finally {
-      requestsRef.current.kvUpdate = false;
     }
   }, []);
 
   // Fetch Spotify data from API
   const fetchSpotifyData = useCallback(async (): Promise<boolean> => {
-    // Prevent concurrent requests
-    if (requestsRef.current.apiFetch) {
-      return false;
-    }
-    
     try {
-      requestsRef.current.apiFetch = true;
       setState(prev => ({ ...prev, isLoading: true }));
       
-      const response = await fetch('/api/spotify/data', {
-        // Set a timeout to prevent hanging requests
-        signal: AbortSignal.timeout(5000),
-        // Add cache busting parameter to query
+      // Add cache busting parameter
+      const cacheParam = `nocache=${Date.now()}${Math.random()}`;
+      const timestamp = new Date().toISOString();
+      
+      console.log("[SpotifyBox] Fetching Spotify data from API");
+      
+      const response = await fetch(`/api/spotify/data?${cacheParam}`, {
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Timestamp': timestamp
         }
       });
       
       const data = await response.json();
       
+      console.log("[SpotifyBox] API response:", data);
+      
       // Check if we got valid data
       if (data) {
         // If currently listening to Spotify
         if (data.listeningToSpotify && data.spotify) {
+          console.log("[SpotifyBox] User is currently listening to Spotify:", data.spotify.song);
+          
           setState(prev => ({
             ...prev,
             spotifyData: data.spotify,
@@ -190,11 +222,19 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
             onLoad();
           }
           
+          // Force a KV update if we're currently listening
+          if (data.spotify.track_id !== dataRef.current.lastTrackId) {
+            console.log("[SpotifyBox] Track changed, updating KV store from listening data");
+            updateKVStore(data.spotify, true);
+          }
+          
           return true;
         }
         
         // Otherwise, use last played from KV
         if (data.lastPlayedFromKV) {
+          console.log("[SpotifyBox] User last played:", data.lastPlayedFromKV.song);
+          
           setState(prev => ({
             ...prev,
             spotifyData: data.lastPlayedFromKV,
@@ -202,6 +242,9 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
             isLoading: false,
             error: null
           }));
+          
+          // Track last known value
+          dataRef.current.lastTrackId = data.lastPlayedFromKV.track_id;
           
           // Call onLoad if provided
           if (onLoad) {
@@ -213,6 +256,8 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       }
       
       // If we get here, we didn't find any valid data
+      console.warn("[SpotifyBox] No Spotify data available from API");
+      
       setState(prev => ({
         ...prev,
         isLoading: false,
@@ -230,18 +275,25 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       }));
       
       return false;
-    } finally {
-      requestsRef.current.apiFetch = false;
     }
-  }, [onLoad]);
+  }, [onLoad, updateKVStore]);
 
   // Process Lanyard data directly
   const processLanyardData = useCallback(() => {
     const lanyardData = lanyard.data?.data;
     
     if (lanyardData) {
+      const isListening = !!lanyardData.listening_to_spotify;
+      const trackId = lanyardData.spotify?.track_id || null;
+      
+      // Store current Lanyard state for comparison
+      dataRef.current.lanyard = {
+        isListening,
+        trackId
+      };
+      
       // If currently listening to Spotify
-      if (lanyardData.listening_to_spotify && lanyardData.spotify) {
+      if (isListening && lanyardData.spotify) {
         // Create a clean SpotifyData object
         const spotifyData: SpotifyData = {
           song: lanyardData.spotify.song,
@@ -260,6 +312,8 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
           };
         }
         
+        console.log(`[SpotifyBox] Lanyard reports user listening to: ${spotifyData.song}`);
+        
         // Update state
         setState(prev => ({
           ...prev,
@@ -274,22 +328,22 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
           onLoad();
         }
         
-        // Background update KV store
-        // Use a debounce to avoid hammering the API with updates
-        if (timeoutsRef.current.kvUpdate) {
-          clearTimeout(timeoutsRef.current.kvUpdate);
+        // Check if the track changed
+        if (spotifyData.track_id !== dataRef.current.lastTrackId) {
+          console.log("[SpotifyBox] Track changed, updating KV store");
+          
+          // Update KV store in the background to avoid blocking UI
+          setTimeout(() => {
+            updateKVStore(spotifyData).catch(err => {
+              console.error("[SpotifyBox] Background KV update error:", err);
+            });
+          }, 1000);
         }
-        
-        timeoutsRef.current.kvUpdate = setTimeout(() => {
-          updateKVStore(spotifyData).catch(err => {
-            console.error("[SpotifyBox] Background KV update error:", err);
-          });
-        }, 2000);
         
         return true;
       }
       
-      // Try to get data from KV store
+      // Try to get data from KV store if not currently listening
       if (lanyardData.kv?.spotify_last_played) {
         try {
           // Parse KV data
@@ -299,6 +353,9 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
           if (kvData && typeof kvData === 'object' && 
               kvData.song && kvData.artist && kvData.album && 
               kvData.album_art_url && kvData.track_id) {
+            
+            console.log(`[SpotifyBox] Lanyard KV reports last played: ${kvData.song}`);
+            
             // Update state
             setState(prev => ({
               ...prev,
@@ -307,6 +364,9 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
               isLoading: false,
               error: null
             }));
+            
+            // Update last track ID
+            dataRef.current.lastTrackId = kvData.track_id;
             
             // Call onLoad if provided
             if (onLoad) {
@@ -321,30 +381,71 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       }
     }
     
+    // If we get here, we didn't find any valid data in Lanyard
+    console.log("[SpotifyBox] No Spotify data found in Lanyard");
     return false;
   }, [lanyard.data, onLoad, updateKVStore]);
 
+  // Set up periodic update check
+  useEffect(() => {
+    // Function to check for updates
+    const checkForUpdates = () => {
+      const currentData = state.spotifyData;
+      
+      // If we have current data and it's been more than 5 minutes since last update
+      if (currentData && Date.now() - state.lastUpdateTime > 300000) {
+        console.log("[SpotifyBox] Periodic update check - forcing KV update");
+        
+        // Force an update
+        updateKVStore(currentData, true).catch(console.error);
+      }
+    };
+    
+    // Set up periodic checks every 5 minutes
+    timeoutsRef.current.periodicUpdate = setInterval(checkForUpdates, 300000);
+    
+    return () => {
+      if (timeoutsRef.current.periodicUpdate) {
+        clearInterval(timeoutsRef.current.periodicUpdate);
+      }
+    };
+  }, [state.spotifyData, state.lastUpdateTime, updateKVStore]);
+
   // Main effect to load data
   useEffect(() => {
+    // Only trigger effect when lanyard data changes or we need a force update
+    if (!lanyard.data && !state.forceUpdate) return;
+    
     const loadData = async () => {
+      console.log("[SpotifyBox] Loading data, force update:", state.forceUpdate);
+      
       // 1. Try to get data directly from Lanyard
       const lanyardSuccess = processLanyardData();
       
-      // 2. If Lanyard data processing failed, try the API
-      if (!lanyardSuccess) {
+      // 2. If Lanyard data processing failed or we're forcing an update, try the API
+      if (!lanyardSuccess || state.forceUpdate) {
         const apiSuccess = await fetchSpotifyData();
         
         // 3. If API fails too, set up retry logic
-        if (!apiSuccess) {
-          // Schedule a retry after 10 seconds
+        if (!apiSuccess && dataRef.current.attempts < 3) {
+          console.log(`[SpotifyBox] API fetch failed, scheduling retry #${dataRef.current.attempts + 1}`);
+          
+          // Schedule a retry with exponential backoff
           if (timeoutsRef.current.retry) {
             clearTimeout(timeoutsRef.current.retry);
           }
           
+          const backoffTime = Math.min(10000, 1000 * Math.pow(2, dataRef.current.attempts));
+          
           timeoutsRef.current.retry = setTimeout(() => {
-            fetchSpotifyData().catch(console.error);
-          }, 10000);
+            setState(prev => ({ ...prev, forceUpdate: true }));
+          }, backoffTime);
         }
+      }
+      
+      // Reset force update flag
+      if (state.forceUpdate) {
+        setState(prev => ({ ...prev, forceUpdate: false }));
       }
     };
     
@@ -360,11 +461,51 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
         clearTimeout(timeoutsRef.current.retry);
       }
     };
-  }, [lanyard.data, processLanyardData, fetchSpotifyData]);
+  }, [lanyard.data, state.forceUpdate, processLanyardData, fetchSpotifyData]);
 
+  // Additional effect to trigger updates when Spotify status changes
+  useEffect(() => {
+    const lanyardData = lanyard.data?.data;
+    if (!lanyardData) return;
+    
+    // Check if Spotify status changed
+    const isListening = !!lanyardData.listening_to_spotify;
+    const trackId = lanyardData.spotify?.track_id || null;
+    
+    if (!dataRef.current.lanyard) {
+      // Initialize if this is the first run
+      dataRef.current.lanyard = { isListening, trackId };
+      return;
+    }
+    
+    // Check if listening status or track ID changed
+    if (isListening !== dataRef.current.lanyard.isListening ||
+        trackId !== dataRef.current.lanyard.trackId) {
+      
+      console.log(`[SpotifyBox] Spotify status changed - Was listening: ${dataRef.current.lanyard.isListening}, Now listening: ${isListening}`);
+      console.log(`[SpotifyBox] Track changed - Old: ${dataRef.current.lanyard.trackId}, New: ${trackId}`);
+      
+      // If user was listening but isn't anymore, force a KV update for "last played"
+      if (dataRef.current.lanyard.isListening && !isListening && 
+          dataRef.current.lanyard.trackId) {
+        
+        console.log("[SpotifyBox] User stopped listening - forcing KV update");
+        
+        // Give a slight delay to ensure Lanyard has proper data
+        setTimeout(() => {
+          fetchSpotifyData().catch(console.error);
+        }, 2000);
+      }
+      
+      // Update reference
+      dataRef.current.lanyard = { isListening, trackId };
+    }
+  }, [lanyard.data, fetchSpotifyData]);
+  
   // Also run the process when isValidating changes to false (indicating a refresh)
   useEffect(() => {
     if (!lanyard.isValidating && lanyard.data) {
+      console.log("[SpotifyBox] Lanyard refresh completed");
       processLanyardData();
     }
   }, [lanyard.isValidating, processLanyardData]);
