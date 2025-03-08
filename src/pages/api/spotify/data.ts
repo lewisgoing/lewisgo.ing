@@ -1,6 +1,9 @@
 // src/pages/api/spotify/data.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+/**
+ * TypeScript interfaces for Spotify data
+ */
 interface SpotifyData {
   song: string;
   artist: string;
@@ -11,7 +14,6 @@ interface SpotifyData {
     start: number;
     end: number;
   };
-  // Add a timestamp to help with versioning
   _updated_at?: number;
 }
 
@@ -19,63 +21,78 @@ interface ApiResponseData {
   spotify: SpotifyData | null;
   listeningToSpotify: boolean;
   lastPlayedFromKV: SpotifyData | null;
+  error?: string;
 }
 
+/**
+ * API handler for Spotify data
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Always return 200 status in production to prevent client-side errors
-  // Use the response body to indicate errors instead
   const userId = process.env.NEXT_PUBLIC_LANYARD_USER_ID || '661068667781513236';
   const apiKey = process.env.LANYARD_KV_KEY;
   
   // GET request to fetch data
   if (req.method === 'GET') {
     try {
-      // Fetch from Lanyard with timeout
+      // Fetch Lanyard data with timeout
       const lanyardData = await fetchLanyardData(userId);
       
-      // Build response with safeguards
+      // Prepare response
       const response: ApiResponseData = {
         spotify: null,
         listeningToSpotify: false,
         lastPlayedFromKV: null
       };
       
-      // Check if currently listening
-      if (lanyardData?.data?.listening_to_spotify && lanyardData.data.spotify) {
-        const spotifyData = lanyardData.data.spotify;
-        
-        if (isValidSpotifyData(spotifyData)) {
-          response.spotify = sanitizeSpotifyData(spotifyData);
-          response.listeningToSpotify = true;
-        }
-      }
-      
-      // Get last played from KV
-      if (lanyardData?.data?.kv?.spotify_last_played) {
-        try {
-          const kvRaw = lanyardData.data.kv.spotify_last_played;
-          const kvData = typeof kvRaw === 'string' ? JSON.parse(kvRaw) : kvRaw;
+      // Process Lanyard data if available
+      if (lanyardData?.data) {
+        // Check if currently listening
+        if (lanyardData.data.listening_to_spotify && lanyardData.data.spotify) {
+          const spotifyData = lanyardData.data.spotify;
           
-          if (isValidSpotifyData(kvData)) {
-            response.lastPlayedFromKV = sanitizeSpotifyData(kvData);
+          if (isValidSpotifyData(spotifyData)) {
+            response.spotify = sanitizeSpotifyData(spotifyData);
+            response.listeningToSpotify = true;
+            
+            // Background KV update for currently playing track
+            // This ensures consistency without blocking response
+            if (apiKey) {
+              // Don't await this to avoid blocking the response
+              updateKVStore(userId, apiKey, response.spotify)
+                .catch(err => console.error('[Spotify API] Background KV update error:', err));
+            }
           }
-        } catch (error) {
-          console.error('[Spotify API] Error parsing KV data:', error);
+        }
+        
+        // Get last played from KV
+        if (lanyardData.data.kv?.spotify_last_played) {
+          try {
+            const kvRaw = lanyardData.data.kv.spotify_last_played;
+            const kvData = typeof kvRaw === 'string' ? JSON.parse(kvRaw) : kvRaw;
+            
+            if (isValidSpotifyData(kvData)) {
+              response.lastPlayedFromKV = sanitizeSpotifyData(kvData);
+            }
+          } catch (error) {
+            console.error('[Spotify API] Error parsing KV data:', error);
+            response.error = 'Error parsing KV data';
+          }
         }
       }
       
       return res.status(200).json(response);
     } catch (error) {
-      console.error('[Spotify API] GET error:', error);
+      console.error('[Spotify API] GET handler error:', error);
       
-      // Return empty data on error
+      // Return empty data with error info on failure
       return res.status(200).json({
         spotify: null,
         listeningToSpotify: false,
-        lastPlayedFromKV: null
+        lastPlayedFromKV: null,
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
@@ -86,7 +103,7 @@ export default async function handler(
       if (!apiKey) {
         return res.status(200).json({ 
           success: false, 
-          error: 'API key not configured'
+          error: 'API key not configured' 
         });
       }
       
@@ -96,35 +113,38 @@ export default async function handler(
       if (!isValidSpotifyData(data)) {
         return res.status(200).json({ 
           success: false, 
-          error: 'Invalid Spotify data'
+          error: 'Invalid Spotify data' 
         });
       }
       
-      // Add timestamp for versioning
+      // Prepare sanitized data with timestamp
       const spotifyData = sanitizeSpotifyData(data);
       spotifyData._updated_at = Date.now();
       
-      // Update KV store with proper error handling
+      // Update KV store
       const success = await updateKVStore(userId, apiKey, spotifyData);
       
       return res.status(200).json({ success });
     } catch (error) {
-      console.error('[Spotify API] POST error:', error);
+      console.error('[Spotify API] POST handler error:', error);
+      
       return res.status(200).json({ 
         success: false, 
-        error: 'Internal server error'
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }
   
   // Method not allowed
-  return res.status(200).json({ 
+  return res.status(405).json({ 
     success: false, 
     error: 'Method not allowed' 
   });
 }
 
-// Helper function to fetch Lanyard data with timeout
+/**
+ * Helper function to fetch Lanyard data with timeout
+ */
 async function fetchLanyardData(userId: string) {
   try {
     const controller = new AbortController();
@@ -143,36 +163,53 @@ async function fetchLanyardData(userId: string) {
     return await response.json();
   } catch (error) {
     console.error('[Spotify API] Error fetching Lanyard data:', error);
-    return null;
+    throw error;
   }
 }
 
-// Helper function to update KV store with proper error handling
-async function updateKVStore(userId: string, apiKey: string, data: SpotifyData): Promise<boolean> {
+/**
+ * Helper function to update KV store
+ */
+async function updateKVStore(
+  userId: string,
+  apiKey: string,
+  data: SpotifyData
+): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
     
-    const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}/kv/spotify_last_played`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': apiKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data),
-      signal: controller.signal
-    });
+    const response = await fetch(
+      `https://api.lanyard.rest/v1/users/${userId}/kv/spotify_last_played`,
+      {
+        method: 'PUT',
+        headers: {
+          'Authorization': apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        signal: controller.signal
+      }
+    );
     
     clearTimeout(timeoutId);
     
-    return response.ok;
+    if (!response.ok) {
+      const responseText = await response.text();
+      console.error('[Spotify API] KV update failed:', responseText);
+      return false;
+    }
+    
+    return true;
   } catch (error) {
-    console.error('[Spotify API] Error updating KV store:', error);
+    console.error('[Spotify API] KV update error:', error);
     return false;
   }
 }
 
-// Helper function to validate SpotifyData
+/**
+ * Helper function to validate SpotifyData
+ */
 function isValidSpotifyData(data: any): data is SpotifyData {
   return (
     data &&
@@ -185,14 +222,16 @@ function isValidSpotifyData(data: any): data is SpotifyData {
   );
 }
 
-// Helper function to create a clean SpotifyData object
+/**
+ * Helper function to create a clean SpotifyData object
+ */
 function sanitizeSpotifyData(data: any): SpotifyData {
   const sanitized: SpotifyData = {
-    song: String(data.song),
-    artist: String(data.artist),
-    album: String(data.album),
-    album_art_url: String(data.album_art_url),
-    track_id: String(data.track_id)
+    song: String(data.song || ''),
+    artist: String(data.artist || ''),
+    album: String(data.album || ''),
+    album_art_url: String(data.album_art_url || ''),
+    track_id: String(data.track_id || '')
   };
   
   // Copy timestamps if they exist
