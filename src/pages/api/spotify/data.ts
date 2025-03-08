@@ -200,7 +200,7 @@ export default async function handler(
       let retries = 0;
       const maxRetries = 2;
       let success = false;
-      let lastError = null;
+      let lastError = '';
       
       while (retries <= maxRetries && !success) {
         try {
