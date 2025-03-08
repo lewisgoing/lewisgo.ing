@@ -1,7 +1,7 @@
 // components/assets/IconComponent.tsx
 import React from 'react';
 import Image from 'next/image';
-import { cn } from 'scripts/utils/tailwind-helpers';
+import { cn } from 'src/utils/tailwind-helpers';
 
 // Define icon sizes for consistency
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

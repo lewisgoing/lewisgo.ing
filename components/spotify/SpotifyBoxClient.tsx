@@ -1,7 +1,7 @@
 // components/boxes/SpotifyBox.tsx
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { FaSpotify } from "react-icons/fa";
 import ExternalLink from "../assets/ExternalLink";
@@ -20,31 +20,50 @@ interface SpotifyData {
   };
 }
 
-interface LanyardData {
+// This matches what useLanyard() returns
+interface LanyardSWRResponse {
   data?: {
-    listening_to_spotify?: boolean;
-    spotify?: SpotifyData | null;
-    kv?: {
-      spotify_last_played?: string;
+    success: boolean;
+    data: {
+      listening_to_spotify: boolean;
+      spotify?: SpotifyData | null;
+      kv?: {
+        spotify_last_played?: string;
+      };
+      [key: string]: any;
     };
   };
+  error?: Error;
+  isValidating: boolean;
+  mutate: () => void;
 }
 
 interface SpotifyBoxProps {
-  lanyard: LanyardData;
+  lanyard: LanyardSWRResponse;
   onLoad?: () => void;
 }
 
-const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
-  // State management
-  const [state, setState] = useState({
-    isHovered: false,
-    spotifyData: null as SpotifyData | null,
-    isLoading: true,
-    isCurrentlyPlaying: false,
-  });
+// Combined state interface
+interface SpotifyBoxState {
+  isHovered: boolean;
+  spotifyData: SpotifyData | null;
+  isLoading: boolean;
+  isCurrentlyPlaying: boolean;
+}
 
-  // Image styles based on hover state
+const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
+  // State for component
+  const [state, setState] = useState<SpotifyBoxState>({
+    isHovered: false,
+    spotifyData: null,
+    isLoading: true,
+    isCurrentlyPlaying: false
+  });
+  
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const kvUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Derived styles based on hover state
   const imageStyle = state.isHovered
     ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
     : { filter: 'grayscale(1)', transition: 'filter 0.3s ease' };
@@ -54,56 +73,154 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     color: state.isHovered ? "#1db954" : "#e5d3b8",
   };
 
+  const setSpotifyData = (data: SpotifyData | null, isPlaying: boolean = false): void => {
+    setState(prev => ({
+      ...prev,
+      spotifyData: data,
+      isCurrentlyPlaying: isPlaying,
+      isLoading: false
+    }));
+  };
+
+  // Update the KV store with track data
+  const updateKVStore = useCallback(async (trackData: SpotifyData): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/spotify/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(trackData)
+      });
+      
+      if (!response.ok) {
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }, []);
+
+  // Fetch Spotify data from API
+  const fetchSpotifyData = async (): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/spotify/data');
+      
+      if (!response.ok) {
+        return false;
+      }
+      
+      const data = await response.json();
+      
+      // Check if user is currently listening to Spotify
+      if (data.listeningToSpotify && data.spotify) {
+        setSpotifyData(data.spotify, true);
+        updateKVStore(data.spotify);
+        return true;
+      }
+      
+      // Otherwise, use last played from KV
+      if (data.lastPlayedFromKV) {
+        setSpotifyData(data.lastPlayedFromKV, false);
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
   // Process Lanyard data only when it changes
   useEffect(() => {
     // Early return if no lanyard data is available
-    if (!lanyard || !lanyard.data) {
+    if (!lanyard.data || !lanyard.data.data) {
       setState(prev => ({ ...prev, isLoading: false }));
       return;
     }
 
-    const processLanyardData = () => {
+    const lanyardData = lanyard.data.data;
+    
+    const processLanyardData = async () => {
       try {
         // Check if the user is currently listening to Spotify
-        if (lanyard.data?.listening_to_spotify && lanyard.data?.spotify) {
-          setState(prev => ({
-            ...prev,
-            spotifyData: lanyard.data.spotify,
-            isCurrentlyPlaying: true,
-            isLoading: false
-          }));
+        if (lanyardData.listening_to_spotify && lanyardData.spotify) {
+          setSpotifyData(lanyardData.spotify, true);
+          await updateKVStore(lanyardData.spotify);
           
           if (onLoad) onLoad();
           return;
         }
 
-        // If not currently playing, try to get the last played track from KV store
-        if (lanyard.data?.kv?.spotify_last_played) {
-          try {
-            const kvData = JSON.parse(lanyard.data.kv.spotify_last_played);
-            setState(prev => ({
-              ...prev,
-              spotifyData: kvData,
-              isCurrentlyPlaying: false,
-              isLoading: false
-            }));
-            
-            if (onLoad) onLoad();
-          } catch (error) {
-            console.error('Error parsing Spotify KV data:', error);
+        // If not currently playing, try API endpoint
+        const success = await fetchSpotifyData();
+        
+        if (!success) {
+          // If API fails, try to get the last played track from KV store
+          if (lanyardData.kv?.spotify_last_played) {
+            try {
+              const kvData = JSON.parse(lanyardData.kv.spotify_last_played);
+              setSpotifyData(kvData, false);
+              
+              if (onLoad) onLoad();
+            } catch (parseErr) {
+              setState(prev => ({ ...prev, isLoading: false }));
+            }
+          } else {
             setState(prev => ({ ...prev, isLoading: false }));
           }
-        } else {
-          setState(prev => ({ ...prev, isLoading: false }));
         }
       } catch (error) {
-        console.error('Error processing Lanyard data:', error);
         setState(prev => ({ ...prev, isLoading: false }));
       }
     };
 
     processLanyardData();
-  }, [lanyard, onLoad]);
+    
+    // Cleanup on unmount
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+      if (kvUpdateTimeoutRef.current) {
+        clearTimeout(kvUpdateTimeoutRef.current);
+      }
+    };
+  }, [lanyard, onLoad, updateKVStore]);
+
+  // CRITICAL: This useEffect specifically watches for changes in listening status
+  // This ensures the last played song is always saved
+  useEffect(() => {
+    if (!lanyard.data?.data) return;
+    
+    if (
+      lanyard.data.data.listening_to_spotify && 
+      lanyard.data.data.spotify
+    ) {
+      // Use timeout to prevent multiple rapid updates
+      if (kvUpdateTimeoutRef.current) {
+        clearTimeout(kvUpdateTimeoutRef.current);
+      }
+      
+      kvUpdateTimeoutRef.current = setTimeout(() => {
+        updateKVStore(lanyard.data.data.spotify!);
+        setSpotifyData(lanyard.data.data.spotify, true);
+      }, 1000);
+    }
+  }, [
+    lanyard.data?.data?.listening_to_spotify, 
+    lanyard.data?.data?.spotify, 
+    updateKVStore
+  ]);
+
+  // Call onLoad callback when data is available
+  useEffect(() => {
+    if (state.spotifyData && onLoad) {
+      onLoad();
+    }
+  }, [state.spotifyData, onLoad]);
 
   // Mouse event handlers
   const handleMouseEnter = () => setState(prev => ({ ...prev, isHovered: true }));

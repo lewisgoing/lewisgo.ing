@@ -1,9 +1,11 @@
 // components/boxes/SpotifyBox.tsx
-'use cache'
+'use client';
+
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import React, { useEffect, useState, useRef } from "react";
 import { FaSpotify } from "react-icons/fa";
 import ExternalLink from "../assets/ExternalLink";
+import { Skeleton } from "../shadcn/skeleton";
 
 // Define TypeScript interfaces
 interface SpotifyData {
@@ -18,43 +20,44 @@ interface SpotifyData {
   };
 }
 
-interface LanyardData {
+// This matches what useLanyard() returns
+interface LanyardSWRResponse {
   data?: {
-    listening_to_spotify?: boolean;
-    spotify?: SpotifyData | null;
-    kv?: {
-      spotify_last_played?: string;
+    success: boolean;
+    data: {
+      listening_to_spotify: boolean;
+      spotify?: SpotifyData | null;
+      kv?: {
+        spotify_last_played?: string;
+      };
+      [key: string]: any;
     };
   };
+  error?: Error;
+  isValidating: boolean;
+  mutate: () => void;
 }
 
 interface SpotifyBoxProps {
-  lanyard: LanyardData;
+  lanyard: LanyardSWRResponse;
   onLoad?: () => void;
 }
 
-// Combined state interface to reduce useState calls
+// Combined state interface
 interface SpotifyBoxState {
   isHovered: boolean;
   spotifyData: SpotifyData | null;
-  loading: {
-    isLoading: boolean;
-    showMessage: boolean;
-  };
+  isLoading: boolean;
   isCurrentlyPlaying: boolean;
   debugInfo: string[];
 }
 
 const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
-  'use cache';
   // Combined state for better management
   const [state, setState] = useState<SpotifyBoxState>({
     isHovered: false,
     spotifyData: null,
-    loading: {
-      isLoading: false,
-      showMessage: false
-    },
+    isLoading: true,
     isCurrentlyPlaying: false,
     debugInfo: []
   });
@@ -62,18 +65,17 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Derived styles based on hover state
+  const imageStyle = state.isHovered
+    ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
+    : { filter: 'grayscale(1)', transition: 'filter 0.3s ease' };
+
   const iconStyle = {
     transition: "color 0.3s ease",
     color: state.isHovered ? "#1db954" : "#e5d3b8",
   };
 
-  const imageStyle = state.isHovered
-    ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
-    : { filter: 'grayscale(1)', transition: 'filter 0.3s ease' };
-
   // Helper functions for state updates
   const addDebug = (message: string): void => {
-
     setState(prev => ({
       ...prev,
       debugInfo: [...prev.debugInfo, message]
@@ -84,28 +86,9 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     setState(prev => ({
       ...prev,
       spotifyData: data,
-      isCurrentlyPlaying: isPlaying
+      isCurrentlyPlaying: isPlaying,
+      isLoading: false
     }));
-  };
-
-  const startLoading = (): void => {
-    setState(prev => ({
-      ...prev,
-      loading: { isLoading: true, showMessage: false }
-    }));
-    // No need for timeout anymore since we're not showing text
-  };
-
-  const stopLoading = (): void => {
-    setState(prev => ({
-      ...prev,
-      loading: { isLoading: false, showMessage: false }
-    }));
-    
-    if (loadingTimeoutRef.current) {
-      clearTimeout(loadingTimeoutRef.current);
-      loadingTimeoutRef.current = null;
-    }
   };
 
   // Update the KV store with track data
@@ -172,59 +155,58 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     }
   };
 
-  // Main initialization effect
+  // Process Lanyard data only when it changes
   useEffect(() => {
-    const initSpotify = async (): Promise<void> => {
-      startLoading();
-      addDebug('Initializing SpotifyBox component');
-      
-      // Check lanyard prop first for immediate data
-      if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
-        addDebug('Using immediate lanyard data');
-        setSpotifyData(lanyard.data.spotify, true);
-        
-        // Update KV store in the background
-        updateKVStore(lanyard.data.spotify).then(() => {
-          stopLoading();
-          onLoad?.();
-        });
-        
-        stopLoading();
-        return;
-      }
-      
+    // Early return if no lanyard data is available
+    if (!lanyard.data || !lanyard.data.data) {
+      setState(prev => ({ ...prev, isLoading: false }));
+      return;
+    }
+
+    const lanyardData = lanyard.data.data;
+    
+    const processLanyardData = async () => {
       try {
-        // Try API endpoint next
+        // Check if the user is currently listening to Spotify
+        if (lanyardData.listening_to_spotify && lanyardData.spotify) {
+          addDebug('User is currently listening to Spotify via Lanyard');
+          setSpotifyData(lanyardData.spotify, true);
+          
+          // Update KV store with current track
+          await updateKVStore(lanyardData.spotify);
+          
+          if (onLoad) onLoad();
+          return;
+        }
+
+        // If not currently playing, try API endpoint
         const success = await fetchSpotifyData();
         
         if (!success) {
-          // Final fallback to direct Lanyard data
-          addDebug('Falling back to direct Lanyard data');
-          
-          if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
-            addDebug('User is listening to Spotify (from Lanyard prop)');
-            setSpotifyData(lanyard.data.spotify, true);
-            await updateKVStore(lanyard.data.spotify);
-          } else if (lanyard?.data?.kv?.spotify_last_played) {
+          // If API fails, try to get the last played track from KV store
+          if (lanyardData.kv?.spotify_last_played) {
             addDebug('Found last played in Lanyard KV prop');
             try {
-              const kvData = JSON.parse(lanyard.data.kv.spotify_last_played);
+              const kvData = JSON.parse(lanyardData.kv.spotify_last_played);
               setSpotifyData(kvData, false);
+              
+              if (onLoad) onLoad();
             } catch (parseErr: any) {
               addDebug(`Error parsing KV data: ${parseErr.message}`);
+              setState(prev => ({ ...prev, isLoading: false }));
             }
           } else {
             addDebug('No Spotify data available');
+            setState(prev => ({ ...prev, isLoading: false }));
           }
         }
-      } catch (err: any) {
-        addDebug(`Initialization error: ${err.message}`);
-      } finally {
-        stopLoading();
+      } catch (error: any) {
+        addDebug(`Error processing Lanyard data: ${error.message}`);
+        setState(prev => ({ ...prev, isLoading: false }));
       }
     };
-    
-    initSpotify();
+
+    processLanyardData();
     
     // Cleanup on unmount
     return () => {
@@ -232,37 +214,18 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
         clearTimeout(loadingTimeoutRef.current);
       }
     };
-  }, [lanyard]);
-  
-  // Handle changes in Lanyard Spotify status
-  useEffect(() => {
-    if (lanyard?.data?.listening_to_spotify && lanyard?.data?.spotify) {
-      addDebug('Spotify status changed - now playing');
-      setSpotifyData(lanyard.data.spotify, true);
-      
-      // Update KV store with current track
-      updateKVStore(lanyard.data.spotify);
-    }
-  }, [lanyard?.data?.listening_to_spotify, lanyard?.data?.spotify, updateKVStore]);
-  
-  // Call onLoad callback when data is available
-  useEffect(() => {
-    if (state.spotifyData && onLoad) {
-      addDebug('Calling onLoad callback');
-      onLoad();
-    }
-  }, [state.spotifyData, onLoad]);
+  }, [lanyard, onLoad]);
 
-  // Event handlers
-  const handleMouseEnter = (): void => setState(prev => ({ ...prev, isHovered: true }));
-  const handleMouseLeave = (): void => setState(prev => ({ ...prev, isHovered: false }));
+  // Mouse event handlers
+  const handleMouseEnter = () => setState(prev => ({ ...prev, isHovered: true }));
+  const handleMouseLeave = () => setState(prev => ({ ...prev, isHovered: false }));
 
-  // Empty, invisible placeholder during loading
-  if (state.loading.isLoading && !state.spotifyData) {
-    return <div className="h-full w-full"></div>;
+  // Loading state - show skeleton
+  if (state.isLoading) {
+    return <Skeleton className="w-full h-full rounded-3xl" />;
   }
   
-  // Minimal "no data" state without loading text
+  // If no data is available - empty state
   if (!state.spotifyData) {
     return (
       <div className="h-full w-full opacity-0">
@@ -278,22 +241,17 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
     );
   }
 
-  // Extract Spotify data with default empty values
-  const { song, artist, album, album_art_url, track_id } = state.spotifyData || {
-    song: "",
-    artist: "",
-    album: "",
-    album_art_url: "",
-    track_id: ""
-  };
+  // Extract track data for readability
+  const { song, artist, album, album_art_url, track_id } = state.spotifyData;
 
   return (
     <>
       <div 
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className={`transition-all duration-500 ease-in-out ${state.loading.isLoading ? 'opacity-0' : 'opacity-100'}`}
+        className="transition-all duration-500 ease-in-out opacity-100"
       >
+        {/* Desktop Layout */}
         <div className="flex bento-md:hidden z-[1] bento-lg:flex h-full w-full flex-col justify-between p-6">
           <Image
             src={album_art_url}
@@ -307,7 +265,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
           <div className="flex flex-col">
             <span className="mb-2 flex gap-2">
               <Image
-                src="svg/bento-now-playing.svg"
+                src="/svg/bento-now-playing.svg"
                 alt="Now playing"
                 width={16}
                 height={16}
@@ -336,6 +294,8 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
             </span>
           </div>
         </div>
+
+        {/* Tablet Layout */}
         <div className="hidden bento-md:flex z-[1] bento-lg:hidden h-full w-full px-4 items-center gap-4">
           <Image
             src={album_art_url}
@@ -349,7 +309,7 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
           <div className="flex flex-col w-[42%]">
             <span className="mb-2 flex gap-2">
               <Image
-                src="svg/bento-now-playing.svg"
+                src="/svg/bento-now-playing.svg"
                 alt="Now playing"
                 width={16}
                 height={16}
@@ -378,9 +338,13 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
             </span>
           </div>
         </div>
+
+        {/* Spotify logo */}
         <div className="absolute right-0 top-0 z-[1] m-3 text-primary">
           <FaSpotify size={56} style={iconStyle} />
         </div>
+
+        {/* External link to track */}
         {track_id && (
           <ExternalLink
             href={`https://open.spotify.com/track/${track_id}`}
@@ -388,6 +352,15 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
           />
         )}
       </div>
+      
+      {process.env.NODE_ENV === 'development' && (
+        <details className="fixed bottom-2 right-2 text-xs text-gray-500 z-10">
+          <summary>Debug info</summary>
+          <pre className="whitespace-pre-wrap text-xs">
+            {state.debugInfo.join('\n')}
+          </pre>
+        </details>
+      )}
     </>
   );
 };

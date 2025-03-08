@@ -4,7 +4,7 @@
 
 import headerNavLinks from '../public/data/headerNavLinks'
 import siteMetadata from 'public/data/siteMetaData'
-import { cn } from '../scripts/utils/tailwind-helpers'
+import { cn } from '../src/utils/tailwind-helpers'
 import NextImage from 'next/image'
 import { useEffect, useState } from 'react'
 

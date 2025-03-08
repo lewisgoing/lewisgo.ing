@@ -16,7 +16,7 @@ import GithubBox from "./boxes/GithubBox";
 import GithubCalendar from "./boxes/GithubCalendar";
 import SkillsBox from "./boxes/SkillsBox";
 import SoundcloudBox from "./boxes/SoundcloudBox";
-import SpotifyBox from "./boxes/SpotifyBox";
+import SpotifyBox from "./spotify/SpotifyBoxClient";
 
 // Layout utilities
 import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
@@ -47,8 +47,9 @@ interface LanyardData {
 
 interface LanyardResponse {
   data: LanyardData;
-  // Include any other top-level properties of the Lanyard response
 }
+
+
 
 // Apply WidthProvider to Responsive Grid Layout
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -261,13 +262,14 @@ export default function Bento() {
       </div>
 
       {/* Spotify Status Box */}
-      <div
+<div
   key="spotify"
   className="group"
   onMouseEnter={() => setIntroSilhouette(true)}
   onMouseLeave={() => setIntroSilhouette(false)}
 >
-  {lanyard.data ? (
+  {/* Pass the full lanyard object to the SpotifyBox component */}
+  {!lanyard.isValidating ? (
     <SpotifyBox
       lanyard={lanyard}
       onLoad={() => setIsSpotifyLoaded(true)}

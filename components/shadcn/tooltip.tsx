@@ -1,7 +1,7 @@
 // components/shadcn/tooltip.tsx
 'use client'
 
-import { cn } from '../../scripts/utils/tailwind-helpers'
+import { cn } from '../../src/utils/tailwind-helpers'
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import * as React from 'react'
 
