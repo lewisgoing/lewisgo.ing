@@ -195,9 +195,11 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
   useEffect(() => {
     if (!lanyard.data?.data) return;
     
+    const lanyardData = lanyard.data.data;
+    
     if (
-      lanyard.data.data.listening_to_spotify && 
-      lanyard.data.data.spotify
+      lanyardData.listening_to_spotify && 
+      lanyardData.spotify
     ) {
       // Use timeout to prevent multiple rapid updates
       if (kvUpdateTimeoutRef.current) {
@@ -205,15 +207,13 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       }
       
       kvUpdateTimeoutRef.current = setTimeout(() => {
-        updateKVStore(lanyard.data.data.spotify!);
-        setSpotifyData(lanyard.data.data.spotify, true);
+        if (lanyardData.spotify) {
+          updateKVStore(lanyardData.spotify);
+          setSpotifyData(lanyardData.spotify, true);
+        }
       }, 1000);
     }
-  }, [
-    lanyard.data?.data?.listening_to_spotify, 
-    lanyard.data?.data?.spotify, 
-    updateKVStore
-  ]);
+  }, [lanyard.data?.data, updateKVStore]);
 
   // Call onLoad callback when data is available
   useEffect(() => {
