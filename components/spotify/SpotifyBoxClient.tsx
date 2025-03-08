@@ -21,21 +21,34 @@ interface SpotifyData {
   _updated_at?: number;
 }
 
-interface LanyardData {
-  data?: {
-    listening_to_spotify?: boolean;
-    spotify?: SpotifyData | null;
-    kv?: {
-      spotify_last_played?: string;
-    };
+// Define the structure of Lanyard's response
+interface LanyardResponseData {
+  listening_to_spotify?: boolean;
+  spotify?: SpotifyData;
+  kv?: {
+    spotify_last_played?: string;
   };
+  discord_user?: any;
+  discord_status?: string;
+  activities?: any[];
+  [key: string]: any;
+}
+
+interface LanyardResponse {
+  success: boolean;
+  data: LanyardResponseData;
+}
+
+// The actual type provided by useLanyard
+interface LanyardSWRSingle {
+  data?: LanyardResponse;
   error?: Error;
   isValidating: boolean;
   mutate: () => void;
 }
 
 interface SpotifyBoxProps {
-  lanyard: LanyardData;
+  lanyard: LanyardSWRSingle;
   onLoad?: () => void;
 }
 
@@ -151,9 +164,11 @@ const SpotifyBox: React.FC<SpotifyBoxProps> = ({ lanyard, onLoad }) => {
       const response = await fetch('/api/spotify/data', {
         // Set a timeout to prevent hanging requests
         signal: AbortSignal.timeout(5000),
-        // Add cache busting parameter
-        cache: 'no-store',
-        next: { revalidate: 0 }
+        // Add cache busting parameter to query
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
       
       const data = await response.json();
