@@ -404,7 +404,7 @@ const AudioBox = () => {
       <div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`transition-all duration-500 ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        className={`transition-all ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}
       >
         {/* Desktop Layout */}
         <div className="flex bento-md:hidden z-[1] bento-lg:flex h-full w-full flex-col justify-between p-6 mt-2">

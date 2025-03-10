@@ -26,7 +26,6 @@ const ProjectPreviewBox: React.FC<Props> = ({
       whileInView="animate"
       variants={PreviewAnimation}
     >
-      {/* duration-[500ms] */}
       <div
         className="h-full w-full px-10 py-6  transition-all ease-in-out hover:scale-105 bg-cover bg-no-repeat bg-center"
         style={{ backgroundImage: `url(${imageUrl})` }}

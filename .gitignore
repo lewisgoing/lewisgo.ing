@@ -40,3 +40,4 @@ next-env.d.ts
 *.mp3.tmp
 *.wav.tmp
 public/svg/ignore
+public/ignore

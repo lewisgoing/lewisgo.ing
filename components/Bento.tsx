@@ -19,7 +19,7 @@ import SoundcloudBox from "./boxes/SoundcloudBox";
 import SpotifyBox from "./spotify/SpotifyBoxClient";
 
 // Layout utilities
-import { lgLayout, mdLayout, smLayout } from "../scripts/utils/bento-layouts";
+import { lgLayout, mdLayout, smLayout } from "../src/utils/bento-layouts";
 
 // TypeScript interfaces
 interface DiscordUser {
