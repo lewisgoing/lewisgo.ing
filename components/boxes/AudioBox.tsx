@@ -124,7 +124,7 @@ const AudioBox = () => {
       {
         title: "Closer",
         artist: "lewisgoing & Avi8",
-        albumCoverUrl: "/albumart/closer.jpg",
+        albumCoverUrl: "/albumart/closer.webp",
         audioSrc: "./audio/closer.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/closer",
         preload: "auto", // First song loads immediately
@@ -132,7 +132,7 @@ const AudioBox = () => {
       {
         title: "Winter '22 Samples",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/winter22.jpeg",
+        albumCoverUrl: "/albumart/winter22.webp",
         audioSrc: "./audio/winter22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/winter22?si=6464126a1a6d4fbdad72cda1978ba8b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
         preload: "metadata", // Just load metadata for next track
@@ -140,7 +140,7 @@ const AudioBox = () => {
       {
         title: "2023 Samples",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/2023clips.jpeg",
+        albumCoverUrl: "/albumart/2023clips.webp",
         audioSrc: "./audio/2023samples.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/whereimat?si=b18a4a36f49540789802800d35bc63c7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
         preload: "none", // Don't preload until needed
@@ -148,7 +148,7 @@ const AudioBox = () => {
       {
         title: "New Paths",
         artist: "Pradaaslife produced by lewisgoing",
-        albumCoverUrl: "/albumart/newpaths.jpeg",
+        albumCoverUrl: "/albumart/newpaths.webp",
         audioSrc: "./audio/newpaths.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/newpaths?si=cd069d336dcf4059840ede43a5d69a47&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
         preload: "none",
@@ -156,7 +156,7 @@ const AudioBox = () => {
       {
         title: "Midsummer '22 Clips",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/summer22.jpeg",
+        albumCoverUrl: "/albumart/summer22.webp",
         audioSrc: "./audio/summer22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
         preload: "none",
@@ -164,7 +164,7 @@ const AudioBox = () => {
       {
         title: "May '22 Clips",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/may22.jpeg",
+        albumCoverUrl: "/albumart/may22.webp",
         audioSrc: "./audio/may22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/may?si=4880056ad4e94c3fa4b6285d08951427&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
         preload: "none",
@@ -172,7 +172,7 @@ const AudioBox = () => {
       {
         title: "February '22 Clips",
         artist: "lewisgoing",
-        albumCoverUrl: "/albumart/feb22.jpeg",
+        albumCoverUrl: "/albumart/feb22.webp",
         audioSrc: "./audio/feb22.mp3",
         audioLink: "https://soundcloud.com/lewisgoing/feb22?si=9a9c188a73a84cb78d6ac17fc76de175&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
         preload: "none",
