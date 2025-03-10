@@ -1,4 +1,4 @@
-//components/boxes/DiscordStatusBox.tsx
+// components/boxes/DiscordStatusBox.tsx
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { FaDiscord } from 'react-icons/fa'
@@ -10,6 +10,12 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
     )[0]
 
     const hasMainActivity = !!mainActivity
+    const [isHovered, setIsHovered] = useState(false);
+
+    const circleStyle = {
+        transition: 'background-color 0.3s ease',
+        backgroundColor: isHovered ? '#5865F2' : 'hsl(var(--primary))'
+    };
 
     const [elapsedTime, setElapsedTime] = useState<string>(
         mainActivity && mainActivity.timestamps && mainActivity.timestamps.start
@@ -35,7 +41,11 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
 
     return (
         <>
-            <div className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col">
+            <div 
+                className="hidden bento-lg:relative w-full h-full bento-lg:flex flex-col"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
                 <div className="absolute top-5 left-4">
                     <div className="relative">
                         <Image
@@ -65,7 +75,10 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                         )}
                     </div>
                 </div>
-                <div className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full bg-primary">
+                <div 
+                    className="absolute right-0 top-0 z-[1] w-14 h-14 flex items-center justify-center m-3 rounded-full"
+                    style={circleStyle}
+                >
                     <FaDiscord size={50} className="text-secondary p-1" />
                 </div>
                 <div className="bg-tertiary/50 w-full h-[80px] rounded-t-3xl flex-shrink-0" />
@@ -139,7 +152,11 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                     </div>
                 </div>
             </div>
-            <div className="relative w-full h-full flex flex-col bento-lg:hidden">
+            <div 
+                className="relative w-full h-full flex flex-col bento-lg:hidden"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
                 <div className="flex flex-col h-full gap-2 m-2 justify-between">
                     <div className="flex gap-2 items-center">
                         <div className="flex-shrink-0">
@@ -238,7 +255,10 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                             </div>
                         )}
                     </div>
-                    <div className="absolute right-0 top-0 w-14 h-14 flex items-center justify-center m-3 rounded-full bg-primary">
+                    <div 
+                        className="absolute right-0 top-0 w-14 h-14 flex items-center justify-center m-3 rounded-full"
+                        style={circleStyle}
+                    >
                         <FaDiscord size={50} className="text-secondary p-1" />
                     </div>
                 </div>

@@ -503,7 +503,7 @@ const AudioBox = () => {
 
           {/* flex col for metadata */}
           <div className="flex flex-col w-[200px] h-full">
-            <div className="h-12 flex flex-col justify-start overflow-hidden">
+            <div className="h-12 flex flex-col justify-start overflow-hidden w-[162px]">
               <div className="text-md font-bold leading-none truncate mb-1">
                 {currentSong.title}
               </div>
@@ -541,7 +541,7 @@ const AudioBox = () => {
                     onClick={playLastTrack} 
                     onMouseDown={preventDrag}
                   >
-                    <HiBackward size={32} className="text-primary" />
+                    <HiBackward size={32} className="text-primary" style={{        cursor: "pointer", }}/>
                   </button>
                   
                   <button 
@@ -568,8 +568,9 @@ const AudioBox = () => {
                     className="cursor-pointer no-drag p-0 drag-blocker transition-all duration-200 hover:brightness-125" 
                     onClick={skipToNextTrack} 
                     onMouseDown={preventDrag}
+                    
                   >
-                    <HiForward size={32} className="text-primary" />
+                    <HiForward size={32} className="text-primary" style={{        cursor: "pointer", }} />
                   </button>
                 </div>
               </div>
@@ -632,7 +633,7 @@ const AudioBox = () => {
                   className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
                   onMouseDown={preventDrag}
                 >
-                  <HiBackward size={24} className="text-primary" />
+                  <HiBackward size={24} className="text-primary cursor-pointer" />
                 </button>
                 
                 <button 
