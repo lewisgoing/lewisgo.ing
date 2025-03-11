@@ -12,7 +12,7 @@ const sizeMap: Record<IconSize, number> = {
   sm: 24,
   md: 32,
   lg: 48,
-  xl: 64
+  xl: 64,
 };
 
 interface IconProps {
@@ -26,21 +26,16 @@ interface IconProps {
  * A component for rendering optimized SVG icons
  * This uses Next.js Image for optimized loading
  */
-export const Icon: React.FC<IconProps> = ({ 
-  name, 
-  size = 'md', 
-  className, 
-  alt = 'icon' 
-}) => {
+export const Icon: React.FC<IconProps> = ({ name, size = 'md', className, alt = 'icon' }) => {
   const pixelSize = sizeMap[size];
-  
+
   return (
     <Image
       src={`/svg/${name}.svg`}
       alt={alt}
       width={pixelSize}
       height={pixelSize}
-      className={cn("text-primary", className)}
+      className={cn('text-primary', className)}
       // Only use unoptimized for SVGs - Next.js doesn't optimize SVGs by default
       unoptimized
     />

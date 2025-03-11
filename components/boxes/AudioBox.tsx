@@ -7,77 +7,69 @@ import React, {
   CSSProperties,
   useRef,
   Suspense,
-} from "react";
-import dynamic from "next/dynamic";
-import { useTheme } from "next-themes";
-import NextImage from "next/image";
-import {
-  HiForward,
-  HiBackward,
-} from "react-icons/hi2";
-import { FaCompactDisc, FaSoundcloud } from "react-icons/fa";
-import { ExternalLink, MoveUpRight } from "lucide-react";
-import ExternalLinkComponent from "../assets/ExternalLink";
+} from 'react';
+import dynamic from 'next/dynamic';
+import { useTheme } from 'next-themes';
+import NextImage from 'next/image';
+import { HiForward, HiBackward } from 'react-icons/hi2';
+import { FaCompactDisc, FaSoundcloud } from 'react-icons/fa';
+import { ExternalLink, MoveUpRight } from 'lucide-react';
+import ExternalLinkComponent from '../assets/ExternalLink';
 
 // Lazy load the Lottie component with explicit props type
-const LottiePlayPauseWithNoSSR = dynamic(
-  () => import("../../components/LottiePlayPauseButton"),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="w-10 h-10 flex items-center justify-center opacity-80">
-        <div className="w-6 h-6 text-primary">
-          ▶
-        </div>
-      </div>
-    )
-  }
-);
+const LottiePlayPauseWithNoSSR = dynamic(() => import('../../components/LottiePlayPauseButton'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-10 h-10 flex items-center justify-center opacity-80">
+      <div className="w-6 h-6 text-primary">▶</div>
+    </div>
+  ),
+});
 
 // Keeping the original style definitions intact
 const progressBarContainerStyle: CSSProperties = {
-  position: "relative",
-  height: "6px", // Fixed height container
-  display: "flex",
-  alignItems: "center"
+  position: 'relative',
+  height: '6px', // Fixed height container
+  display: 'flex',
+  alignItems: 'center',
 };
 
 const progressBarStyle: CSSProperties = {
-  position: "absolute",
-  height: "3px",
-  width: "100%",
-  backgroundColor: "#8d9092",
-  cursor: "pointer",
-  borderRadius: "2px",
-  transition: "height 0.2s ease-in-out"
+  position: 'absolute',
+  height: '3px',
+  width: '100%',
+  backgroundColor: '#8d9092',
+  cursor: 'pointer',
+  borderRadius: '2px',
+  transition: 'height 0.2s ease-in-out',
 };
 
 const progressBarHoverStyle: CSSProperties = {
   ...progressBarStyle,
-  height: "5px",
-  backgroundColor: "#a0a0a0"
+  height: '5px',
+  backgroundColor: '#a0a0a0',
 };
 
 const progressIndicatorStyle = (percentage: number): CSSProperties => ({
-  position: "absolute",
+  position: 'absolute',
   top: 0,
   left: 0,
-  height: "100%",
+  height: '100%',
   width: `${percentage}%`,
-  backgroundColor: "#FFFFFF",
+  backgroundColor: '#FFFFFF',
 });
 
 const dotIndicatorStyle = (percentage: number, isHovered: boolean): CSSProperties => ({
-  position: "absolute",
-  top: "50%",
+  position: 'absolute',
+  top: '50%',
   left: `${percentage}%`,
-  transform: "translate(-50%, -50%)",
-  width: isHovered ? "8px" : "5px",
-  height: isHovered ? "8px" : "5px",
-  borderRadius: "50%",
-  backgroundColor: "#FFFFFF",
-  transition: "width 0.2s ease, height 0.2s ease",
-  boxShadow: isHovered ? "0 0 3px rgba(255, 255, 255, 0.7)" : "none"
+  transform: 'translate(-50%, -50%)',
+  width: isHovered ? '8px' : '5px',
+  height: isHovered ? '8px' : '5px',
+  borderRadius: '50%',
+  backgroundColor: '#FFFFFF',
+  transition: 'width 0.2s ease, height 0.2s ease',
+  boxShadow: isHovered ? '0 0 3px rgba(255, 255, 255, 0.7)' : 'none',
 });
 
 interface Song {
@@ -86,7 +78,7 @@ interface Song {
   albumCoverUrl: string;
   audioSrc: string;
   audioLink?: string;
-  preload?: "none" | "metadata" | "auto"; // Add preload option
+  preload?: 'none' | 'metadata' | 'auto'; // Add preload option
 }
 
 const AudioBox = () => {
@@ -106,79 +98,85 @@ const AudioBox = () => {
 
   // Hover styles (kept the same)
   const imageStyle = {
-    filter: isPlaying ? 'grayscale(0)' : (isHovered ? 'grayscale(0.5)' : 'grayscale(1)'),
+    filter: isPlaying ? 'grayscale(0)' : isHovered ? 'grayscale(0.5)' : 'grayscale(1)',
     transition: 'filter 0.3s ease',
   };
 
   const iconStyle = {
-    transition: "color 0.3s ease",
-    color: isHovered ? "#ff7700" : "#e5d3b8",
+    transition: 'color 0.3s ease',
+    color: isHovered ? '#ff7700' : '#e5d3b8',
   };
 
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
 
   // Memoized song data (no changes here, just using useMemo for performance)
   const songs: Song[] = useMemo(
     () => [
       {
-        title: "Closer",
-        artist: "lewisgoing & Avi8",
-        albumCoverUrl: "/albumart/closer.webp",
-        audioSrc: "./audio/closer.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/closer",
-        preload: "auto", // First song loads immediately
+        title: 'Closer',
+        artist: 'lewisgoing & Avi8',
+        albumCoverUrl: '/albumart/closer.webp',
+        audioSrc: './audio/closer.mp3',
+        audioLink: 'https://soundcloud.com/lewisgoing/closer',
+        preload: 'auto', // First song loads immediately
       },
       {
         title: "Winter '22 Samples",
-        artist: "lewisgoing",
-        albumCoverUrl: "/albumart/winter22.webp",
-        audioSrc: "./audio/winter22.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/winter22?si=6464126a1a6d4fbdad72cda1978ba8b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-        preload: "metadata", // Just load metadata for next track
+        artist: 'lewisgoing',
+        albumCoverUrl: '/albumart/winter22.webp',
+        audioSrc: './audio/winter22.mp3',
+        audioLink:
+          'https://soundcloud.com/lewisgoing/winter22?si=6464126a1a6d4fbdad72cda1978ba8b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+        preload: 'metadata', // Just load metadata for next track
       },
       {
-        title: "2023 Samples",
-        artist: "lewisgoing",
-        albumCoverUrl: "/albumart/2023clips.webp",
-        audioSrc: "./audio/2023samples.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/whereimat?si=b18a4a36f49540789802800d35bc63c7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-        preload: "none", // Don't preload until needed
+        title: '2023 Samples',
+        artist: 'lewisgoing',
+        albumCoverUrl: '/albumart/2023clips.webp',
+        audioSrc: './audio/2023samples.mp3',
+        audioLink:
+          'https://soundcloud.com/lewisgoing/whereimat?si=b18a4a36f49540789802800d35bc63c7&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+        preload: 'none', // Don't preload until needed
       },
       {
-        title: "New Paths",
-        artist: "Pradaaslife produced by lewisgoing",
-        albumCoverUrl: "/albumart/newpaths.webp",
-        audioSrc: "./audio/newpaths.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/newpaths?si=cd069d336dcf4059840ede43a5d69a47&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-        preload: "none",
+        title: 'New Paths',
+        artist: 'Pradaaslife produced by lewisgoing',
+        albumCoverUrl: '/albumart/newpaths.webp',
+        audioSrc: './audio/newpaths.mp3',
+        audioLink:
+          'https://soundcloud.com/lewisgoing/newpaths?si=cd069d336dcf4059840ede43a5d69a47&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+        preload: 'none',
       },
       {
         title: "Midsummer '22 Clips",
-        artist: "lewisgoing",
-        albumCoverUrl: "/albumart/summer22.webp",
-        audioSrc: "./audio/summer22.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-        preload: "none",
+        artist: 'lewisgoing',
+        albumCoverUrl: '/albumart/summer22.webp',
+        audioSrc: './audio/summer22.mp3',
+        audioLink:
+          'https://soundcloud.com/lewisgoing/summer22?si=d4ea34a33f234e8b85472684a675be55&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+        preload: 'none',
       },
       {
         title: "May '22 Clips",
-        artist: "lewisgoing",
-        albumCoverUrl: "/albumart/may22.webp",
-        audioSrc: "./audio/may22.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/may?si=4880056ad4e94c3fa4b6285d08951427&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-        preload: "none",
+        artist: 'lewisgoing',
+        albumCoverUrl: '/albumart/may22.webp',
+        audioSrc: './audio/may22.mp3',
+        audioLink:
+          'https://soundcloud.com/lewisgoing/may?si=4880056ad4e94c3fa4b6285d08951427&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+        preload: 'none',
       },
       {
         title: "February '22 Clips",
-        artist: "lewisgoing",
-        albumCoverUrl: "/albumart/feb22.webp",
-        audioSrc: "./audio/feb22.mp3",
-        audioLink: "https://soundcloud.com/lewisgoing/feb22?si=9a9c188a73a84cb78d6ac17fc76de175&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
-        preload: "none",
+        artist: 'lewisgoing',
+        albumCoverUrl: '/albumart/feb22.webp',
+        audioSrc: './audio/feb22.mp3',
+        audioLink:
+          'https://soundcloud.com/lewisgoing/feb22?si=9a9c188a73a84cb78d6ac17fc76de175&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
+        preload: 'none',
       },
     ],
-    []
+    [],
   );
 
   // Helper function to prevent dragging (kept the same)
@@ -192,12 +190,12 @@ const AudioBox = () => {
     if (!loadedSongs.has(nextIndex)) {
       const preloadAudio = new Audio();
       preloadAudio.src = songs[nextIndex].audioSrc;
-      preloadAudio.preload = "metadata"; // Just load metadata
+      preloadAudio.preload = 'metadata'; // Just load metadata
       preloadAudio.load();
-      
+
       // Mark as loaded
-      setLoadedSongs(prev => new Set([...prev, nextIndex]));
-      
+      setLoadedSongs((prev) => new Set([...prev, nextIndex]));
+
       // Remove the audio element reference once loaded
       preloadAudio.onloadedmetadata = () => {
         preloadAudio.onloadedmetadata = null;
@@ -206,38 +204,41 @@ const AudioBox = () => {
   }, [currentTrackIndex, songs, loadedSongs]);
 
   // Handle progress bar interaction (optimized but functionality unchanged)
-  const handleProgressBarClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    // Use e.currentTarget instead of progressBarRef to ensure we're getting the correct element that was clicked
-    const clickX = e.nativeEvent.offsetX;
-    const totalWidth = e.currentTarget.offsetWidth;
-    
-    // Ensure we have valid dimensions and duration
-    if (totalWidth <= 0 || !duration || duration <= 0) return;
-    
-    const clickPercentage = (clickX / totalWidth) * 100;
-    const newTime = (clickPercentage / 100) * duration;
-    
-    // Add safety check but keep it minimal
-    if (audioElementRef.current && isFinite(newTime)) {
-      audioElementRef.current.currentTime = newTime;
-    }
-  }, [duration]);
+  const handleProgressBarClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      // Use e.currentTarget instead of progressBarRef to ensure we're getting the correct element that was clicked
+      const clickX = e.nativeEvent.offsetX;
+      const totalWidth = e.currentTarget.offsetWidth;
+
+      // Ensure we have valid dimensions and duration
+      if (totalWidth <= 0 || !duration || duration <= 0) return;
+
+      const clickPercentage = (clickX / totalWidth) * 100;
+      const newTime = (clickPercentage / 100) * duration;
+
+      // Add safety check but keep it minimal
+      if (audioElementRef.current && isFinite(newTime)) {
+        audioElementRef.current.currentTime = newTime;
+      }
+    },
+    [duration],
+  );
 
   // Initialize audio on mount (kept the same)
   useEffect(() => {
     if (typeof window === 'undefined' || audioElementRef.current) return;
 
     const audio = new Audio();
-    audio.preload = songs[0].preload || "metadata";
+    audio.preload = songs[0].preload || 'metadata';
     audioElementRef.current = audio;
-    
+
     // Mark the first track as loaded
     setLoadedSongs(new Set([0]));
-    
+
     // Only set the source once the component is mounted
     audio.src = songs[0].audioSrc;
     audio.load();
-    
+
     return () => {
       // Cleanup
       if (audioElementRef.current) {
@@ -278,25 +279,25 @@ const AudioBox = () => {
     };
 
     // Add event listeners
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("waiting", handleWaiting);
-    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('waiting', handleWaiting);
+    audio.addEventListener('canplay', handleCanPlay);
 
     // Load new source if track changes
     if (audio.src !== new URL(songs[currentTrackIndex].audioSrc, window.location.href).href) {
       setIsLoading(true);
       audio.src = songs[currentTrackIndex].audioSrc;
       audio.load();
-      
+
       if (isPlaying) {
-        audio.play().catch(error => {
-          console.error("Error playing audio:", error);
+        audio.play().catch((error) => {
+          console.error('Error playing audio:', error);
           setIsLoading(false);
         });
       }
-      
+
       // Preload the next track using the optimized function
       if (typeof window !== 'undefined') {
         if ('requestIdleCallback' in window) {
@@ -306,14 +307,14 @@ const AudioBox = () => {
         }
       }
     }
-    
+
     // Cleanup event listeners on unmount
     return () => {
-      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("waiting", handleWaiting);
-      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('waiting', handleWaiting);
+      audio.removeEventListener('canplay', handleCanPlay);
     };
   }, [currentTrackIndex, songs, isPlaying, preloadNextTrack]);
 
@@ -325,8 +326,8 @@ const AudioBox = () => {
     if (isPlaying) {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.error("Error playing audio:", error);
+        playPromise.catch((error) => {
+          console.error('Error playing audio:', error);
           setIsPlaying(false);
         });
       }
@@ -343,15 +344,15 @@ const AudioBox = () => {
       if (isPlaying) {
         audio.pause();
       } else {
-        audio.play().catch(error => {
+        audio.play().catch((error) => {
           console.error('Error playing audio:', error);
         });
       }
     }
 
     // Update playing state
-    setIsPlaying(prev => !prev);
-    
+    setIsPlaying((prev) => !prev);
+
     // If we have a reference to the Lottie component, ensure animation state matches
     if (lottieRef.current && typeof lottieRef.current.setPlaying === 'function') {
       lottieRef.current.setPlaying(!isPlaying);
@@ -360,16 +361,14 @@ const AudioBox = () => {
 
   // Optimize track navigation functions without changing functionality
   const skipToNextTrack = useCallback(() => {
-    setCurrentTrackIndex(prevIndex => (prevIndex + 1) % songs.length);
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % songs.length);
     if (!isPlaying) {
       setIsPlaying(true);
     }
   }, [songs.length, isPlaying]);
 
   const playLastTrack = useCallback(() => {
-    setCurrentTrackIndex(prevIndex => 
-      prevIndex - 1 < 0 ? songs.length - 1 : prevIndex - 1
-    );
+    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 < 0 ? songs.length - 1 : prevIndex - 1));
     if (!isPlaying) {
       setIsPlaying(true);
     }
@@ -379,7 +378,7 @@ const AudioBox = () => {
   const formatTime = useCallback((time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   }, []);
 
   const progressPercentage = (currentTime / duration) * 100;
@@ -399,9 +398,11 @@ const AudioBox = () => {
   // The main return stays the same to preserve the layout
   return (
     <>
-      <style jsx global>{noGrabStyles}</style>
-      
-      <div 
+      <style jsx global>
+        {noGrabStyles}
+      </style>
+
+      <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={`transition-all ease-in-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}
@@ -422,15 +423,15 @@ const AudioBox = () => {
               {currentSong.title}
             </span>
             <span className="line-clamp-1 text-xs text-muted-foreground mb-2">
-              <span className="text-secondary-foreground font-semibold">by</span>{" "}
+              <span className="text-secondary-foreground font-semibold">by</span>{' '}
               {currentSong.artist}
             </span>
 
             {/* Progress Bar */}
             <div className="w-full mt-1">
               <div style={progressBarContainerStyle} className="no-drag drag-blocker">
-                <div 
-                  style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
+                <div
+                  style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle}
                   onClick={handleProgressBarClick}
                   onMouseDown={preventDrag}
                   onMouseEnter={() => setIsProgressBarHovered(true)}
@@ -441,7 +442,7 @@ const AudioBox = () => {
                   <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
                 </div>
               </div>
-              
+
               {/* Time Display */}
               <div className="flex justify-between text-[12px] text-muted-foreground mt-.5">
                 <span>{formatTime(currentTime)}</span>
@@ -450,24 +451,26 @@ const AudioBox = () => {
 
               {/* Playback Controls */}
               <div className="flex justify-center items-center gap-4 w-full h-full lg:-translate-y-1 xl:-translate-y-1 sm:translate-y-0">
-                <button 
+                <button
                   onClick={playLastTrack}
                   className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
                 >
-                  <HiBackward size={42} className="text-primary" style={{cursor: "pointer"}}/>
+                  <HiBackward size={42} className="text-primary" style={{ cursor: 'pointer' }} />
                 </button>
-                
-                <button 
+
+                <button
                   className="cursor-pointer no-drag drag-blocker relative transition-transform duration-200 ease-in-out hover:brightness-125"
                   onClick={togglePlay}
                   onMouseDown={preventDrag}
                   onMouseEnter={() => setIsPlayButtonHovered(true)}
                   onMouseLeave={() => setIsPlayButtonHovered(false)}
-                  style={{ 
+                  style={{
                     transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
                   }}
                 >
-                  <Suspense fallback={<div className="w-12 h-12 flex items-center justify-center">▶</div>}>
+                  <Suspense
+                    fallback={<div className="w-12 h-12 flex items-center justify-center">▶</div>}
+                  >
                     <LottiePlayPauseWithNoSSR
                       ref={lottieRef}
                       togglePlay={togglePlay}
@@ -476,13 +479,13 @@ const AudioBox = () => {
                     />
                   </Suspense>
                 </button>
-                
-                <button 
+
+                <button
                   onClick={skipToNextTrack}
                   className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
                   onMouseDown={preventDrag}
                 >
-                  <HiForward size={42} className="text-primary" style={{cursor: "pointer"}}/>
+                  <HiForward size={42} className="text-primary" style={{ cursor: 'pointer' }} />
                 </button>
               </div>
             </div>
@@ -514,66 +517,74 @@ const AudioBox = () => {
             </div>
 
             <div className="w-full">
-                <div style={progressBarContainerStyle} className="no-drag drag-blocker mb-1">
-                  <div 
-                    style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
-                    onClick={handleProgressBarClick}
-                    onMouseDown={preventDrag}
-                    onMouseEnter={() => setIsProgressBarHovered(true)}
-                    onMouseLeave={() => setIsProgressBarHovered(false)}
-                    className="w-full"
-                  >
-                    <div style={progressIndicatorStyle(progressPercentage)}></div>
-                    <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
-                  </div>
-                </div>
-                
-                {/* Time Display */}
-                <div className="flex justify-between text-[12px] text-muted-foreground mb-0">
-                  <span>{formatTime(currentTime)}</span>
-                  <span>{formatTime(duration)}</span>
-                </div>
-
-                {/* Playback Controls */}
-                <div className="flex space-x-2.5 justify-center mt-0" style={{transform: 'scale(1.1)'}}>
-                  <button 
-                    className="cursor-pointer no-drag p-0 pr-0.5 drag-blocker transition-all duration-200 hover:brightness-125" 
-                    onClick={playLastTrack} 
-                    onMouseDown={preventDrag}
-                  >
-                    <HiBackward size={32} className="text-primary" style={{        cursor: "pointer", }}/>
-                  </button>
-                  
-                  <button 
-                    className="no-drag p-0 drag-blocker transition-all duration-200 ease-in-out hover:brightness-125" 
-                    onClick={togglePlay} 
-                    onMouseDown={preventDrag}
-                    onMouseEnter={() => setIsPlayButtonHovered(true)}
-                    onMouseLeave={() => setIsPlayButtonHovered(false)}
-                    style={{ 
-                      transform: isPlayButtonHovered ? 'scale(.90)' : 'scale(.80)',
-                    }}
-                  >
-                    <Suspense fallback={<div className="w-8 h-8 flex items-center justify-center text-primary">▶</div>}>
-                      <LottiePlayPauseWithNoSSR
-                        ref={lottieRef}
-                        togglePlay={togglePlay}
-                        isPlaying={isPlaying}
-                        isDark={isDark}
-                      />
-                    </Suspense>
-                  </button>
-                  
-                  <button 
-                    className="cursor-pointer no-drag p-0 drag-blocker transition-all duration-200 hover:brightness-125" 
-                    onClick={skipToNextTrack} 
-                    onMouseDown={preventDrag}
-                    
-                  >
-                    <HiForward size={32} className="text-primary" style={{        cursor: "pointer", }} />
-                  </button>
+              <div style={progressBarContainerStyle} className="no-drag drag-blocker mb-1">
+                <div
+                  style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle}
+                  onClick={handleProgressBarClick}
+                  onMouseDown={preventDrag}
+                  onMouseEnter={() => setIsProgressBarHovered(true)}
+                  onMouseLeave={() => setIsProgressBarHovered(false)}
+                  className="w-full"
+                >
+                  <div style={progressIndicatorStyle(progressPercentage)}></div>
+                  <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
                 </div>
               </div>
+
+              {/* Time Display */}
+              <div className="flex justify-between text-[12px] text-muted-foreground mb-0">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+
+              {/* Playback Controls */}
+              <div
+                className="flex space-x-2.5 justify-center mt-0"
+                style={{ transform: 'scale(1.1)' }}
+              >
+                <button
+                  className="cursor-pointer no-drag p-0 pr-0.5 drag-blocker transition-all duration-200 hover:brightness-125"
+                  onClick={playLastTrack}
+                  onMouseDown={preventDrag}
+                >
+                  <HiBackward size={32} className="text-primary" style={{ cursor: 'pointer' }} />
+                </button>
+
+                <button
+                  className="no-drag p-0 drag-blocker transition-all duration-200 ease-in-out hover:brightness-125"
+                  onClick={togglePlay}
+                  onMouseDown={preventDrag}
+                  onMouseEnter={() => setIsPlayButtonHovered(true)}
+                  onMouseLeave={() => setIsPlayButtonHovered(false)}
+                  style={{
+                    transform: isPlayButtonHovered ? 'scale(.90)' : 'scale(.80)',
+                  }}
+                >
+                  <Suspense
+                    fallback={
+                      <div className="w-8 h-8 flex items-center justify-center text-primary">
+                        ▶
+                      </div>
+                    }
+                  >
+                    <LottiePlayPauseWithNoSSR
+                      ref={lottieRef}
+                      togglePlay={togglePlay}
+                      isPlaying={isPlaying}
+                      isDark={isDark}
+                    />
+                  </Suspense>
+                </button>
+
+                <button
+                  className="cursor-pointer no-drag p-0 drag-blocker transition-all duration-200 hover:brightness-125"
+                  onClick={skipToNextTrack}
+                  onMouseDown={preventDrag}
+                >
+                  <HiForward size={32} className="text-primary" style={{ cursor: 'pointer' }} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -597,7 +608,7 @@ const AudioBox = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="text-center mt-2">
                 <div className="font-bold text-md">{currentSong.title}</div>
                 <div className="text-xs text-muted-foreground">{currentSong.artist}</div>
@@ -606,8 +617,8 @@ const AudioBox = () => {
               {/* Progress Bar */}
               <div className="w-full my-3">
                 <div className="no-drag drag-blocker" style={progressBarContainerStyle}>
-                  <div 
-                    style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle} 
+                  <div
+                    style={isProgressBarHovered ? progressBarHoverStyle : progressBarStyle}
                     onClick={handleProgressBarClick}
                     onMouseDown={preventDrag}
                     onMouseEnter={() => setIsProgressBarHovered(true)}
@@ -618,35 +629,41 @@ const AudioBox = () => {
                     <div style={dotIndicatorStyle(progressPercentage, isProgressBarHovered)}></div>
                   </div>
                 </div>
-                
+
                 {/* Time Display */}
                 <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(duration)}</span>
                 </div>
               </div>
-              
+
               {/* Playback Controls */}
               <div className="flex justify-center items-center gap-4">
-                <button 
+                <button
                   onClick={playLastTrack}
                   className="cursor-pointer no-drag drag-blocker transition-all duration-200 hover:brightness-125"
                   onMouseDown={preventDrag}
                 >
                   <HiBackward size={24} className="text-primary cursor-pointer" />
                 </button>
-                
-                <button 
-                  onClick={togglePlay} 
-                  onMouseDown={preventDrag} 
+
+                <button
+                  onClick={togglePlay}
+                  onMouseDown={preventDrag}
                   onMouseEnter={() => setIsPlayButtonHovered(true)}
                   onMouseLeave={() => setIsPlayButtonHovered(false)}
                   className="no-drag drag-blocker z-10 relative transition-all duration-200 ease-in-out hover:brightness-125"
-                  style={{ 
+                  style={{
                     transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
                   }}
                 >
-                  <Suspense fallback={<div className="w-10 h-10 flex items-center justify-center text-primary">▶</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="w-10 h-10 flex items-center justify-center text-primary">
+                        ▶
+                      </div>
+                    }
+                  >
                     <LottiePlayPauseWithNoSSR
                       ref={lottieRef}
                       togglePlay={togglePlay}
@@ -655,8 +672,8 @@ const AudioBox = () => {
                     />
                   </Suspense>
                 </button>
-                
-                <button 
+
+                <button
                   onClick={skipToNextTrack}
                   className="cursor-picker no-drag drag-blocker transition-all duration-200 hover:brightness-125"
                   onMouseDown={preventDrag}
@@ -669,36 +686,34 @@ const AudioBox = () => {
         </div>
 
         {/* SoundCloud Logo in top right for all layouts */}
-        <div 
-          className="absolute right-1 top-0 z-[1] p-3 visible bento-lg:opacity-100 bento-xl:opacity-100 bento-md:opacity-0 sm:opacity-100"
-        >
-          <FaSoundcloud 
-            size={56} 
-            className="text-primary transition-colors hover:text-[#ff7700] mb-10" 
+        <div className="absolute right-1 top-0 z-[1] p-3 visible bento-lg:opacity-100 bento-xl:opacity-100 bento-md:opacity-0 sm:opacity-100">
+          <FaSoundcloud
+            size={56}
+            className="text-primary transition-colors hover:text-[#ff7700] mb-10"
             style={iconStyle}
           />
         </div>
-        
+
         <div className="absolute right-2 top-14 z-[1] p-8 bento-md:right-0 bento-md:top-2 bento-lg:top-14 bento-lg:right-3 bento-sm:top-14 bento-sm:right-2">
           {currentSong.audioLink && (
             // <ExternalLinkComponent href={currentSong.audioLink} />
 
             <a
-            href={currentSong.audioLink}
-            aria-label="Listen on Soundcloud"
-            title="Listen on Soundcloud"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute bottom-0 right-0 m-3 flex w-fit items-end rounded-full border bg-secondary/50 p-3 text-primary transition-all duration-300 hover:rotate-12 hover:ring-1 hover:ring-primary"
-          >
-            <MoveUpRight size={16} />
-          </a>
+              href={currentSong.audioLink}
+              aria-label="Listen on Soundcloud"
+              title="Listen on Soundcloud"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-0 right-0 m-3 flex w-fit items-end rounded-full border bg-secondary/50 p-3 text-primary transition-all duration-300 hover:rotate-12 hover:ring-1 hover:ring-primary"
+            >
+              <MoveUpRight size={16} />
+            </a>
           )}
         </div>
 
         {/* External Link in bottom right */}
         {currentSong.audioLink && (
-          <div className="absolute bottom-0.5 right-0" style={{transform: 'scale(.95)'}}>
+          <div className="absolute bottom-0.5 right-0" style={{ transform: 'scale(.95)' }}>
             <></>
           </div>
         )}

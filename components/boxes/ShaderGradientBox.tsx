@@ -21,7 +21,7 @@ interface ShaderGradientBoxProps {
   color3?: string;
   wireframe?: boolean;
   shader?: string;
-  type?: "sphere" | "plane";
+  type?: 'sphere' | 'plane';
   uAmplitude?: number;
   uDensity?: number;
   uFrequency?: number;
@@ -74,7 +74,7 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
     brightness,
     grain,
     toggleAxis,
-    hoverState
+    hoverState,
   } = props;
 
   // Canvas styles - fixed and consistent
@@ -84,9 +84,9 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
     width: '100%',
     height: '100%',
     borderRadius: '12px',
-    pointerEvents: "none" as const,
+    pointerEvents: 'none' as const,
   };
-  
+
   return (
     <ShaderGradientCanvas
       importedfiber={{ ...fiber, ...drei, ...reactSpring }}
@@ -94,8 +94,8 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
       style={canvasStyle}
     >
       <ShaderGradient
-        animate={"on"}
-        control={"props"}
+        animate={'on'}
+        control={'props'}
         positionX={positionX}
         positionY={positionY}
         positionZ={positionZ}
@@ -118,11 +118,11 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
         cAzimuthAngle={cAzimuthAngle}
         cPolarAngle={cPolarAngle}
         uTime={uTime}
-        lightType={"3d"}
-        envPreset={"dawn"}
+        lightType={'3d'}
+        envPreset={'dawn'}
         reflection={reflection}
         brightness={brightness}
-        grain={"off"}
+        grain={'off'}
         toggleAxis={toggleAxis}
         hoverState={hoverState}
       />

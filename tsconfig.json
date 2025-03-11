@@ -1,47 +1,52 @@
 {
   "compilerOptions": {
-      "incremental": true,
-      "target": "ES6",
-      "lib": ["dom", "dom.iterable", "esnext"],
-      "allowJs": true,
-      "skipLibCheck": true,
-      "strict": false,
-      "forceConsistentCasingInFileNames": true,
-      "allowImportingTsExtensions": true,
-      "noEmit": true,
-      "composite": true,
-      "esModuleInterop": true,
-      "module": "esnext",
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "jsx": "preserve",
-      "baseUrl": ".",
-      "paths": {
-          "@/components/*": ["components/*"],
-          "@/data/*": ["data/*"],
-          "@/layouts/*": ["layouts/*"],
-          "@/css/*": ["css/*"],
-          "@/scripts/*": ["scripts/*"],
-          "contentlayer/generated": ["./.contentlayer/generated"]
-      },
-      "plugins": [
-          {
-              "name": "next"
-          }
-      ],
-      "strictNullChecks": true
+    "incremental": true,
+    "target": "ES6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "composite": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/data/*": ["data/*"],
+      "@/layouts/*": ["layouts/*"],
+      "@/css/*": ["css/*"],
+      "@/scripts/*": ["scripts/*"],
+      "contentlayer/generated": ["./.contentlayer/generated"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
   "include": [
-      "next-env.d.ts",
-      "**/*.js",
-      "**/*.mjs",
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.json",
-      ".contentlayer/generated",
-      ".contentlayer/generated/**/*.json",
-      ".next/types/**/*.ts"
-, "../marchWebsite/assets/ShaderParkBoxReactive copy.tsx", "../marchWebsite/assets/ShaderParkBoxReactive.tsx", "../marchWebsite/assets/SpotifyBox copy 2.tsx", "../marchWebsite/assets/SpotifyBox copy.tsx", "src/pages/api/spotify/reset.ss"  ],
+    "next-env.d.ts",
+    "**/*.js",
+    "**/*.mjs",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.json",
+    ".contentlayer/generated",
+    ".contentlayer/generated/**/*.json",
+    ".next/types/**/*.ts",
+    "../marchWebsite/assets/ShaderParkBoxReactive copy.tsx",
+    "../marchWebsite/assets/ShaderParkBoxReactive.tsx",
+    "../marchWebsite/assets/SpotifyBox copy 2.tsx",
+    "../marchWebsite/assets/SpotifyBox copy.tsx",
+    "src/pages/api/spotify/reset.ss"
+  ],
   "exclude": ["node_modules"]
 }

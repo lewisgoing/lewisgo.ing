@@ -1,7 +1,7 @@
 // src/pages/index.tsx
-import Head from "next/head";
-import NavBar from "../../components/NavBar";
-import Bento from "../../components/Bento";
+import Head from 'next/head';
+import NavBar from '../../components/NavBar';
+import Bento from '../../components/Bento';
 
 export default function Home() {
   return (

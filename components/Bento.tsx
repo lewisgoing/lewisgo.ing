@@ -1,25 +1,25 @@
 // components/Bento.tsx
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import React, { useEffect, useState, useRef } from "react";
-import { Responsive, WidthProvider } from "react-grid-layout";
-import { useLanyard } from "react-use-lanyard";
-import { Skeleton } from "./shadcn/skeleton";
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState, useRef } from 'react';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+import { useLanyard } from 'react-use-lanyard';
+import { Skeleton } from './shadcn/skeleton';
 
 // Component imports
-import Image from "./assets/ImageBox";
-import ShaderGradientBox from "./boxes/ShaderGradientBox";
-import AudioBox from "./boxes/AudioBox";
-import DiscordPresence from "./boxes/DiscordStatusBox";
-import GithubBox from "./boxes/GithubBox";
-import GithubCalendar from "./boxes/GithubCalendar";
-import SkillsBox from "./boxes/SkillsBox";
-import SoundcloudBox from "./boxes/SoundcloudBox";
-import SpotifyBox from "./spotify/SpotifyBoxClient";
+import Image from './assets/ImageBox';
+import ShaderGradientBox from './boxes/ShaderGradientBox';
+import AudioBox from './boxes/AudioBox';
+import DiscordPresence from './boxes/DiscordStatusBox';
+import GithubBox from './boxes/GithubBox';
+import GithubCalendar from './boxes/GithubCalendar';
+import SkillsBox from './boxes/SkillsBox';
+import SoundcloudBox from './boxes/SoundcloudBox';
+import SpotifyBox from './spotify/SpotifyBoxClient';
 
 // Layout utilities
-import { lgLayout, mdLayout, smLayout } from "src/utils/bento-layouts";
+import { lgLayout, mdLayout, smLayout } from 'src/utils/bento-layouts';
 
 // TypeScript interfaces
 interface DiscordUser {
@@ -49,8 +49,6 @@ interface LanyardResponse {
   data: LanyardData;
 }
 
-
-
 // Apply WidthProvider to Responsive Grid Layout
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -60,13 +58,13 @@ export default function Bento() {
   const [isDiscordLoaded, setDiscordLoaded] = useState(false);
   const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false);
   const [rowHeight, setRowHeight] = useState(280);
-  
+
   // Refs
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Lanyard data hook for Discord/Spotify integration
   const lanyard = useLanyard({
-    userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || "661068667781513236",
+    userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || '661068667781513236',
     // Reduce polling to prevent excessive API calls
     pollInterval: 600000, // Poll every 60 seconds instead of default 15 seconds
   });
@@ -88,16 +86,16 @@ export default function Bento() {
       clearTimeout(timeoutRef.current);
     }
 
-    document.querySelectorAll(".react-grid-item").forEach((item) => {
-      (item as HTMLElement).style.zIndex = "1";
+    document.querySelectorAll('.react-grid-item').forEach((item) => {
+      (item as HTMLElement).style.zIndex = '1';
     });
 
-    element.style.zIndex = "10";
+    element.style.zIndex = '10';
   };
 
   const handleDragStop = (element: HTMLElement) => {
     timeoutRef.current = setTimeout(() => {
-      element.style.zIndex = "1";
+      element.style.zIndex = '1';
     }, 500);
   };
 
@@ -123,12 +121,8 @@ export default function Bento() {
       isBounded
       margin={[16, 16]}
       useCSSTransforms={true}
-      onDragStart={(layout, oldItem, newItem, placeholder, e, element) =>
-        handleDragStart(element)
-      }
-      onDragStop={(layout, oldItem, newItem, placeholder, e, element) =>
-        handleDragStop(element)
-      }
+      onDragStart={(layout, oldItem, newItem, placeholder, e, element) => handleDragStart(element)}
+      onDragStop={(layout, oldItem, newItem, placeholder, e, element) => handleDragStop(element)}
     >
       {/* Intro Box with Shader Gradient */}
       <div key="intro" className="relative">
@@ -166,18 +160,17 @@ export default function Bento() {
           toggleAxis={false}
           hoverState="off"
         />
-        
+
         {/* SVG Overlay - placed after ShaderGradientBox to appear on top */}
         <Image
           src="/svg/lewis-card-hover-4.svg"
           alt="Bento Intro Silhouette"
-fill
+          fill
           className="rounded-3xl object-cover absolute top-0 left-0 z-10"
           skeletonClassName="rounded-3xl"
           noRelative
           unoptimized
           priority
-          
         />
       </div>
 
@@ -232,10 +225,7 @@ fill
       {/* Discord Status Box */}
       <div key="discord">
         {lanyard.data && !lanyard.isValidating ? (
-          <DiscordPresence
-            lanyard={lanyard.data}
-            onLoad={() => setDiscordLoaded(true)}
-          />
+          <DiscordPresence lanyard={lanyard.data} onLoad={() => setDiscordLoaded(true)} />
         ) : (
           <Skeleton className="w-full h-full rounded-3xl" />
         )}
@@ -262,17 +252,16 @@ fill
       </div>
 
       {/* Spotify Status Box */}
-<div
-  key="spotify"
-  className="group"
-  onMouseEnter={() => setIntroSilhouette(true)}
-  onMouseLeave={() => setIntroSilhouette(false)}
->
-  {/* Pass the full lanyard object to the SpotifyBox component */}
-    <SpotifyBox    />
-    {/* <Skeleton className="w-full h-full rounded-3xl z-[1]" /> */}
-  
-</div>
+      <div
+        key="spotify"
+        className="group"
+        onMouseEnter={() => setIntroSilhouette(true)}
+        onMouseLeave={() => setIntroSilhouette(false)}
+      >
+        {/* Pass the full lanyard object to the SpotifyBox component */}
+        <SpotifyBox />
+        {/* <Skeleton className="w-full h-full rounded-3xl z-[1]" /> */}
+      </div>
 
       {/* Skills Box */}
       <div key="tech" className="flex justify-center items-center">

@@ -1,11 +1,11 @@
 // components/boxes/IntroBox.tsx
 
-import React, { useState } from "react";
-import ImageBox from "../assets/ImageBox";
+import React, { useState } from 'react';
+import ImageBox from '../assets/ImageBox';
 // import Cursor from "../oldcursor";
 
 const IntroBox = ({ introSilhouette }: { introSilhouette: boolean }) => {
-'use cache';
+  'use cache';
   return (
     <>
       <ImageBox
@@ -13,7 +13,7 @@ const IntroBox = ({ introSilhouette }: { introSilhouette: boolean }) => {
         alt="Bento Intro Silhouette"
         fill
         className={`rounded-3xl object-cover transition-opacity duration-300 ${
-          introSilhouette ? "opacity-100" : "opacity-0 delay-75"
+          introSilhouette ? 'opacity-100' : 'opacity-0 delay-75'
         }`}
         skeletonClassName="rounded-3xl"
         noRelative

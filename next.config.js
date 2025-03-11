@@ -6,7 +6,7 @@ const nextConfig = {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.module.rules.push({
       test: /\.svg$/,
-      use: [{ loader: "@svgr/webpack", options: { icon: true } }],
+      use: [{ loader: '@svgr/webpack', options: { icon: true } }],
     });
     return config;
   },
@@ -40,12 +40,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'lastfm.freetls.fastly.net',
         pathname: '/**',
-      }
-    ]
+      },
+    ],
   },
   experimental: {
     useCache: true,
-  }
+  },
 };
 
 module.exports = nextConfig;

@@ -1,7 +1,7 @@
 // spCode.ts
 // components/boxes/spCode.ts
 export const spCode = (): string => {
-    return `
+  return `
       let audio = input();
       let pointerDown = input();
       
@@ -21,5 +21,4 @@ export const spCode = (): string => {
       mixGeo(pointerDown);
       sphere(n * .5 + .8);
     `;
-  };
-  
+};

@@ -1,24 +1,30 @@
 // components/boxes/SoundcloudBox.tsx
 
-import React, { useState } from "react";
-import ExternalLink from "../assets/ExternalLink";
-import { FaSoundcloud } from "react-icons/fa";
-import { MoveUpRight } from "lucide-react";
+import React, { useState } from 'react';
+import ExternalLink from '../assets/ExternalLink';
+import { FaSoundcloud } from 'react-icons/fa';
+import { MoveUpRight } from 'lucide-react';
 
 const SoundcloudBox = () => {
-    const [isHovered, setIsHovered] = useState(false);
-    const iconStyle = {
-        transition: 'color 0.3s ease',
-        color: isHovered ? '#ff7700' : '#e5d3b8'
-    };
+  const [isHovered, setIsHovered] = useState(false);
+  const iconStyle = {
+    transition: 'color 0.3s ease',
+    color: isHovered ? '#ff7700' : '#e5d3b8',
+  };
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center rounded-lg"         onMouseEnter={() => setIsHovered(true)}
-    onMouseLeave={() => setIsHovered(false)}>
-      <FaSoundcloud className="absolute z-[1] text-primary w-16 h-16 bento-md:w-24 bento-md:h-24" style={iconStyle} />
+    <div
+      className="relative flex h-full w-full items-center justify-center rounded-lg"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <FaSoundcloud
+        className="absolute z-[1] text-primary w-16 h-16 bento-md:w-24 bento-md:h-24"
+        style={iconStyle}
+      />
       {/* <ExternalLink href="https://soundcloud.com/lewisgoing" /> */}
       <a
-        href={"https://soundcloud.com/lewisgoing"}
+        href={'https://soundcloud.com/lewisgoing'}
         aria-label="Listen on Soundcloud"
         title="Listen to my music"
         target="_blank"
