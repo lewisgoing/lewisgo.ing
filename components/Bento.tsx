@@ -269,9 +269,7 @@ fill
   onMouseLeave={() => setIntroSilhouette(false)}
 >
   {/* Pass the full lanyard object to the SpotifyBox component */}
-    <SpotifyBox
-      onLoad={() => setIsSpotifyLoaded(true)}
-    />
+    <SpotifyBox    />
     {/* <Skeleton className="w-full h-full rounded-3xl z-[1]" /> */}
   
 </div>
