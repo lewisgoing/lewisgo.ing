@@ -1,7 +1,8 @@
-// components/assets/IconComponent.tsx
+// components/IconComponent.tsx
 import React from 'react';
 import Image from 'next/image';
 import { cn } from 'src/utils/tailwind-helpers';
+import { getSvgUrl } from '../src/utils/blob-utils';
 
 // Define icon sizes for consistency
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -24,14 +25,17 @@ interface IconProps {
 
 /**
  * A component for rendering optimized SVG icons
- * This uses Next.js Image for optimized loading
+ * This uses Next.js Image for optimized loading and Vercel Blob for storage
  */
 export const Icon: React.FC<IconProps> = ({ name, size = 'md', className, alt = 'icon' }) => {
   const pixelSize = sizeMap[size];
+  
+  // Get the optimized URL from Vercel Blob
+  const iconUrl = getSvgUrl(`${name}.svg`);
 
   return (
     <Image
-      src={`/svg/${name}.svg`}
+      src={iconUrl}
       alt={alt}
       width={pixelSize}
       height={pixelSize}

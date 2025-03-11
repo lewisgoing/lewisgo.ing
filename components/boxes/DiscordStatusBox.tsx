@@ -1,10 +1,10 @@
-'use cache'; 
 // components/boxes/DiscordStatusBox.tsx
+'use cache'; 
 
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FaDiscord } from 'react-icons/fa';
-
+import { getSvgUrl } from '../../src/utils/blob-utils';
 
 interface DiscordStatusBoxProps {
   lanyard: any; // We should type this properly
@@ -12,12 +12,13 @@ interface DiscordStatusBoxProps {
 }
 
 const DiscordStatusBox = ({ lanyard, onLoad }) => {
+  // Get SVG URLs from Vercel Blob
+  const discordBadgesUrl = getSvgUrl('discord-badges.svg');
+  const discordImageUrl = getSvgUrl('discord.svg');
 
   const mainActivity = lanyard.data.activities.filter(
     (activity) => activity.type === 0 && activity.assets,
   )[0];
-
-  
 
   const hasMainActivity = !!mainActivity;
   const [isHovered, setIsHovered] = useState(false);
@@ -96,7 +97,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
           <div className="h-6 flex-shrink-0">
             <div className="bg-tertiary/50 rounded-lg w-[40%] h-full ml-auto">
               <Image
-                src="svg/discord-badges.svg"
+                src={discordBadgesUrl}
                 alt="Discord Badges"
                 width={0}
                 height={0}
@@ -147,7 +148,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
             ) : (
               <div className="flex flex-col items-center justify-center w-full h-full">
                 <Image
-                  src="svg/discord.svg"
+                  src={discordImageUrl}
                   alt="No Status Image"
                   width={0}
                   height={0}
@@ -203,7 +204,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                 </div>
               </div>
               <Image
-                src="svg/discord-badges.svg"
+                src={discordBadgesUrl}
                 alt="Discord Badges"
                 width={0}
                 height={0}
@@ -248,7 +249,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
             ) : (
               <div className="flex flex-col items-center justify-center w-full h-full">
                 <Image
-                  src="svg/discord.svg"
+                  src={discordImageUrl}
                   alt="No Status Image"
                   width={0}
                   height={0}

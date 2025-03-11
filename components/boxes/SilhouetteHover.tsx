@@ -1,5 +1,6 @@
 // components/boxes/SilhouetteHover.tsx
 import Image from '../assets/ImageBox';
+import { getSvgUrl } from '../../src/utils/blob-utils';
 
 interface SilhouetteHoverProps {
   silhouetteSrc: string;
@@ -20,10 +21,19 @@ const SilhouetteHover = ({
   children,
   className,
 }: SilhouetteHoverProps) => {
+  // Get the Blob URLs for the SVG files
+  const silhouetteBlobUrl = silhouetteSrc.endsWith('.svg') 
+    ? getSvgUrl(silhouetteSrc) 
+    : silhouetteSrc;
+    
+  const mainBlobUrl = mainSrc.endsWith('.svg') 
+    ? getSvgUrl(mainSrc) 
+    : mainSrc;
+
   return (
     <div className={`group ${className}`}>
       <Image
-        src={silhouetteSrc}
+        src={silhouetteBlobUrl}
         alt={silhouetteAlt}
         fill
         noRelative
@@ -34,7 +44,7 @@ const SilhouetteHover = ({
         unoptimized
       />
       <Image
-        src={mainSrc}
+        src={mainBlobUrl}
         alt={mainAlt}
         fill
         noRelative

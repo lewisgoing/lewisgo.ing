@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
         hostname: 'lastfm.freetls.fastly.net',
         pathname: '/**',
       },
+      // Add Vercel Blob hostname pattern
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
     ],
   },
   // NextJS 15 features
@@ -56,6 +62,11 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+  },
+  // Add environment variables that should be available to the client
+  env: {
+    NEXT_PUBLIC_USE_VERCEL_BLOB: process.env.NEXT_PUBLIC_USE_VERCEL_BLOB || 'false',
+    VERCEL_BLOB_URL: process.env.NEXT_PUBLIC_VERCEL_BLOB_URL || '',
   },
 };
 
