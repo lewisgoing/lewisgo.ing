@@ -1,15 +1,20 @@
-// components/Footer.tsx
-
 'use client';
 
 import siteMetadata from 'public/data/siteMetaData';
-import { Github, Linkedin, Mail, Twitter } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 import Link from './assets/Link';
 
 export default function Footer() {
   const pathName = usePathname();
+  const [currentYear, setCurrentYear] = useState(2024); // Default fallback year
+  
+  // Set the current year on the client side
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer>
@@ -53,7 +58,7 @@ export default function Footer() {
           </div>
         )}
         <div className="mb-10 flex space-x-2 text-sm text-muted-foreground">
-          <div>{`© ${new Date().getFullYear()} ${siteMetadata.author}`}</div>
+          <div>{`© ${currentYear} ${siteMetadata.author}`}</div>
           <div>{` • `}</div>
           <Link href="/">{siteMetadata.title}</Link>
         </div>

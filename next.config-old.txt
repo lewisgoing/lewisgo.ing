@@ -35,42 +35,56 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // NextJS 15 features (only include what's definitely supported in canary)
+  // NextJS 15 features
   experimental: {
     // Core caching features
     useCache: true,
+    dynamicIO: true,
     // Enables after API for post-response processing
-    // after: true,
+    after: true,
     typedRoutes: true,
+    // Define custom caching profiles
+    cacheLife: {
+      blog: {
+        stale: 3600, // 1 hour
+        revalidate: 900, // 15 minutes
+        expire: 86400, // 1 day
+      },
+      staticContent: {
+        stale: 86400, // 1 day
+        revalidate: 3600, // 1 hour
+        expire: 604800, // 7 days
+      },
+    },
+    // Performance improvements for build
+    staticGenerationMaxConcurrency: 8,
     // Bundle optimizations
-    // bundlePagesRouterDependencies: true,
+    bundlePagesRouterDependencies: true,
     serverActions: {
       bodySizeLimit: '2mb',
     },
   },
-  // Use a standard headersList array for headers without the function
-  async headers() {
-    return [
-      {
-        source: '/audio/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/svg/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
-  },
+  // Servers can control caching behavior
+  headers: () => [
+    {
+      source: '/audio/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+      ],
+    },
+    {
+      source: '/svg/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+      ],
+    },
+  ],
 };
 
 export default nextConfig;

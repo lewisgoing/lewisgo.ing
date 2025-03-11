@@ -8,7 +8,10 @@
 }
 
 body {
-  @apply max-w-[90%] w-[1080px] mx-auto;
+  max-width: 90%;
+  width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tooltip-content {
@@ -102,52 +105,62 @@ body {
     --radius: 0.5rem;
   }
 }
+
 .tooltip-content {
   z-index: 1000; /* Adjust as necessary */
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
 .react-grid-item {
-  @apply flex select-none items-center rounded-3xl border border-border bg-secondary !duration-500 hover:scale-[1.025] bento-md:hover:cursor-grab bento-md:hover:shadow-lg;
-  transition-property: transform, left, top, width, height;
+  display: flex;
+  user-select: none;
+  align-items: center;
+  border-radius: 1.5rem;
+  border-width: 1px;
+  border-color: hsl(var(--border));
+  background-color: hsl(var(--secondary));
+  transition-duration: 500ms !important;
   overflow: visible;
+  transition-property: transform, left, top, width, height;
+}
+
+.react-grid-item:hover {
+  transform: scale(1.025);
+}
+
+@media (min-width: 799px) {
+  .react-grid-item:hover {
+    cursor: grab;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
 }
 
 .react-draggable-dragging {
-  @apply !cursor-grabbing;
+  cursor: grabbing !important;
 }
 
 .tooltip-content {
-  z-index: 1000; /* Adjust as necessary */
+  z-index: 1000;
 }
 
 .react-grid-placeholder {
-  @apply !bg-primary/75 !duration-500;
-}
-
-@keyframes skeleton {
-  0%,
-  100% {
-    @apply bg-muted;
-  }
-  50% {
-    @apply bg-secondary;
-  }
+  background-color: hsl(var(--primary) / 0.75) !important;
+  transition-duration: 500ms !important;
 }
 
 .spin {
   animation: spin 2s linear infinite;
 }
 
-/* Add this to your global CSS file or a CSS module */
 @keyframes spin {
   100% {
     transform: rotate(360deg);
@@ -155,18 +168,20 @@ body {
 }
 
 .react-grid-container {
-  @apply mx-auto max-w-[1200px];
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
 }
 
 article[style*='--react-activity-calendar-level-0:#ebebeb'] {
-  @apply hidden;
+  display: none;
 }
 
 svg[width='1372'] {
-  @apply hidden;
+  display: none;
 }
 
 /* <Box> styling */
 .my-6.rounded-lg.p-4.bg-secondary.text-center ul {
-  @apply m-0;
+  margin: 0;
 }

@@ -1,5 +1,4 @@
 // tailwind.config.js
-// @ts-check
 const { fontFamily } = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
@@ -10,16 +9,10 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
-
-    // Or if using `src` directory:
     './src/**/*.{js,ts,jsx,tsx}',
     './data/**/*.mdx',
   ],
-  variants: {
-    extend: {
-      grayscale: ['hover'],
-    },
-  },
+  darkMode: ['class'],
   theme: {
     container: {
       center: true,
@@ -28,7 +21,6 @@ module.exports = {
         '2xl': '1400px',
       },
     },
-
     extend: {
       screens: {
         'bento-sm': '374px',
@@ -44,10 +36,23 @@ module.exports = {
         13: '3.25rem',
         14: '3.5rem',
       },
+      spacing: {
+        '0.5': '0.125rem',
+        '1.5': '0.375rem',
+        '2.5': '0.625rem',
+        '3.5': '0.875rem',
+        '4.5': '1.125rem',
+      },
+      margin: {
+        '12': '3rem',
+        '16': '4rem',
+        '20': '5rem',
+        '24': '6rem',
+      },
       colors: {
         instagram: '#E4405F',
         linkedin: '#0E76A8',
-        github: '#24292E', // #2b3137 for lighter dark or #2dba4e for the green one
+        github: '#24292E',
         soundcloud: '#FF7700',
         gray: colors.gray,
         border: 'hsl(var(--border))',
@@ -57,7 +62,6 @@ module.exports = {
         foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
-          // DocSearch colors
           400: 'hsl(var(--primary))',
           500: 'hsl(var(--primary))',
           600: 'hsl(var(--primary))',
@@ -104,6 +108,19 @@ module.exports = {
         gradient: {
           '0%': { backgroundPosition: '0% 50%' },
           '100%': { backgroundPosition: '100% 50%' },
+        },
+        // Define the skeleton animation without @apply
+        skeleton: {
+          '0%, 100%': { backgroundColor: 'hsl(var(--muted))' },
+          '50%': { backgroundColor: 'hsl(var(--secondary))' },
+        },
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
         },
       },
       animation: {
@@ -199,11 +216,8 @@ module.exports = {
       }),
     },
   },
-
   plugins: [
-    require('@tailwindcss/typography'),
     require('@tailwindcss/typography'),
     require('tailwindcss-animate'),
   ],
-  darkMode: 'class',
 };

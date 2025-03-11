@@ -1,9 +1,23 @@
-// components/boxes/ShaderGradientBox.tsx
-import React, { memo } from 'react';
-import { ShaderGradientCanvas, ShaderGradient } from 'shadergradient';
-import * as reactSpring from '@react-spring/three';
-import * as drei from '@react-three/drei';
-import * as fiber from '@react-three/fiber';
+'use client';
+
+import React, { memo, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Use specific imports that are available in the exports field
+const ShaderGradientCanvas = dynamic(
+  () => import('shadergradient/canvas').then(mod => mod.ShaderGradientCanvas),
+  { ssr: false }
+);
+
+const ShaderGradient = dynamic(
+  () => import('shadergradient/gradient').then(mod => mod.ShaderGradient),
+  { ssr: false }
+);
+
+// Also dynamically import Three.js libraries
+const ReactSpringThree = dynamic(() => import('@react-spring/three'), { ssr: false });
+const Drei = dynamic(() => import('@react-three/drei'), { ssr: false });
+const Fiber = dynamic(() => import('@react-three/fiber'), { ssr: false });
 
 // Define prop types for better type safety and documentation
 interface ShaderGradientBoxProps {
@@ -42,40 +56,28 @@ interface ShaderGradientBoxProps {
 }
 
 const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
-  const {
-    className,
-    animate,
-    control,
-    positionX,
-    positionY,
-    positionZ,
-    rotationX,
-    rotationY,
-    rotationZ,
-    color1,
-    color2,
-    color3,
-    wireframe,
-    shader,
-    type,
-    uAmplitude,
-    uDensity,
-    uFrequency,
-    uSpeed,
-    uStrength,
-    cDistance,
-    cameraZoom,
-    cAzimuthAngle,
-    cPolarAngle,
-    uTime,
-    lightType,
-    envPreset,
-    reflection,
-    brightness,
-    grain,
-    toggleAxis,
-    hoverState,
-  } = props;
+  const [loaded, setLoaded] = useState(false);
+  const [libraries, setLibraries] = useState<any>(null);
+
+  // Load libraries
+  useEffect(() => {
+    Promise.all([
+      ReactSpringThree,
+      Drei,
+      Fiber
+    ]).then(([reactSpring, drei, fiber]) => {
+      setLibraries({
+        ...reactSpring,
+        ...drei,
+        ...fiber
+      });
+      setLoaded(true);
+    }).catch(error => {
+      console.error("Error loading Three.js libraries:", error);
+      // Still set loaded to true to show fallback
+      setLoaded(true);
+    });
+  }, []);
 
   // Canvas styles - fixed and consistent
   const canvasStyle = {
@@ -87,47 +89,75 @@ const ShaderGradientBox: React.FC<ShaderGradientBoxProps> = (props) => {
     pointerEvents: 'none' as const,
   };
 
-  return (
-    <ShaderGradientCanvas
-      importedfiber={{ ...fiber, ...drei, ...reactSpring }}
-      className={className}
-      style={canvasStyle}
-    >
-      <ShaderGradient
-        animate={'on'}
-        control={'props'}
-        positionX={positionX}
-        positionY={positionY}
-        positionZ={positionZ}
-        rotationX={rotationX}
-        rotationY={rotationY}
-        rotationZ={rotationZ}
-        color1={color1}
-        color2={color2}
-        color3={color3}
-        wireframe={wireframe}
-        shader={shader}
-        type={type}
-        uAmplitude={uAmplitude}
-        uDensity={uDensity}
-        uFrequency={uFrequency}
-        uSpeed={uSpeed}
-        uStrength={uStrength}
-        cDistance={cDistance}
-        cameraZoom={cameraZoom}
-        cAzimuthAngle={cAzimuthAngle}
-        cPolarAngle={cPolarAngle}
-        uTime={uTime}
-        lightType={'3d'}
-        envPreset={'dawn'}
-        reflection={reflection}
-        brightness={brightness}
-        grain={'off'}
-        toggleAxis={toggleAxis}
-        hoverState={hoverState}
-      />
-    </ShaderGradientCanvas>
-  );
+  if (!loaded || !libraries) {
+    return (
+      <div className={props.className || ''} style={{ 
+        background: 'linear-gradient(45deg, #FF0006, #003FFF)',
+        borderRadius: '12px',
+        width: '100%',
+        height: '100%'
+      }}>
+        {/* Gradient placeholder while loading */}
+      </div>
+    );
+  }
+
+  try {
+    return (
+      <ShaderGradientCanvas
+        importedfiber={libraries}
+        className={props.className}
+        style={canvasStyle}
+      >
+        <ShaderGradient
+          animate={props.animate || 'on'}
+          control={props.control || 'props'}
+          positionX={props.positionX}
+          positionY={props.positionY}
+          positionZ={props.positionZ}
+          rotationX={props.rotationX}
+          rotationY={props.rotationY}
+          rotationZ={props.rotationZ}
+          color1={props.color1}
+          color2={props.color2}
+          color3={props.color3}
+          wireframe={props.wireframe}
+          shader={props.shader}
+          type={props.type}
+          uAmplitude={props.uAmplitude}
+          uDensity={props.uDensity}
+          uFrequency={props.uFrequency}
+          uSpeed={props.uSpeed}
+          uStrength={props.uStrength}
+          cDistance={props.cDistance}
+          cameraZoom={props.cameraZoom}
+          cAzimuthAngle={props.cAzimuthAngle}
+          cPolarAngle={props.cPolarAngle}
+          uTime={props.uTime}
+          lightType={props.lightType || '3d'}
+          envPreset={props.envPreset || 'dawn'}
+          reflection={props.reflection}
+          brightness={props.brightness}
+          grain={props.grain || 'off'}
+          toggleAxis={props.toggleAxis}
+          hoverState={props.hoverState || 'off'}
+        />
+      </ShaderGradientCanvas>
+    );
+  } catch (error) {
+    console.error("Error rendering ShaderGradient:", error);
+    // Fallback in case of render error
+    return (
+      <div className={props.className || ''} style={{ 
+        background: 'linear-gradient(45deg, #FF0006, #003FFF)',
+        borderRadius: '12px',
+        width: '100%',
+        height: '100%'
+      }}>
+        {/* Error fallback */}
+      </div>
+    );
+  }
 };
 
 // Use memo to prevent unnecessary re-renders when props don't change

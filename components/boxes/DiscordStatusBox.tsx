@@ -1,4 +1,4 @@
-'use cache'; 
+// 'use cache'; 
 // components/boxes/DiscordStatusBox.tsx
 
 import Image from 'next/image';

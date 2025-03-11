@@ -1,7 +1,7 @@
 // components/Bento.tsx
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useLanyard } from 'react-use-lanyard';
 import { Skeleton } from './shadcn/skeleton';
@@ -20,34 +20,6 @@ import SpotifyBox from './boxes/SpotifyBox';
 // Layout utilities
 import { lgLayout, mdLayout, smLayout } from 'src/utils/bento-layouts';
 
-// TypeScript interfaces
-interface DiscordUser {
-  id: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-  bot: boolean;
-
-}
-
-interface LanyardData {
-  active_on_discord_desktop: boolean;
-  active_on_discord_mobile: boolean;
-  active_on_discord_web: boolean;
-  activities: any[]; 
-  discord_status: string; 
-  discord_user: DiscordUser;
-  kv: {
-    spotify_last_played: string; 
-  };
-  listening_to_spotify: boolean;
-  spotify: null; 
-}
-
-interface LanyardResponse {
-  data: LanyardData;
-}
-
 // Apply WidthProvider to Responsive Grid Layout
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -57,6 +29,7 @@ export default function Bento() {
   const [isDiscordLoaded, setDiscordLoaded] = useState(false);
   const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false);
   const [rowHeight, setRowHeight] = useState(280);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Refs
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -65,8 +38,13 @@ export default function Bento() {
   const lanyard = useLanyard({
     userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || '661068667781513236',
     // Reduce polling to prevent excessive API calls
-    pollInterval: 600000, // Poll every 60 seconds instead of default 15 seconds
+    pollInterval: 600000, // Poll every 10 minutes
   });
+
+  // Initialize component on client side only
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Handle responsive layout changes
   const handleWidthChange = (width: number) => {
@@ -106,6 +84,10 @@ export default function Bento() {
       }
     };
   }, []);
+
+  if (!isMounted) {
+    return <div className="h-screen w-full flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <ResponsiveGridLayout
@@ -257,9 +239,7 @@ export default function Bento() {
         onMouseEnter={() => setIntroSilhouette(true)}
         onMouseLeave={() => setIntroSilhouette(false)}
       >
-        {/* Pass the full lanyard object to the SpotifyBox component */}
         <SpotifyBox />
-        {/* <Skeleton className="w-full h-full rounded-3xl z-[1]" /> */}
       </div>
 
       {/* Skills Box */}

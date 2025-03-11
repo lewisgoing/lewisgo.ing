@@ -1,8 +1,11 @@
 // components/assets/OptimizedImage.tsx
+'use cache';
+
 import React from 'react';
 import Image, { ImageProps } from 'next/image';
 import { Skeleton } from '../shadcn/skeleton';
-import { cn } from 'src/utils/tailwind-helpers';
+import { cn } from '@/utils/tailwind-helpers';
+import { applyStaticContentCacheProfile } from '@/utils/cache-utils';
 
 interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {
   skeletonClassName?: string;
@@ -11,8 +14,40 @@ interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {
 
 /**
  * An optimized image component with skeleton loading
+ * Uses NextJS 15 caching features for better performance
  */
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  className,
+  skeletonClassName,
+  noSkeleton = false,
+  priority = false,
+  ...props
+}) => {
+  // Apply static content caching for images
+  applyStaticContentCacheProfile();
+
+  return (
+    <ClientOptimizedImage
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      className={className}
+      skeletonClassName={skeletonClassName}
+      noSkeleton={noSkeleton}
+      priority={priority}
+      {...props}
+    />
+  );
+};
+
+// Client component for interactive features
+'use client';
+const ClientOptimizedImage: React.FC<OptimizedImageProps> = ({
   src,
   alt,
   width,
@@ -43,3 +78,5 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     </div>
   );
 };
+
+export default OptimizedImage;
