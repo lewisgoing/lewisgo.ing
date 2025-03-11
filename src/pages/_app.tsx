@@ -9,10 +9,9 @@ import siteMetadata from '../../public/data/siteMetaData';
 
 import '../styles/tailwind.css';
 import { Metadata } from 'next';
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { JetBrains_Mono } from 'next/font/google';
 import AnimatedCursor from 'react-animated-cursor';
-import { Analytics } from '@vercel/analytics/react';
+
 // import { SearchConfig, SearchProvider } from 'pliny/search'
 // import 'pliny/search/algolia.css'
 import 'react-grid-layout/css/styles.css';
@@ -120,8 +119,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <Footer />
           </div>
         </SectionContainer>
-        <Analytics />
-        <SpeedInsights />
+
       </ThemeProviders>
     </>
   );
