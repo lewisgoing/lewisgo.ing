@@ -1,7 +1,6 @@
 // components/Bento.tsx
 'use client';
 
-import dynamic from 'next/dynamic';
 import React, { useEffect, useState, useRef } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useLanyard } from 'react-use-lanyard';
@@ -28,21 +27,21 @@ interface DiscordUser {
   avatar: string;
   discriminator: string;
   bot: boolean;
-  // Add other properties as needed
+
 }
 
 interface LanyardData {
   active_on_discord_desktop: boolean;
   active_on_discord_mobile: boolean;
   active_on_discord_web: boolean;
-  activities: any[]; // Adjust the type according to your data structure
-  discord_status: string; // Include discord_status here
+  activities: any[]; 
+  discord_status: string; 
   discord_user: DiscordUser;
   kv: {
-    spotify_last_played: string; // or any other type as per your data structure
+    spotify_last_played: string; 
   };
   listening_to_spotify: boolean;
-  spotify: null; // or the correct type if spotify data is available
+  spotify: null; 
 }
 
 interface LanyardResponse {

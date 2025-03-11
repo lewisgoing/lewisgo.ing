@@ -1,5 +1,4 @@
 // src/pages/_app.tsx
-'use cache';
 
 import Footer from '../../components/Footer';
 import NavBar from '../../components/NavBar';
