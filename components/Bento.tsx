@@ -19,7 +19,7 @@ import SoundcloudBox from "./boxes/SoundcloudBox";
 import SpotifyBox from "./spotify/SpotifyBoxClient";
 
 // Layout utilities
-import { lgLayout, mdLayout, smLayout } from "../src/utils/bento-layouts";
+import { lgLayout, mdLayout, smLayout } from "src/utils/bento-layouts";
 
 // TypeScript interfaces
 interface DiscordUser {
@@ -68,7 +68,7 @@ export default function Bento() {
   const lanyard = useLanyard({
     userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || "661068667781513236",
     // Reduce polling to prevent excessive API calls
-    pollInterval: 30000, // Poll every 60 seconds instead of default 15 seconds
+    pollInterval: 600000, // Poll every 60 seconds instead of default 15 seconds
   });
 
   // Handle responsive layout changes
