@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-portfolio-website",
-  "version": "0.1.0",
+  "name": "lewisgo.ing",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -27,7 +27,7 @@
     "camera-controls": "^2.8.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "esbuild": "^0.25.0",
+    "esbuild": "0.25.1",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
     "framer-motion": "^10.18.0",
@@ -37,7 +37,7 @@
     "next": "^15.2.0-canary.76",
     "next-redis-cache": "^1.0.3",
     "next-themes": "^0.3.0",
-    "path-to-regexp": "^6.3.0",
+    "path-to-regexp": "8.2.0",
     "react": "^18.2.0",
     "react-activity-calendar": "^2.2.8",
     "react-animated-cursor": "^2.11.2",
@@ -65,6 +65,6 @@
     "postcss": "^8.4.21",
     "prettier": "^3.5.3",
     "tailwindcss": "^3.3.1",
-    "typescript": "5.7.3"
+    "typescript": "^5.8.2"
   }
 }

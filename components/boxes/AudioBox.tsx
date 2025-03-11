@@ -17,7 +17,7 @@ import { ExternalLink, MoveUpRight } from 'lucide-react';
 import ExternalLinkComponent from '../assets/ExternalLink';
 
 // Lazy load the Lottie component with explicit props type
-const LottiePlayPauseWithNoSSR = dynamic(() => import('../../components/LottiePlayPauseButton'), {
+const LottiePlayPauseWithNoSSR = dynamic(() => import('../assets/LottiePlayPauseButton'), {
   ssr: false,
   loading: () => (
     <div className="w-10 h-10 flex items-center justify-center opacity-80">
