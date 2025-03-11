@@ -34,6 +34,9 @@ module.exports = {
         'bento-sm': '374px',
         'bento-md': '799px',
         'bento-lg': '1199px',
+        'sm': '374px',  
+        'md': '799px',  
+        'lg': '1199px',
       },
       lineHeight: {
         11: '2.75rem',
