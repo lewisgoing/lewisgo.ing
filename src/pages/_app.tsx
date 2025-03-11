@@ -121,6 +121,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </div>
         </SectionContainer>
         <Analytics />
+        <SpeedInsights />
       </ThemeProviders>
     </>
   );
