@@ -171,7 +171,7 @@ export default function Bento() {
         <Image
           src="/svg/lewis-card-hover-4.svg"
           alt="Bento Intro Silhouette"
-          fill
+fill
           className="rounded-3xl object-cover absolute top-0 left-0 z-10"
           skeletonClassName="rounded-3xl"
           noRelative

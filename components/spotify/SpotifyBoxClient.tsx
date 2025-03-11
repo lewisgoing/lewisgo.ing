@@ -76,10 +76,10 @@ const SpotifyPresence = () => {
           alt="Album art"
           width={128}
           height={128}
-          className="mb-2 w-[55%] rounded-xl border border-border grayscale"
+          className="mb-2 w-[55%] rounded-xl border border-border grayscale md:w-32"
           style={imageStyle}
         />
-        <div className="flex min-w-0 flex-1 flex-col justify-end overflow-hidden">
+<div className="flex min-w-0 flex-1 flex-col justify-end overflow-hidden lg:pl-0 lg:pt-0 lg:relative lg:w-[95%] md:absolute md:pl-36 md:pt-8 md:w-[86%]">
           <div className="flex flex-col">
             <span className="mb-2 flex gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
