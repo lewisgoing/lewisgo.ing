@@ -55,9 +55,7 @@ export default function Footer() {
                     </div>
                 )}
                 <div className="mb-10 flex space-x-2 text-sm text-muted-foreground">
-                    <div>{siteMetadata.author}</div>
-                    <div>{` • `}</div>
-                    <div>{`© ${new Date().getFullYear()}`}</div>
+                    <div>{`© ${new Date().getFullYear()} ${siteMetadata.author}`}</div>
                     <div>{` • `}</div>
                     <Link href="/">{siteMetadata.title}</Link>
                 </div>
