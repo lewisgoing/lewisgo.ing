@@ -19,6 +19,7 @@ import 'react-resizable/css/styles.css';
 
 import '../styles/globals.css';
 import { ThemeProviders } from '../../components/ThemeProviders';
+import { Analytics } from '@vercel/analytics/next';
 
 const font = JetBrains_Mono({
   subsets: ['latin'],
@@ -119,6 +120,8 @@ export default function App({ Component, pageProps }: AppProps) {
             <Footer />
           </div>
         </SectionContainer>
+
+        <Analytics />
 
       </ThemeProviders>
     </>

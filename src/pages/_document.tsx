@@ -10,8 +10,9 @@ export default function Document() {
       <Head />
       <body>
         <Main />
-        <Analytics />
+
         <NextScript />
+        <Analytics />
         <SpeedInsights />
       </body>
     </Html>

@@ -16,7 +16,7 @@ import GithubBox from './boxes/GithubBox';
 import GithubCalendar from './boxes/GithubCalendar';
 import SkillsBox from './boxes/SkillsBox';
 import SoundcloudBox from './boxes/SoundcloudBox';
-import SpotifyBox from './spotify/SpotifyBoxClient';
+import SpotifyBox from './boxes/SpotifyBox';
 
 // Layout utilities
 import { lgLayout, mdLayout, smLayout } from 'src/utils/bento-layouts';
