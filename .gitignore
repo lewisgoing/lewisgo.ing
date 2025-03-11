@@ -42,3 +42,4 @@ next-env.d.ts
 public/svg/ignore
 public/ignore
 components/spotify/SpotBoxOg.tsx
+components/assets/ExternalLink copy.tsx

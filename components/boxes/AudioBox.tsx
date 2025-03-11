@@ -16,7 +16,7 @@ import {
   HiBackward,
 } from "react-icons/hi2";
 import { FaCompactDisc, FaSoundcloud } from "react-icons/fa";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, MoveUpRight } from "lucide-react";
 import ExternalLinkComponent from "../assets/ExternalLink";
 
 // Lazy load the Lottie component with explicit props type
@@ -681,7 +681,18 @@ const AudioBox = () => {
         
         <div className="absolute right-2 top-14 z-[1] p-8 bento-md:right-0 bento-md:top-2 bento-lg:top-14 bento-lg:right-3 bento-sm:top-14 bento-sm:right-2">
           {currentSong.audioLink && (
-            <ExternalLinkComponent href={currentSong.audioLink} />
+            // <ExternalLinkComponent href={currentSong.audioLink} />
+
+            <a
+            href={currentSong.audioLink}
+            aria-label="Listen on Soundcloud"
+            title="Listen on Soundcloud"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute bottom-0 right-0 m-3 flex w-fit items-end rounded-full border bg-secondary/50 p-3 text-primary transition-all duration-300 hover:rotate-12 hover:ring-1 hover:ring-primary"
+          >
+            <MoveUpRight size={16} />
+          </a>
           )}
         </div>
 
