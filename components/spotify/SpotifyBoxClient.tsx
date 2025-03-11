@@ -85,9 +85,9 @@ const SpotifyPresence = () => {
         <div
           className="flex 
 
-lg:min-w-0 lg:flex-1 lg:flex-col lg:justify-end lg:overflow-hidden lg:pl-0 lg:pt-0 lg:relative lg:w-[95%] 
+lg:min-w-0 lg:flex-1 lg:flex-col lg:justify-end lg:overflow-hidden lg:pl-0 lg:pt-0 lg:relative lg:w-[97%] 
 
-sm:min-w-0 sm:flex-1 sm:flex-col sm:justify-end sm:overflow-hidden sm:pl-0 sm:pt-0 sm:relative sm:w-[95%] 
+sm:min-w-0 sm:flex-1 sm:flex-col sm:justify-end sm:overflow-hidden sm:pl-0 sm:pt-0 sm:relative sm:w-[97%] 
 
 md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]
 "
@@ -100,7 +100,7 @@ md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]
                 {displayData['@attr']?.nowplaying === 'true' ? 'Now playing...' : 'Last played...'}
               </span>
             </span>
-            <span className="text-md pb-2 truncate font-bold leading-none z-[1]">{song}</span>
+            <span className="text-md pb-2 truncate font-bold leading-tight">{song}</span>
             <span className="w-[85%] truncate text-xs text-muted-foreground">
               <span className="font-semibold text-secondary-foreground">by</span> {artist['#text']}
             </span>

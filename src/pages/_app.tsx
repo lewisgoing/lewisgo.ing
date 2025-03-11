@@ -6,9 +6,10 @@ import NavBar from '../../components/NavBar';
 import SectionContainer from '../../components/SectionContainer';
 import type { AppProps } from 'next/app';
 import siteMetadata from '../../public/data/siteMetaData';
-// import { Analytics } from '@vercel/analytics/react'
+
 import '../styles/tailwind.css';
 import { Metadata } from 'next';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { JetBrains_Mono } from 'next/font/google';
 import AnimatedCursor from 'react-animated-cursor';
 import { Analytics } from '@vercel/analytics/react';
@@ -109,38 +110,6 @@ export default function App({ Component, pageProps }: AppProps) {
               } as any,
             ]}
           />{' '}
-          {/* <AnimatedCursor
-            innerSize={8}
-            outerSize={16}
-            color="193, 11, 111"
-            outerAlpha={0.2}
-            innerScale={0.7}
-            outerScale={5}
-            clickables={[
-              "a",
-              'input[type="text"]',
-              'input[type="email"]',
-              'input[type="number"]',
-              'input[type="submit"]',
-              'input[type="image"]',
-              "label[for]",
-              "select",
-              "textarea",
-              "button",
-              ".link",
-              {
-                target: ".react-grid-item",
-                options: {
-                  innerSize: 12,
-                  outerSize: 16,
-                  color: "255, 255, 255",
-                  outerAlpha: 0.3,
-                  innerScale: 0.7,
-                  outerScale: 5,
-                },
-              },
-            ]}
-          />{" "} */}
           <div className="flex h-full flex-col justify-between font-sans">
             {/* <SearchProvider searchConfig={siteMetadata.search as SearchConfig}> */}
             {/* <NavBar /> */}
@@ -153,7 +122,6 @@ export default function App({ Component, pageProps }: AppProps) {
         </SectionContainer>
         <Analytics />
       </ThemeProviders>
-      {/* </body> */}
     </>
   );
 }
