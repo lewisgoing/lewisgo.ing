@@ -17,7 +17,6 @@ const IntroBox = ({ introSilhouette }: { introSilhouette: boolean }) => {
         }`}
         skeletonClassName="rounded-3xl"
         noRelative
-        unoptimized
         priority
       />
     </>
