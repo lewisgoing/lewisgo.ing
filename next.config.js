@@ -45,6 +45,8 @@ const nextConfig = {
   },
   experimental: {
     useCache: true,
+    dynamicIO: true,
+    typedRoutes: true,
   },
 };
 

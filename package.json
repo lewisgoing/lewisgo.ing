@@ -27,6 +27,7 @@
     "camera-controls": "^2.8.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "esbuild": "^0.25.0",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
     "framer-motion": "^10.18.0",
@@ -36,6 +37,7 @@
     "next": "^15.2.0-canary.76",
     "next-redis-cache": "^1.0.3",
     "next-themes": "^0.3.0",
+    "path-to-regexp": "^6.3.0",
     "react": "^18.2.0",
     "react-activity-calendar": "^2.2.8",
     "react-animated-cursor": "^2.11.2",
@@ -48,6 +50,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.150.1",
+    "undici": "^5.28.5",
     "vercel": "^41.3.2"
   },
   "devDependencies": {

@@ -18,6 +18,7 @@ export default function Footer() {
           {siteMetadata.linkedin && (
             <a
               href={siteMetadata.linkedin}
+              title='linkedin'
               className="text-muted-foreground hover:brightness-125 dark:hover:brightness-125"
             >
               <Linkedin size={24} />
@@ -26,6 +27,7 @@ export default function Footer() {
           {siteMetadata.email && (
             <a
               href={`mailto:${siteMetadata.email}`}
+              title='email'
               className="text-muted-foreground hover:brightness-125 dark:hover:brightness-125"
             >
               <Mail size={24} />
@@ -34,6 +36,7 @@ export default function Footer() {
           {siteMetadata.github && (
             <a
               href={siteMetadata.github}
+              title='Github'
               className="text-muted-foreground hover:brightness-125 dark:hover:brightness-125"
             >
               <Github size={24} />

@@ -1,11 +1,11 @@
 // components/boxes/IntroBox.tsx
+'use cache';
 
 import React, { useState } from 'react';
 import ImageBox from '../assets/ImageBox';
 // import Cursor from "../oldcursor";
 
 const IntroBox = ({ introSilhouette }: { introSilhouette: boolean }) => {
-  'use cache';
   return (
     <>
       <ImageBox
@@ -25,3 +25,5 @@ const IntroBox = ({ introSilhouette }: { introSilhouette: boolean }) => {
 };
 
 export default IntroBox;
+
+

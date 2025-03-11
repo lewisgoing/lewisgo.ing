@@ -1,5 +1,6 @@
-// src/pages/_document.tsx
 'use cache';
+// src/pages/_document.tsx
+
 import { Html, Head, Main, NextScript } from 'next/document';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';

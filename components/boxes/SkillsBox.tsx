@@ -42,14 +42,14 @@ const SkillsBox = () => {
   return (
     <TooltipProvider>
       <div
-        className="grid grid-cols-4          gap-2 
+        className="grid          
 
                 overflow-hidden 
                             transition-all 
                             duration-300
 
                             bento-sm:grid-cols-4 
-                                                        sm: gap-4
+                                                        gap-4
 
                             bento-md:grid-cols-8
                             bento-md:gap-1 
