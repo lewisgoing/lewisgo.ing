@@ -2,8 +2,8 @@
 
 import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Player } from '@lottiefiles/react-lottie-player';
-import lottieDarkSrc from '../public/lottie-dark.json';
-import lottieLightSrc from '../public/lottie-light.json';
+import lottieDarkSrc from 'public/lottie-dark.json';
+import lottieLightSrc from 'public/lottie-light.json';
 
 interface LottiePlayPauseButtonProps {
   isDark: boolean;
