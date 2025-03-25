@@ -69,7 +69,7 @@ const AboutContact = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            Whether you're interested in working together on a project, have questions about my work, or just want to say hello, I'd love to hear from you.
+            Whether you&apos;re interested in working together on a project, have questions about my work, or just want to say hello, I&apos;d love to hear from you.
           </motion.p>
 
           <motion.p 
@@ -79,7 +79,7 @@ const AboutContact = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            I'm currently open to freelance opportunities, collaborations, and interesting projects. The best way to reach me is through email or LinkedIn.
+            I&apos;m currently open to freelance opportunities, collaborations, and interesting projects. The best way to reach me is through email or LinkedIn.
           </motion.p>
 
           {/* Social links */}
@@ -190,7 +190,7 @@ const AboutContact = () => {
       >
         <h3 className="text-xl font-bold mb-2">A Note on Response Time</h3>
         <p className="text-muted-foreground">
-          I typically respond to messages within 24-48 hours. If you're reaching out about a time-sensitive matter, please mention it in your message, and I'll do my best to prioritize it.
+          I typically respond to messages within 24-48 hours. If you&apos;re reaching out about a time-sensitive matter, please mention it in your message, and I&apos;ll do my best to prioritize it.
         </p>
       </motion.div>
     </section>

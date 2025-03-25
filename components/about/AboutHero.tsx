@@ -100,7 +100,7 @@ const AboutHero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            I'm <span className="text-primary">Lewis Going</span>
+            I&apos;m <span className="text-primary">Lewis Going</span>
           </motion.h2>
           
           <motion.div

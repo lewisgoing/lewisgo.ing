@@ -79,9 +79,10 @@ const AboutMusic = () => {
   
   // Pause audio when unmounting
   React.useEffect(() => {
+    const audio = audioRef.current;
     return () => {
-      if (audioRef.current && !audioRef.current.paused) {
-        audioRef.current.pause();
+      if (audio && !audio.paused) {
+        audio.pause();
       }
     };
   }, []);
