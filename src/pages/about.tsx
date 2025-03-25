@@ -72,7 +72,7 @@ export default function About() {
           </motion.section>
 
           {/* Professional Journey */}
-          <motion.section
+          {/* <motion.section
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
@@ -80,7 +80,7 @@ export default function About() {
             custom={1}
           >
             <AboutJourney />
-          </motion.section>
+          </motion.section> */}
 
           {/* Skills & Technologies */}
           <motion.section
