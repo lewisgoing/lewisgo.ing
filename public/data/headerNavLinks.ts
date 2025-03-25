@@ -1,6 +1,12 @@
 // public/data/headerNavLinks.ts
+import { LinkProps } from 'next/link';
 
-const headerNavLinks = [
+interface NavLink {
+  href: LinkProps<string>['href'];
+  title: string;
+}
+
+const headerNavLinks: NavLink[] = [
     // { href: '/projects', title: 'Projects' },
     // { href: '/projects', title: 'Projects' },
     // { href: '/music', title: 'Music' },
