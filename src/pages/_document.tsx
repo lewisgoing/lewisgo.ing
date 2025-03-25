@@ -9,15 +9,14 @@ export default function Document() {
     <Html lang="en">
       <Head />
       <body>
-        <div className='box-border flex h-fit min-h-screen flex-col gap-y-6 font-sans antialiased'>
-        <main className='flex-grow'>       <Main /></main>
- 
-
-        <NextScript />
-        <Analytics />
-        <SpeedInsights />
+        <div className='box-border flex h-fit min-h-screen flex-col gap-y-6 font-mono antialiased'>
+          <main className='flex-grow'>
+            <Main />
+          </main>
+          <NextScript />
+          <Analytics />
+          <SpeedInsights />
         </div>
-
       </body>
     </Html>
   );

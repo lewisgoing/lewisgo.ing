@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import { Responsive, WidthProvider, Layout } from 'react-grid-layout';
 import { useLanyard } from 'react-use-lanyard';
 import { Skeleton } from './shadcn/skeleton';
 
@@ -16,51 +16,65 @@ import GithubCalendar from './boxes/GithubCalendar';
 import SkillsBox from './boxes/SkillsBox';
 import SoundcloudBox from './boxes/SoundcloudBox';
 import SpotifyBox from './boxes/SpotifyBox';
+import ProjectsBox from './boxes/ProjectsBox';
+
+// Toast functionality
+import { ToastProvider } from '@/components/shadcn/toast-provider';
+import { useToast } from './shadcn/use-toast';
 
 // Layout utilities
-import { lgLayout, mdLayout, smLayout } from 'src/utils/bento-layouts';
+import { lgLayout, mdLayout, smLayout, xlLayout } from 'src/utils/bento-layouts';
+import { KeySquare } from 'lucide-react';
+import KeyboardShortcutsIndicators from './KeyboardShortcutIndicator';
 
-// TypeScript interfaces
-interface DiscordUser {
-  id: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-  bot: boolean;
+// Store the original layouts for reset functionality
+const defaultLayouts = {
+  lg: lgLayout,
+  md: mdLayout,
+  sm: smLayout,
+  xl: xlLayout
+};
 
-}
-
-interface LanyardData {
-  active_on_discord_desktop: boolean;
-  active_on_discord_mobile: boolean;
-  active_on_discord_web: boolean;
-  activities: any[]; 
-  discord_status: string; 
-  discord_user: DiscordUser;
-  kv: {
-    spotify_last_played: string; 
-  };
-  listening_to_spotify: boolean;
-  spotify: null; 
-}
-
-interface LanyardResponse {
-  data: LanyardData;
-}
+const MinimalistFooterPills = ({ isDraggable }) => {
+  return (
+    <div className="mx-auto flex justify-center gap-4 py-2 mt-3 mb-6">
+      <div className="flex items-center px-3 py-1 rounded-full bg-secondary/40 backdrop-blur-sm border border-border/50">
+        <KeySquare size={12} className="text-primary mr-1.5" />
+        <span className="text-xs font-medium mx-0.5">⌘L</span>
+        <span className="text-xs text-muted-foreground ml-1 mr-0.5">
+          {isDraggable ? 'Lock' : 'Unlock'}
+        </span>
+      </div>
+      
+      <div className="flex items-center px-3 py-1 rounded-full bg-secondary/40 backdrop-blur-sm border border-border/50">
+        <KeySquare size={12} className="text-primary mr-1.5" />
+        <span className="text-xs font-medium mx-0.5">⌘K</span>
+        <span className="text-xs text-muted-foreground ml-1 mr-0.5">Reset</span>
+      </div>
+    </div>
+  );
+};
 
 // Apply WidthProvider to Responsive Grid Layout
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-export default function Bento() {
+// Helper component to use toast inside the main component
+const BentoWithToast = () => {
+  const { toast } = useToast();
+  
   // States
   const [introSilhouette, setIntroSilhouette] = useState(false);
   const [isDiscordLoaded, setDiscordLoaded] = useState(false);
   const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false);
   const [rowHeight, setRowHeight] = useState(280);
-
+  
+  // New states for draggability and layouts
+  const [isDraggable, setIsDraggable] = useState(true);
+  const [layouts, setLayouts] = useState(defaultLayouts);
+  
   // Refs
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  
   // Lanyard data hook for Discord/Spotify integration
   const lanyard = useLanyard({
     userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || '661068667781513236',
@@ -68,16 +82,56 @@ export default function Bento() {
     pollInterval: 600000, // Poll every 60 seconds instead of default 15 seconds
   });
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Toggle draggability with Command+D
+      if (e.key === 'l' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setIsDraggable(prev => !prev);
+        toast({
+          title: isDraggable ? "Dragging disabled" : "Dragging enabled",
+          description: isDraggable 
+            ? "Use ⌘L to re-enable dragging" 
+            : "Drag boxes to rearrange your dashboard",
+          duration: 2000,
+        });
+      }
+      
+      // Reset layout with Command+K
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setLayouts(defaultLayouts);
+        toast({
+          title: "Layout reset",
+          description: "All boxes have been reset to their default positions",
+          duration: 2000,
+        });
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isDraggable, toast]);
+
   // Handle responsive layout changes
   const handleWidthChange = (width: number) => {
     if (width <= 500) {
-      setRowHeight(158);
-    } else if (width <= 1100) {
-      setRowHeight(180);
+      setRowHeight(158); // For small screens
+    } else if (width <= 800) {
+      setRowHeight(180); // For medium screens
+    } else if (width <= 1200) {
+      setRowHeight(280); // For large screens
     } else {
-      setRowHeight(280);
+      setRowHeight(350); // For xl screens
     }
   };
+  
 
   // Drag handlers for grid items
   const handleDragStart = (element: HTMLElement) => {
@@ -97,6 +151,14 @@ export default function Bento() {
       element.style.zIndex = '1';
     }, 500);
   };
+  
+  // Track layout changes
+  const onLayoutChange = (layout: Layout[], allLayouts: any) => {
+    // Only save changes if dragging is enabled
+    if (isDraggable) {
+      setLayouts(allLayouts);
+    }
+  };
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -107,24 +169,32 @@ export default function Bento() {
     };
   }, []);
 
+  // Visual indicator for draggable state
+  const gridItemClass = isDraggable 
+    ? "react-grid-item" 
+    : "react-grid-item transition-all duration-300 hover:cursor-default";
+
   return (
-    <ResponsiveGridLayout
-      className="mx-auto max-w-[375px] bento-md:max-w-[800px] bento-lg:max-w-[1200px]"
-      layouts={{ lg: lgLayout, md: mdLayout, sm: smLayout }}
-      breakpoints={{ lg: 1199, md: 799, sm: 374 }}
-      cols={{ lg: 4, md: 4, sm: 2 }}
-      rowHeight={rowHeight}
-      isResizable={false}
-      isDraggable={true}
-      onWidthChange={handleWidthChange}
-      isBounded
-      margin={[16, 16]}
-      useCSSTransforms={true}
-      onDragStart={(layout, oldItem, newItem, placeholder, e, element) => handleDragStart(element)}
-      onDragStop={(layout, oldItem, newItem, placeholder, e, element) => handleDragStop(element)}
-    >
+    <>
+<ResponsiveGridLayout
+  className="mx-auto max-w-[375px] bento-md:max-w-[800px] bento-lg:max-w-[1200px] bento-xl:max-w-[1600px]"
+  layouts={layouts}
+  breakpoints={{ xl: 1600, lg: 1199, md: 799, sm: 374 }} // Add XL breakpoint
+  cols={{ xl: 4, lg: 4, md: 4, sm: 2 }} // Add cols for XL
+  rowHeight={rowHeight}
+  isResizable={false}
+  isDraggable={isDraggable}
+  onWidthChange={handleWidthChange}
+  isBounded
+  margin={[16, 16]} // Slightly larger margins
+  useCSSTransforms={true}
+  onDragStart={(layout, oldItem, newItem, placeholder, e, element) => handleDragStart(element)}
+  onDragStop={(layout, oldItem, newItem, placeholder, e, element) => handleDragStop(element)}
+  onLayoutChange={onLayoutChange}
+  draggableCancel=".drag-blocker"
+>
       {/* Intro Box with Shader Gradient */}
-      <div key="intro" className="relative">
+      <div key="intro" className={`relative ${gridItemClass}`}>
         <ShaderGradientBox
           className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
           animate="on"
@@ -162,21 +232,21 @@ export default function Bento() {
 
         {/* SVG Overlay - placed after ShaderGradientBox to appear on top */}
         <Image
-          src="/svg/lewis-card-hover-4.svg"
-          alt="Bento Intro Silhouette"
-          fill
-          className="rounded-3xl object-cover absolute top-0 left-0 z-10"
-          skeletonClassName="rounded-3xl"
-          noRelative
-          unoptimized
-          priority
-        />
+  src="/svg/lewis-card-hover-4.svg"
+  alt="Bento Intro Silhouette"
+  fill
+  className="rounded-3xl object-contain absolute top-0 left-0 z-10" // Changed from object-cover to object-contain
+  skeletonClassName="rounded-3xl"
+  noRelative
+  unoptimized
+  priority
+/>
       </div>
 
       {/* GitHub Box */}
       <div
         key="github"
-        className="group"
+        className={`group ${gridItemClass}`}
         onMouseEnter={() => setIntroSilhouette(true)}
         onMouseLeave={() => setIntroSilhouette(false)}
       >
@@ -184,7 +254,7 @@ export default function Bento() {
       </div>
 
       {/* Tall Gradient Box */}
-      <div key="tall-gradient" className="h-full w-full overflow-hidden">
+      <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
         <ShaderGradientBox
           className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
           animate="on"
@@ -222,7 +292,7 @@ export default function Bento() {
       </div>
 
       {/* Discord Status Box */}
-      <div key="discord">
+      <div key="discord" className={gridItemClass}>
         {lanyard.data && !lanyard.isValidating ? (
           <DiscordPresence lanyard={lanyard.data} onLoad={() => setDiscordLoaded(true)} />
         ) : (
@@ -233,44 +303,43 @@ export default function Bento() {
       {/* Audio Player Box */}
       <div
         key="audiobox"
-        className="group"
+        className={`group ${gridItemClass}`}
         onMouseEnter={() => setIntroSilhouette(true)}
         onMouseLeave={() => setIntroSilhouette(false)}
       >
         <AudioBox />
       </div>
 
-      {/* SoundCloud Box */}
+      {/* Projects Box */}
       <div
-        key="twitter"
-        className="group"
+        key="projects"
+        className={`group ${gridItemClass}`}
         onMouseEnter={() => setIntroSilhouette(true)}
         onMouseLeave={() => setIntroSilhouette(false)}
       >
         <SoundcloudBox />
+        {/* <ProjectsBox /> */}
       </div>
 
       {/* Spotify Status Box */}
       <div
         key="spotify"
-        className="group"
+        className={`group ${gridItemClass}`}
         onMouseEnter={() => setIntroSilhouette(true)}
         onMouseLeave={() => setIntroSilhouette(false)}
       >
-        {/* Pass the full lanyard object to the SpotifyBox component */}
         <SpotifyBox />
-        {/* <Skeleton className="w-full h-full rounded-3xl z-[1]" /> */}
       </div>
 
       {/* Skills Box */}
-      <div key="tech" className="flex justify-center items-center">
+      <div key="tech" className={`flex justify-center items-center ${gridItemClass}`}>
         <SkillsBox />
       </div>
 
       {/* GitHub Contributions Box */}
       <div
         key="contributions"
-        className="group flex items-center justify-center"
+        className={`group flex items-center justify-center ${gridItemClass}`}
         onMouseEnter={() => setIntroSilhouette(true)}
         onMouseLeave={() => setIntroSilhouette(false)}
       >
@@ -284,5 +353,35 @@ export default function Bento() {
         />
       </div>
     </ResponsiveGridLayout>
+    <KeyboardShortcutsIndicators isDraggable={isDraggable} />
+    {/* <MinimalistFooterPills isDraggable={isDraggable} /> */}
+    </>
+  );
+};
+
+// Main export with toast provider
+export default function Bento() {
+  return (
+    <>
+        <ToastProvider>
+      <BentoWithToast />
+      
+    </ToastProvider>
+    <KeyboardShortcutsIndicators />
+    {/* <div className="w-full mx-auto flex h-[60px] justify-around">
+
+            <div className="flex">
+
+              <p className="px-6 py-2 text-xs font-xs text-muted-foreground hover:text-foreground">
+                Command + D to toggle dragging</p>
+                <p className="px-6 py-2 text-xs font-xs text-muted-foreground hover:text-foreground">
+              Command + K to reset layout
+              </p>
+            </div>
+            </div> */}
+
+            
+    </>
+
   );
 }

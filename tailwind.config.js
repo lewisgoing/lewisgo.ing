@@ -1,5 +1,4 @@
-// tailwind.config.js
-// @ts-check
+// tailwind.config.js update
 const { fontFamily } = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
@@ -34,15 +33,22 @@ module.exports = {
         'bento-sm': '374px',
         'bento-md': '799px',
         'bento-lg': '1199px',
+        'bento-xl': '1599px',
         sm: '374px',
         md: '799px',
         lg: '1199px',
+        'xl': '1599px',
       },
       lineHeight: {
         11: '2.75rem',
         12: '3rem',
         13: '3.25rem',
         14: '3.5rem',
+      },
+      fontFamily: {
+        // Enable JetBrains Mono as sans font
+        sans: ['var(--font-inter)', ...fontFamily.sans],
+        mono: ['var(--font-jetbrains-mono)', ...fontFamily.mono],
       },
       colors: {
         instagram: '#E4405F',
@@ -92,9 +98,6 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
-      fontFamily: {
-        //   sans: ['var(--font-space-jetbrains-mono)', ...fontFamily.sans],
-      },
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
@@ -142,7 +145,7 @@ module.exports = {
               backgroundColor: theme('colors.primary.foreground'),
               borderWidth: '1px',
               borderColor: theme('colors.border'),
-              fontFamily: 'inherit',
+              fontFamily: 'var(--font-jetbrains-mono)',
               borderRadius: '0.25rem',
               padding: '0.25rem 0.5rem',
             },
@@ -201,7 +204,6 @@ module.exports = {
   },
 
   plugins: [
-    require('@tailwindcss/typography'),
     require('@tailwindcss/typography'),
     require('tailwindcss-animate'),
   ],

@@ -20,11 +20,8 @@ import '../styles/globals.css';
 import { ThemeProviders } from '../../components/ThemeProviders';
 import { Analytics } from '@vercel/analytics/next';
 
-const font = JetBrains_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-space-jetbrains-mono',
-});
+import { fontClass } from '../utils/fonts';
+import LayoutWrapper from '@/components/LayoutWrapper';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -75,50 +72,22 @@ export default function App({ Component, pageProps }: AppProps) {
       {/* <body className="bg-background text-black antialiased dark:text-white"> */}
       <ThemeProviders>
         {/* <Analytics /> */}
-        <SectionContainer>
-          <AnimatedCursor
-            innerSize={8}
-            outerSize={8}
-            color="193, 11, 111"
-            outerAlpha={0.2}
-            innerScale={0.7}
-            outerScale={5}
-            showSystemCursor={false}
-            clickables={[
-              'a',
-              'input[type="text"]',
-              'input[type="email"]',
-              'input[type="number"]',
-              'input[type="submit"]',
-              'input[type="image"]',
-              'label[for]',
-              'select',
-              'textarea',
-              'button',
-              '.link',
-              {
-                target: '.react-grid-item',
-                options: {
-                  innerSize: 12,
-                  outerSize: 16,
-                  color: '255, 255, 255',
-                  outerAlpha: 0.3,
-                  innerScale: 0.7,
-                  outerScale: 5,
-                },
-              } as any,
-            ]}
-          />{' '}
-          <div className="flex h-full flex-col justify-between font-sans">
+        {/* <SectionContainer> */}
+
+             {/* <div className={`${fontClass} flex h-full flex-col justify-between font-mono`}> */}
             {/* <SearchProvider searchConfig={siteMetadata.search as SearchConfig}> */}
             {/* <NavBar /> */}
-            <Component {...pageProps} />
+            <LayoutWrapper>
+              <Component {...pageProps} /> 
+              {/* <Footer />  */}
+            </LayoutWrapper>
+            
             {/* <main className="mb-auto">{children}</main> */}
             {/* </SearchProvider> */}
 
-            <Footer />
-          </div>
-        </SectionContainer>
+        
+          {/* </div> */}
+        {/* </SectionContainer> */}
 
         <Analytics />
 

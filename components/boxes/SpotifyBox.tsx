@@ -1,8 +1,12 @@
+// components/boxes/SpotifyBox.tsx
+'use cache';
+
 import { useEffect, useState } from 'react';
 import { FaSpotify } from 'react-icons/fa';
-import { Skeleton } from 'components/shadcn/skeleton';
+import { Skeleton } from '../shadcn/skeleton';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
+import { getSvgUrl } from '../../src/utils/blob-utils';
 
 interface Track {
   name: string;
@@ -13,10 +17,11 @@ interface Track {
   '@attr'?: { nowplaying: string };
 }
 
-const SpotifyPresence = () => {
+const SpotifyBox = () => {
   const [displayData, setDisplayData] = useState<Track | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const imageStyle = isHovered
     ? { filter: 'grayscale(0)', transition: 'filter 0.3s ease' }
@@ -29,6 +34,9 @@ const SpotifyPresence = () => {
 
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
+
+  // Get the now playing SVG from blob storage if available
+  const nowPlayingIcon = getSvgUrl('bento-now-playing.svg');
 
   useEffect(() => {
     fetch('https://lastfm-last-played.biancarosa.com.br/trancepilled/latest-song')
@@ -71,31 +79,35 @@ const SpotifyPresence = () => {
     <>
       <div
         className="relative flex h-full w-full flex-col justify-between p-6"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <Image
-          src={image[3]['#text']}
-          alt="Album art"
-          width={128}
-          height={128}
-          className="mb-2 w-[55%] rounded-xl border border-border grayscale md:w-32"
-          style={imageStyle}
-        />
-        <div
-          className="flex 
+        <div className="relative mb-2 w-[55%] bento-md:w-32 bento-xl:w-48">
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 rounded-xl" />
+          )}
+          <Image
+            src={image[3]['#text']}
+            alt="Album art"
+            width={128}
+            height={128}
+            className={`rounded-xl border border-border grayscale mb-2 w-[55%] bento-sm:w-52 bento-md:w-32 bento-xl:w-48 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            style={imageStyle}
+            onLoad={() => setImageLoaded(true)}
+            unoptimized
+          />
+        </div>
 
-lg:min-w-0 lg:flex-1 lg:flex-col lg:justify-end lg:overflow-hidden lg:pl-0 lg:pt-0 lg:relative lg:w-[97%] 
-
-sm:min-w-0 sm:flex-1 sm:flex-col sm:justify-end sm:overflow-hidden sm:pl-0 sm:pt-0 sm:relative sm:w-[97%] 
-
-md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]
-"
-        >
+        <div className="flex lg:min-w-0 lg:flex-1 lg:flex-col lg:justify-end lg:overflow-hidden lg:pl-0 lg:pt-0 lg:relative lg:w-[97%] sm:min-w-0 sm:flex-1 sm:flex-col sm:justify-end sm:overflow-hidden sm:pl-0 sm:pt-0 sm:relative sm:w-[97%] md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]">
           <div className="flex flex-col">
             <span className="mb-2 flex gap-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/svg/bento-now-playing.svg" alt="Now playing" width={16} height={16} />
+              <Image 
+                src={nowPlayingIcon}
+                alt="Now playing" 
+                width={16} 
+                height={16} 
+                unoptimized
+              />
               <span className="text-sm text-primary">
                 {displayData['@attr']?.nowplaying === 'true' ? 'Now playing...' : 'Last played...'}
               </span>
@@ -127,4 +139,4 @@ md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]
   );
 };
 
-export default SpotifyPresence;
+export default SpotifyBox;

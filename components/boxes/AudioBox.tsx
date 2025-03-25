@@ -474,16 +474,16 @@ const AudioBox = () => {
                     transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
                   }}
                 >
-                  <Suspense
+                  {/* <Suspense
                     fallback={<div className="w-12 h-12 flex items-center justify-center">▶</div>}
-                  >
+                  > */}
                     <LottiePlayPauseWithNoSSR
                       ref={lottieRef}
                       togglePlay={togglePlay}
                       isPlaying={isPlaying}
                       isDark={isDark}
                     />
-                  </Suspense>
+                  {/* </Suspense> */}
                 </button>
 
                 <button
@@ -566,20 +566,20 @@ const AudioBox = () => {
                     transform: isPlayButtonHovered ? 'scale(.90)' : 'scale(.80)',
                   }}
                 >
-                  <Suspense
+                  {/* <Suspense
                     fallback={
                       <div className="w-8 h-8 flex items-center justify-center text-primary">
                         ▶
                       </div>
                     }
-                  >
+                  > */}
                     <LottiePlayPauseWithNoSSR
                       ref={lottieRef}
                       togglePlay={togglePlay}
                       isPlaying={isPlaying}
                       isDark={isDark}
                     />
-                  </Suspense>
+                  {/* </Suspense> */}
                 </button>
 
                 <button
@@ -663,20 +663,20 @@ const AudioBox = () => {
                     transform: isPlayButtonHovered ? 'scale(1.05)' : 'scale(1)',
                   }}
                 >
-                  <Suspense
+                  {/* <Suspense
                     fallback={
                       <div className="w-10 h-10 flex items-center justify-center text-primary">
                         ▶
                       </div>
                     }
-                  >
+                  > */}
                     <LottiePlayPauseWithNoSSR
                       ref={lottieRef}
                       togglePlay={togglePlay}
                       isPlaying={isPlaying}
                       isDark={isDark}
                     />
-                  </Suspense>
+                  {/* </Suspense> */}
                 </button>
 
                 <button

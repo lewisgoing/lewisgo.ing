@@ -19,7 +19,7 @@ const GithubBox = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <FaGithub
-        className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24"
+        className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24 bento-xl:"
         style={iconStyle}
       />
       {/* <SilhouetteHover

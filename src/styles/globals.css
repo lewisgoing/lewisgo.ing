@@ -115,6 +115,39 @@ body {
   }
 }
 
+.responsive-text-sm {
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+}
+
+.responsive-text-md {
+  font-size: clamp(0.875rem, 1.5vw, 1.1rem);
+}
+
+.responsive-text-lg {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+}
+
+/* For icons that should scale with container size */
+.scale-with-grid {
+  width: 25%;
+  height: 25%;
+  max-width: 64px;
+  max-height: 64px;
+}
+
+/* Make grid components maintain proper aspect ratios */
+/* .react-grid-item {
+  @apply flex select-none items-center rounded-3xl border border-border bg-secondary !duration-500 hover:scale-[1.025] bento-md:hover:cursor-grab bento-md:hover:shadow-lg;
+  transition-property: transform, left, top, width, height;
+  overflow: visible;
+  aspect-ratio: attr(data-w) / attr(data-h);
+} */
+/* For card sizing */
+/* @media screen and (min-width: 1600px) {
+  .bento-xl\:max-w-\[1600px\] {
+    max-width: 1600px;
+  }
+} */
 .react-grid-item {
   @apply flex select-none items-center rounded-3xl border border-border bg-secondary !duration-500 hover:scale-[1.025] bento-md:hover:cursor-grab bento-md:hover:shadow-lg;
   transition-property: transform, left, top, width, height;

@@ -1,5 +1,4 @@
 // components/NavBar.tsx
-
 'use client';
 
 import headerNavLinks from '../public/data/headerNavLinks';
@@ -8,7 +7,7 @@ import { cn } from '../src/utils/tailwind-helpers';
 import NextImage from 'next/image';
 import { useEffect, useState } from 'react';
 
-import Link from './assets/Link';
+import Link from 'next/link';
 // import MobileNav from './MobileNav'
 // import SearchButton from './SearchButton'
 import ThemeSwitch from './assets/ThemeSwitch';
@@ -35,18 +34,16 @@ const NavBar = () => {
   return (
     <header
       className={cn(
-        'fixed inset-x-0 top-4 z-40 flex h-[60px] mx-8 bento-md:mx-auto items-center justify-between rounded-3xl bg-secondary border-border border px-4 bento-md:px-8 shadow-sm saturate-100 backdrop-blur-[10px] transition-all duration-200 bento-md:max-w-[768px] bento-lg:max-w-[1168px]',
-        isScrolled && 'bg-background/80 border-transparent',
+        'fixed inset-x-0 top-4 z-40 flex h-[60px] mx-8 bento-md:mx-auto items-center justify-between rounded-3xl px-4 bento-md:pr-8 transition-all duration-200 bento-md:max-w-[768px] bento-lg:max-w-[1168px] bento-xl:max-w-[1600px]',
+        isScrolled && 'bg-background/80 border-transparent shadow-sm saturate-100 backdrop-blur-[10px]',
       )}
     >
       <div className="w-full mx-auto flex h-[60px] items-center justify-between">
         <div>
           <Link href="/" aria-label={siteMetadata.headerTitle}>
             <div className="flex items-center justify-between">
-              <NextImage src={logo} alt="Logo" width="40" height="40" unoptimized />
-              <p className="px-3 py-2 text-md font-medium text-muted-foreground hover:text-foreground">
-                lewis<i>going</i>
-              </p>
+              {/* <NextImage src={logo} alt="Logo" width="40" height="40" unoptimized /> */}
+              <p className="px-3 py-2 text-md font-medium text-muted-foreground hover:text-foreground">lewisgo.ing</p>
             </div>
           </Link>
         </div>
@@ -59,7 +56,6 @@ const NavBar = () => {
                   className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                 >
                   <Link
-                    // className="rounded px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-300 hover:bg-secondary hover:brightness-125"
                     href={link.href}
                   >
                     {link.title}
