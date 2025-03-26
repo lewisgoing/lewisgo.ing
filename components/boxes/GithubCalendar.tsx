@@ -52,7 +52,7 @@ const GithubCalendar: FunctionComponent<Props> = ({
       .finally(() => setLoading(false));
   }, [username]);
 
-  useEffect(() => {
+useEffect(() => {
     const updateParams = () => {
       const width = window.innerWidth;
 
@@ -82,14 +82,23 @@ const GithubCalendar: FunctionComponent<Props> = ({
           scale: 0.85,
           daysToShow: 123,
         });
-      } else {
+      } else if (width <= 1599) {
         // bento-lg
         setCalendarParams({
           blockSize: 20,
           blockMargin: 6,
           blockRadius: 7,
           scale: 0.95,
-          daysToShow: 133, // original number of days
+          daysToShow: 133,
+        });
+      } else {
+        // bento-xl
+        setCalendarParams({
+          blockSize: 24,
+          blockMargin: 7,
+          blockRadius: 8,
+          scale: 1,
+          daysToShow: 143, // more days for XL layout
         });
       }
     };
