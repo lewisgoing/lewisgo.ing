@@ -11,6 +11,7 @@ import { cn } from '../../src/utils/tailwind-helpers';
 import { getSvgUrl } from '../../src/utils/blob-utils';
 import { Project, getAllProjects } from '../../src/types/project';
 import { useRouter } from 'next/router';
+import ExternalLink from '../assets/ExternalLink';
 
 const ProjectsBox = () => {
   const router = useRouter();
@@ -372,20 +373,19 @@ const ProjectsBox = () => {
       
       {/* External Link Icon - Consistent with other boxes */}
       <ExternalLink 
-  href={`/projects/${currentProject.id}`}
-  iconSize={16}
-  ariaLabel={`View ${currentProject.title} details`}
-  title={`View ${currentProject.title}`}
-  newTab={false} // We want this to stay within the app
-  // Add custom onClick handler to prevent default and use router
-  className="cursor-pointer"
-  children={
-    <div onClick={(e) => {
-      e.preventDefault();
-      router.push(`/projects/${currentProject.id}`);
-    }} className="w-full h-full absolute inset-0 z-0" />
-  }
-/>
+        href={`/projects/${currentProject.id}`}
+        iconSize={16}
+        ariaLabel={`View ${currentProject.title} details`}
+        title={`View ${currentProject.title}`}
+        newTab={false} // We want this to stay within the app
+        className="cursor-pointer"
+      >
+        <div onClick={(e) => {
+          e.preventDefault();
+          router.push(`/projects/${currentProject.id}`);
+        }} className="w-full h-full absolute inset-0 z-0" />
+      </ExternalLink>
+    </div>
   );
 };
 
