@@ -371,19 +371,21 @@ const ProjectsBox = () => {
       </div>
       
       {/* External Link Icon - Consistent with other boxes */}
-      <a
-        href={`/projects/${currentProject.id}`}
-        aria-label={`View ${currentProject.title} details`}
-        title={`View ${currentProject.title}`}
-        className="absolute bottom-0 right-0 m-3 flex w-fit items-end rounded-full border bg-secondary/50 p-3 text-primary transition-all duration-300 hover:rotate-12 hover:ring-1 hover:ring-primary"
-        onClick={(e) => {
-          e.preventDefault();
-          router.push(`/projects/${currentProject.id}`);
-        }}
-      >
-        <MoveUpRight size={16} />
-      </a>
-    </div>
+      <ExternalLink 
+  href={`/projects/${currentProject.id}`}
+  iconSize={16}
+  ariaLabel={`View ${currentProject.title} details`}
+  title={`View ${currentProject.title}`}
+  newTab={false} // We want this to stay within the app
+  // Add custom onClick handler to prevent default and use router
+  className="cursor-pointer"
+  children={
+    <div onClick={(e) => {
+      e.preventDefault();
+      router.push(`/projects/${currentProject.id}`);
+    }} className="w-full h-full absolute inset-0 z-0" />
+  }
+/>
   );
 };
 

@@ -7,6 +7,7 @@ import { Skeleton } from '../shadcn/skeleton';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { getSvgUrl } from '../../src/utils/blob-utils';
+import ExternalLink from '../assets/ExternalLink';
 
 interface Track {
   name: string;
@@ -123,18 +124,14 @@ const SpotifyBox = () => {
         </div>
       </div>
       <div className="absolute right-0 top-0 m-3 text-primary">
-        <FaSpotify size={56} style={iconStyle} />
-      </div>
-      <a
-        href={url}
-        aria-label="View on last.fm"
-        title="View on last.fm"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute bottom-0 right-0 m-3 flex w-fit items-end rounded-full border bg-secondary/50 p-3 text-primary transition-all duration-300 hover:rotate-12 hover:ring-1 hover:ring-primary"
-      >
-        <MoveUpRight size={16} />
-      </a>
+  <FaSpotify size={56} style={iconStyle} />
+</div>
+<ExternalLink 
+  href={url}
+  iconSize={16}
+  ariaLabel="View on last.fm"
+  title="View on last.fm"
+/>
     </>
   );
 };

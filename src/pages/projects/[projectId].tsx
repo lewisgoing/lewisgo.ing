@@ -239,32 +239,34 @@ const ProjectPage = () => {
               <div className="rounded-xl border border-border bg-tertiary/10 p-4">
                 <h3 className="text-lg font-medium mb-3">Links</h3>
                 <div className="space-y-2">
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex w-full items-center justify-between rounded-lg border border-border bg-tertiary/20 p-3 text-sm transition-colors hover:bg-tertiary/40"
-                    >
-                      <span className="flex items-center">
-                        <Github className="mr-2 h-4 w-4" /> GitHub Repository
-                      </span>
-                      <MoveUpRight className="h-4 w-4" />
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex w-full items-center justify-between rounded-lg border border-border bg-tertiary/20 p-3 text-sm transition-colors hover:bg-tertiary/40"
-                    >
-                      <span className="flex items-center">
-                        <Globe className="mr-2 h-4 w-4" /> Live Demo
-                      </span>
-                      <MoveUpRight className="h-4 w-4" />
-                    </a>
-                  )}
+                {project.githubUrl && (
+  <a
+  href={project.githubUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex w-full items-center justify-between rounded-lg border border-border bg-tertiary/20 p-3 text-sm transition-colors hover:bg-tertiary/40"
+>
+  <span className="flex items-center">
+    <Github className="mr-2 h-4 w-4" /> GitHub Repository
+  </span>
+  <MoveUpRight className="h-4 w-4 bento-xl:hidden" />
+  <MoveUpRight className="h-6 w-6 hidden bento-xl:block" />
+</a>
+)}
+{project.liveUrl && (
+  <a
+  href={project.liveUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex w-full items-center justify-between rounded-lg border border-border bg-tertiary/20 p-3 text-sm transition-colors hover:bg-tertiary/40"
+>
+  <span className="flex items-center">
+    <Globe className="mr-2 h-4 w-4" /> Live Demo
+  </span>
+  <MoveUpRight className="h-4 w-4 bento-xl:hidden" />
+  <MoveUpRight className="h-6 w-6 hidden bento-xl:block" />
+</a>
+)}
                 </div>
               </div>
             )}

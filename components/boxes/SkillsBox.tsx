@@ -41,65 +41,34 @@ const icons = [
 const SkillsBox = () => {
   return (
     <TooltipProvider>
-      <div
-        className="grid          
-
-                overflow-hidden 
-                            transition-all 
-                            duration-300
-
-                            bento-sm:grid-cols-4 
-                                                        gap-4
-
-                            bento-md:grid-cols-8
-                            bento-md:gap-1 
-
-                              bento-lg:gap-4
-                            bento-lg:grid-cols-4 
-                            lg: grid-cols-4
-                            xl:grid-cols-4 
-                                                               xl:gap-4
-                            
-      
-
-                    
-
-                            
-                     
-                    "
+      <div className="grid p-4 
+                      overflow-hidden 
+                      transition-all duration-300
+                      bento-sm:grid-cols-4 gap-3
+                      bento-md:grid-cols-8 bento-md:gap-1 
+                      bento-lg:grid-cols-4 bento-lg:gap-3
+                      xl:grid-cols-4 xl:gap-4 
+                      bento-xl:grid-cols-4 bento-xl:gap-4"
       >
         {icons.map(({ Icon, description }, index) => (
           <Tooltip key={index}>
             <TooltipTrigger asChild>
-              <div
-                className="bg-tertiary/50 
-                                            rounded-3xl 
-                                            flex 
-                                            justify-center 
-                                            items-center 
-                                            p-2
-                                            sm:p-4
-                                            md:p-2
-                                            lg:p-3 
-                                            xl:p-3
-                                            transition-all 
-                                            duration-300 
-                                            grayscale 
-                                            xl:mt-0
-                                            xl:mb-0
-                                            lg:mt-0
-                                            lg:mb-0
-                                            md:mt-1
-                                            md:mb-1
-                                            sm:mt-0
-                                            sm:mb-0
-                                            hover:bg-tertiary 
-                                            hover:grayscale-0"
+              <div className="bg-tertiary/50 
+                              rounded-3xl 
+                              flex justify-center items-center 
+                              p-2 sm:p-3 md:p-2 lg:p-3 xl:p-4
+                              transition-all duration-300 
+                              grayscale 
+                              hover:bg-tertiary hover:grayscale-0"
               >
                 <Icon
                   size={24}
-                  className="text-primary sm:h-full sm:w-full md:w-6 md:h-12  lg:w-6 lg:h-6 xl:w-full xl:h-full"
-                />{' '}
+                  className="text-primary 
+                             sm:h-6 sm:w-6 
+                             md:w-6 md:h-6
+                             lg:w-7 lg:h-7 
+                             xl:w-8 xl:h-8"
+                />
               </div>
             </TooltipTrigger>
             <TooltipContent className="z-50 overflow-visible" side="top" align="center">
