@@ -5,6 +5,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Responsive, WidthProvider, Layout } from 'react-grid-layout';
 import { useLanyard } from 'react-use-lanyard';
 import { Skeleton } from './shadcn/skeleton';
+import { useActivities } from '../src/hooks/useActivities';
 
 // Component imports
 import Image from './assets/ImageBox';
@@ -26,6 +27,7 @@ import { useToast } from './shadcn/use-toast';
 import { lgLayout, mdLayout, smLayout, xlLayout } from 'src/utils/bento-layouts';
 import { KeySquare } from 'lucide-react';
 import KeyboardShortcutsIndicators from './KeyboardShortcutIndicator';
+import CurrentActivitiesBox from './boxes/CurrentActivitiesBox';
 
 // Store the original layouts for reset functionality
 const defaultLayouts = {
@@ -61,6 +63,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // Helper component to use toast inside the main component
 const BentoWithToast = () => {
   const { toast } = useToast();
+  const { activities } = useActivities();
   
   // States
   const [introSilhouette, setIntroSilhouette] = useState(false);
@@ -195,40 +198,77 @@ const BentoWithToast = () => {
 >
       {/* Intro Box with Shader Gradient */}
       <div key="intro" className={`relative ${gridItemClass}`}>
-        <ShaderGradientBox
-          className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
-          animate="on"
-          control="props"
-          positionX={0}
-          positionY={0}
-          positionZ={0}
-          rotationX={0}
-          rotationY={10}
-          rotationZ={50}
-          color1="#FF0006"
-          color2="#003FFF"
-          color3="#4AA6FF"
-          wireframe={false}
-          shader="defaults"
-          type="sphere"
-          uAmplitude={1.4}
-          uDensity={1.2}
-          uFrequency={1.5}
-          uSpeed={0.04}
-          uStrength={1.4}
-          cDistance={10}
-          cameraZoom={20}
-          cAzimuthAngle={0}
-          cPolarAngle={90}
-          uTime={2}
-          lightType="3d"
-          envPreset="dawn"
-          reflection={0.4}
-          brightness={1.9}
-          grain="off"
-          toggleAxis={false}
-          hoverState="off"
-        />
+      <ShaderGradientBox
+  className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
+  animate="on"
+  control="props"
+  positionX={0}
+  positionY={0}
+  positionZ={0}
+  rotationX={50}
+  rotationY={0}
+  rotationZ={-60}
+  color1="#606080" // Golden tone
+  color2="#8d7dca" // Muted purple for transition
+  color3="#212121" // Deep navy blue
+  wireframe={false}
+  shader="a"
+  type="waterPlane"
+  uAmplitude={1.4}
+  uDensity={1.5}
+  uFrequency={1.0}
+  uSpeed={0.1} // Slightly slowed down for smoother motion
+  uStrength={1.5}
+  cDistance={2.8}
+  cameraZoom={29}
+  cAzimuthAngle={180}
+  cPolarAngle={80}
+  uTime={2}
+  lightType="3d"
+  reflection={0.4}
+  brightness={0.3}
+  grain="on"
+  // grainBlending=
+  toggleAxis={false}
+  hoverState="off"
+  enableTransition={true}
+  />
+
+{/* <ShaderGradientBox
+  className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
+  animate="on"
+  control="props"
+  positionX={-1.2}
+  positionY={-2.1}
+  positionZ={-0.4}
+  rotationX={0}
+  rotationY={15}
+  rotationZ={225}
+  color1="#ff6a1a"
+  color2="#c73c00"
+  color3="#FD4912"
+  wireframe={false}
+  shader="defaults"
+  type="waterPlane"
+  uAmplitude={0}
+  uDensity={1.8}
+  uFrequency={1.5}
+  uSpeed={0.1}
+  uStrength={3}
+  cDistance={2.4}
+  cameraZoom={1}
+  cAzimuthAngle={180}
+  cPolarAngle={95}
+  uTime={0.2}
+  lightType="3d"
+
+  reflection={0.1}
+  brightness={0.6}
+  grain="off"
+  toggleAxis={true}
+  hoverState="off"
+  enableTransition={true}
+/> */}
 
         {/* SVG Overlay - placed after ShaderGradientBox to appear on top */}
         <Image
@@ -255,41 +295,87 @@ const BentoWithToast = () => {
 
       {/* Tall Gradient Box */}
       <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
-        <ShaderGradientBox
-          className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
-          animate="on"
-          control="props"
-          positionX={1}
-          positionY={0}
-          positionZ={2}
-          rotationX={1}
-          rotationY={10}
-          rotationZ={50}
-          color1="#FF0006"
-          color2="#003FFF"
-          color3="#4AA6FF"
-          wireframe={false}
-          shader="defaults"
-          type="plane"
-          uAmplitude={1.4}
-          uDensity={1.2}
-          uFrequency={1.5}
-          uSpeed={0.08}
-          uStrength={1.4}
-          cDistance={10}
-          cameraZoom={29}
-          cAzimuthAngle={30}
-          cPolarAngle={90}
-          uTime={2}
-          lightType="3d"
-          envPreset="dawn"
-          reflection={0.4}
-          brightness={1.5}
-          grain="off"
-          toggleAxis={false}
-          hoverState="off"
-        />
+      <ShaderGradientBox
+  className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
+  animate="on"
+  control="props"
+  positionX={1.2}
+  positionY={0}
+  positionZ={0}
+  rotationX={50}
+  rotationY={20}
+  rotationZ={-60}
+  color1="#606080" 
+  color2="#ffbe7b" // color to tweak
+  color3="#212121" 
+  wireframe={false}
+  shader="a"
+  type="waterPlane"
+  uAmplitude={1.4}
+  uDensity={1.5}
+  uFrequency={1.0}
+  uSpeed={0.1} // Slightly slowed down for smoother motion
+  uStrength={1.5}
+  cDistance={2.8}
+  cameraZoom={29}
+  cAzimuthAngle={180}
+  cPolarAngle={80}
+  uTime={4}
+  lightType="3d"
+  reflection={0.4}
+  brightness={0.27}
+  grain="on"
+  // grainBlending=
+  toggleAxis={false}
+  hoverState="off"
+  enableTransition={true}
+  />
       </div>
+      {/* commented out while refining styles */}
+      {/* <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
+      <CurrentActivitiesBox 
+    title="Currently"
+    activities={[
+      { 
+        emoji: '📺', 
+        label: 'Watching', 
+        content: 'Severance' 
+      },
+      { 
+        emoji: '🎧', 
+        label: 'Interested in', 
+        content: 'Ambient & Brian Eno',
+        links: [
+          { text: 'Ambient', url: 'https://open.spotify.com/playlist/37i9dQZF1DX3Ogo9pFvBkY' },
+          { text: 'Brian Eno', url: 'https://open.spotify.com/artist/7MSUfLeTdDEoZiJPDSBXgi' }
+        ]
+      },
+      { 
+        emoji: '🎵', 
+        label: 'Song of the week', 
+        content: 'Simon Doty - Tattoo',
+        links: [
+          { text: 'Simon Doty - Tattoo', url: "https://open.spotify.com/track/508o8MvH1j1ldM4qLvZqe5?si=97be701fec294bb4"},
+        ] 
+      },
+      { 
+        emoji: '🔥', 
+        label: 'Excited about', 
+        content: 'Xfer Serum 2!' 
+      },
+      { 
+        emoji: '💪', 
+        label: 'Training', 
+        content: 'Cardio for triathalon' 
+      }
+    ]}
+    gradientConfig={{
+      color1: "#606080",
+      color2: "#ffbe7b",
+      color3: "#212121"
+    }}
+  />
+</div> */}
 
       {/* Discord Status Box */}
       <div key="discord" className={gridItemClass}>
