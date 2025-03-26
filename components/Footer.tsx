@@ -12,7 +12,7 @@ export default function Footer() {
   const pathName = usePathname();
 
   return (
-    <footer className="mt-auto py-8">
+    <footer className="mt-auto pt-2">
       <div className="flex flex-col items-center">
         <div className="mb-3 flex space-x-4">
           {siteMetadata.linkedin && (

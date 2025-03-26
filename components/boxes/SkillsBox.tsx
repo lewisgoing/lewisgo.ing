@@ -47,7 +47,6 @@ const SkillsBox = () => {
                       bento-sm:grid-cols-4 gap-3
                       bento-md:grid-cols-8 bento-md:gap-1 
                       bento-lg:grid-cols-4 bento-lg:gap-3
-                      xl:grid-cols-4 xl:gap-4 
                       bento-xl:grid-cols-4 bento-xl:gap-4"
       >
         {icons.map(({ Icon, description }, index) => (

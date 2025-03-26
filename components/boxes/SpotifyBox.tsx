@@ -124,7 +124,8 @@ const SpotifyBox = () => {
         </div>
       </div>
       <div className="absolute right-0 top-0 m-3 text-primary">
-  <FaSpotify size={56} style={iconStyle} />
+  <FaSpotify size={56} style={iconStyle} className='bento-xl:hidden'/>
+  <FaSpotify size={64} style={iconStyle} className='hidden bento-xl:block'/>
 </div>
 <ExternalLink 
   href={url}

@@ -91,6 +91,7 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
           style={circleStyle}
         >
           <FaDiscord size={50} className="text-secondary p-1" />
+          {/* <FaDiscord size={52} className="text-secondary p-1 hidden bento-xl:block" /> */}
         </div>
         <div className="bg-tertiary/50 w-full h-[80px] rounded-t-3xl flex-shrink-0" />
         <div className="m-3 flex flex-col h-full gap-3">

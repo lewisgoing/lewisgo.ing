@@ -18,7 +18,7 @@ const SoundcloudBox = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <FaSoundcloud
-        className="absolute z-[1] text-primary w-16 h-16 bento-md:w-24 bento-md:h-24"
+        className="absolute z-[1] text-primary w-16 h-16 bento-md:w-24 bento-md:h-24 bento-xl:w-32 bento-xl:h-32"
         style={iconStyle}
       />
       <ExternalLink 

@@ -48,9 +48,9 @@ const LayoutWrapper = ({ children }: Props) => {
           } as any,
         ]}
       />
-      <div className={`${fontClass} flex min-h-screen flex-col font-mono`}>
+      <div className={`${fontClass} flex flex-col font-mono`}>
         <NavBar />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow mb-4">{children}</main>
         <Footer />
       </div>
     </SectionContainer>

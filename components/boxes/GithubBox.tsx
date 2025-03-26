@@ -18,7 +18,7 @@ const GithubBox = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <FaGithub
-        className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24 bento-xl:"
+        className="absolute z-[1] text-primary w-20 h-20 bento-md:w-24 bento-md:h-24 bento-xl:w-32 bento-xl:h-32"
         style={iconStyle}
       />
       <ExternalLink 

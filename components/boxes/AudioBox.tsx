@@ -693,10 +693,15 @@ const AudioBox = () => {
         </div>
 
         {/* SoundCloud Logo in top right for all layouts */}
-        <div className="absolute right-1 top-0 z-[1] p-3 visible bento-lg:opacity-100 bento-xl:opacity-100 bento-md:opacity-0 sm:opacity-100">
+        <div className="absolute right-1 top-0 z-[1] pr-3 pt-2 bento-xl:block bento-lg:block bento-sm:block bento-md:hidden">
           <FaSoundcloud
             size={56}
-            className="text-primary transition-colors hover:text-[#ff7700] mb-10"
+            className="text-primary transition-colors hover:text-[#ff7700] mb-10 bento-xl:hidden"
+            style={iconStyle}
+          />
+                    <FaSoundcloud
+            size={60}
+            className="text-primary transition-colors hover:text-[#ff7700] mb-10 hidden bento-xl:block pt-4"
             style={iconStyle}
           />
         </div>
