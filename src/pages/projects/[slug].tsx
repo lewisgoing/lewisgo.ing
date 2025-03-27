@@ -63,7 +63,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
   
-  // Serialize the MDX content
+  // Process data to ensure all dates are strings
+  const serializedData = {
+    ...data,
+    date: typeof data.date === 'object' && data.date instanceof Date 
+      ? data.date.toISOString() 
+      : data.date
+  };
+  
+  // Serialize the MDX content with serialized data
   const mdxSource = await serialize(content, {
     mdxOptions: {
       remarkPlugins: [remarkGfm, remarkMath],
@@ -74,7 +82,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         rehypeKatex
       ],
     },
-    scope: data,
+    scope: serializedData, // Use serialized data object
   });
   
   // Extract headings for table of contents
@@ -103,25 +111,32 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const id = fileName.replace(/\.mdx$/, '');
     const filePath = path.join(projectsDirectory, fileName);
     const fileContent = fs.readFileSync(filePath, 'utf8');
-    const { data } = matter(fileContent);
+    const { data: projectData } = matter(fileContent);
+    
+    // Convert Date to ISO string
+    const dateStr = new Date(projectData.date).toISOString();
     
     return {
       id,
-      title: data.title,
-      date: new Date(data.date),
+      title: projectData.title,
+      date: dateStr, // Use string instead of Date object
     };
-  }).sort((a, b) => b.date.getTime() - a.date.getTime());
+  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   
   // Find current project index
   const currentIndex = projects.findIndex(project => project.id === slug);
   const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : null;
   const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
   
-  // Parse dates from string to Date objects
+  // Create serializable project data
   const projectData = {
-    ...data,
+    ...serializedData, // Use the serialized data
     id: slug,
-    date: new Date(data.date),
+    liveUrl: serializedData.liveUrl || null,
+    githubUrl: serializedData.githubUrl || null,
+    thumbnailUrl: serializedData.thumbnailUrl || null,
+    completedDate: serializedData.completedDate || null,
+    images: serializedData.images || [],
   };
   
   return {

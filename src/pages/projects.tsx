@@ -16,17 +16,17 @@ export interface ProjectWithStringDate {
   id: string;
   title: string;
   description: string;
-  date: string; // Date as ISO string for serialization
+  date: string; // Date as ISO string
   tags: string[];
   status: 'completed' | 'in-progress' | 'planned';
-  completedDate?: string;
+  completedDate?: string | null;
   technologies: string[];
   category: string;
   featured?: boolean;
-  githubUrl?: string;
-  liveUrl?: string;
-  thumbnailUrl?: string;
-  images?: string[];
+  githubUrl?: string | null;
+  liveUrl?: string | null;
+  thumbnailUrl: string; // No longer optional
+  images?: string[]
 }
 
 interface ProjectsPageProps {
@@ -64,24 +64,23 @@ async function getAllProjects(): Promise<ProjectWithStringDate[]> {
         (data.images && data.images.length > 0 ? data.images[0] : '/placeholder.jpg');
       
       // Convert date to ISO string for serialization
-      const dateObj = new Date(data.date);
-      const dateString = dateObj.toISOString();
+      const dateString = new Date(data.date).toISOString();
       
-      // Ensure all required fields exist
+      // Ensure all required fields exist and undefined values become null
       return {
         id,
-        title: data.title,
-        description: data.description,
-        date: dateString, // Use string date
+        title: data.title || '',
+        description: data.description || '',
+        date: dateString,
         tags: data.tags || [],
         status: data.status || 'completed',
-        completedDate: data.completedDate,
+        completedDate: data.completedDate || null,
         technologies: data.technologies || [],
         category: data.category || 'other',
         featured: data.featured || false,
-        githubUrl: data.githubUrl,
-        liveUrl: data.liveUrl,
-        thumbnailUrl,
+        githubUrl: data.githubUrl || null,
+        liveUrl: data.liveUrl || null,
+        thumbnailUrl: thumbnailUrl || '/apple-touch-icon.png', // Always provide a fallback
         images: data.images || [],
       } as ProjectWithStringDate;
     })
@@ -237,7 +236,7 @@ export default function ProjectsPage({
           <h1 className="mb-4 text-4xl font-bold tracking-tight">Projects</h1>
           <p className="mx-auto max-w-2xl text-muted-foreground">
             A collection of my work, experiments, and creative projects. 
-            Browse through to see what I've been working on!
+            Browse through to see what I&apos;ve been working on!
           </p>
         </header>
 

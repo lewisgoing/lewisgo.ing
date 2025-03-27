@@ -1,5 +1,5 @@
 // components/projects/ProjectCard.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
@@ -11,9 +11,9 @@ interface ProjectCardProps {
     id: string;
     title: string;
     description: string;
-    thumbnailUrl: string;
+    thumbnailUrl?: string; // Make optional with ?
     tags: string[];
-    date: Date;
+    date: string; // Changed from Date to string
     status: 'completed' | 'in-progress' | 'planned';
     featured?: boolean;
     githubUrl?: string;
@@ -26,6 +26,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   project, 
   variant = 'default' 
 }) => {
+
+  const thumbnailUrl = project.thumbnailUrl || '/apple-touch-icon.png';
+  
+  // Avoid using client-side only features during initial render
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+
   // Status badge color
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -47,12 +58,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     >
       <div className="relative aspect-video w-full overflow-hidden">
         <Image
-          src={project.thumbnailUrl}
+          src={thumbnailUrl}
           alt={project.title}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {project.featured && (
+        {/* Only render potentially dynamic content when mounted */}
+        {isMounted && project.featured && (
           <div className="absolute left-2 top-2 rounded-full bg-amber-500/80 px-2 py-1 text-xs font-medium text-amber-950">
             <StarIcon className="mr-1 inline-block h-3 w-3" />
             Featured
@@ -88,33 +100,33 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
         
         <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-          <span>{formatDate(project.date)}</span>
-          
-          <div className="flex gap-2">
-            {project.githubUrl && (
-              <a 
-                href={project.githubUrl} 
-                className="rounded-full p-1 hover:bg-secondary" 
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Github className="h-4 w-4" />
-              </a>
-            )}
-            {project.liveUrl && (
-              <a 
-                href={project.liveUrl} 
-                className="rounded-full p-1 hover:bg-secondary" 
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoveUpRightIcon className="h-4 w-4" />
-              </a>
-            )}
-          </div>
+        <span>{formatDate(project.date)}</span>
+        
+        <div className="flex gap-2">
+          {project.githubUrl && (
+            <a 
+              href={project.githubUrl} 
+              className="rounded-full p-1 hover:bg-secondary" 
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Github className="h-4 w-4" />
+            </a>
+          )}
+          {project.liveUrl && (
+            <a 
+              href={project.liveUrl} 
+              className="rounded-full p-1 hover:bg-secondary" 
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoveUpRightIcon className="h-4 w-4" />
+            </a>
+          )}
         </div>
+      </div>
       </div>
     </Link>
   );

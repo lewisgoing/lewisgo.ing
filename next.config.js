@@ -50,6 +50,11 @@ const nextConfig = {
         hostname: 'lastfm.freetls.fastly.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'github.com/',
+        pathname: '/**',
+      }
     ],
   },
   experimental: {

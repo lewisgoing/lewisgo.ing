@@ -54,6 +54,24 @@ export function kebabToTitleCase(str: string): string {
 }
 
 /**
+ * Safely convert any value that might be a Date to an ISO string
+ */
+export function serializeDate(date: any): string | null {
+  if (!date) return null;
+  
+  if (date instanceof Date) {
+    return date.toISOString();
+  }
+  
+  try {
+    return new Date(date).toISOString();
+  } catch (error) {
+    console.error("Failed to serialize date:", date);
+    return null;
+  }
+}
+
+/**
  * Parse code block metadata
  * For syntax like: ```js title="filename.js" caption="Example code" showLineNumbers
  */
