@@ -123,3 +123,15 @@ function validateEnvVars() {
     }
   }
 
+  
+  // Group items by a key function
+  export function groupBy<T>(
+    items: T[],
+    keyFn: (item: T) => string
+  ): Record<string, T[]> {
+    return items.reduce((acc: Record<string, T[]>, item) => {
+      const key = keyFn(item);
+      (acc[key] ??= []).push(item);
+      return acc;
+    }, {});
+  }
