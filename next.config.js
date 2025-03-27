@@ -12,7 +12,7 @@ const withMDX = require('@next/mdx')({
       require('rehype-prism-plus'),
       require('rehype-katex')
     ],
-    providerImportSource: '@mdx-js/react',
+    // providerImportSource: '@mdx-js/react',
   },
 })
 

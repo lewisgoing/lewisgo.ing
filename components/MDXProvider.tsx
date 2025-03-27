@@ -6,6 +6,14 @@ import { MDXProvider } from '@mdx-js/react';
 import InfoBox from './mdx/InfoBox';
 import Challenge from './mdx/Challenge';
 import CodeBlock from './mdx/CodeBlock';
+import AudioPlayer from './mdx/AudioPlayer';
+import Badge from './mdx/Badge'
+import ProjectCard from './mdx/ProjectCard';
+import ProjectMetrics from './mdx/ProjectMetrics'
+import ResearchPublication from './mdx/ResearchPublication';
+import TechStack from './mdx/TechStack';
+import WebAudioDemo from './mdx/WebAudioDemo';
+
 
 // Import KaTeX CSS for math rendering
 import 'katex/dist/katex.min.css';
@@ -14,7 +22,14 @@ import 'katex/dist/katex.min.css';
 const components = {
   InfoBox,
   Challenge,
-  pre: CodeBlock,
+  ProjectCard,
+  CodeBlock,
+  AudioPlayer,
+  Badge,
+  ProjectMetrics,
+  ResearchPublication,
+  TechStack,
+  WebAudioDemo
   // Add any other custom components here
 };
 

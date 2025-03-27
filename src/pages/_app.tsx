@@ -22,6 +22,7 @@ import { Analytics } from '@vercel/analytics/next';
 
 import { fontClass } from '../utils/fonts';
 import LayoutWrapper from '@/components/LayoutWrapper';
+import MDXWrapper from '@/components/MDXProvider';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -78,8 +79,10 @@ export default function App({ Component, pageProps }: AppProps) {
             {/* <SearchProvider searchConfig={siteMetadata.search as SearchConfig}> */}
             {/* <NavBar /> */}
             <LayoutWrapper>
+            <MDXWrapper>
               <Component {...pageProps} /> 
               {/* <Footer />  */}
+              </MDXWrapper>
             </LayoutWrapper>
             
             {/* <main className="mb-auto">{children}</main> */}
