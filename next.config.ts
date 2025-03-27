@@ -70,4 +70,18 @@ const nextConfig: NextConfig = {
   },
 };
 
+const withMDX = require('@next/mdx')({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [require('remark-gfm'), require('remark-math')],
+    rehypePlugins: [
+      require('rehype-slug'),
+      [require('rehype-autolink-headings'), { behavior: 'wrap' }],
+      require('rehype-prism-plus'),
+      require('rehype-katex'),
+    ],
+  },
+})
+
+
 export default nextConfig;

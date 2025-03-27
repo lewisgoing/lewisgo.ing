@@ -1,4 +1,4 @@
-// components/shadcn/tooltip.tsx
+// components/ui/tooltip.tsx
 'use client';
 
 import { cn } from '../../src/utils/tailwind-helpers';

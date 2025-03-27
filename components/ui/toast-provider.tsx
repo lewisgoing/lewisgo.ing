@@ -1,7 +1,7 @@
 "use client"
 
-import { Toast, ToastClose, ToastDescription, ToastProvider as Provider, ToastTitle, ToastViewport } from "@/components/shadcn/toast"
-import { useToast } from "@/components/shadcn/use-toast"
+import { Toast, ToastClose, ToastDescription, ToastProvider as Provider, ToastTitle, ToastViewport } from "@/components/ui/toast"
+import { useToast } from "@/components/ui/use-toast"
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const { toasts } = useToast()

@@ -1,4 +1,4 @@
-// components/shadcn/skeleton.tsx
+// components/ui/skeleton.tsx
 import { cn } from '../../src/utils/tailwind-helpers';
 
 function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

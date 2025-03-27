@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
 import { FaSoundcloud } from 'react-icons/fa';
 import siteMetadata from 'public/data/siteMetaData';
-import { Button } from '../shadcn/button';
+import { Button } from '../ui/button';
 import Link from '../assets/Link';
 import ShaderGradientBox from '../boxes/ShaderGradientBox';
 import SectionHeading from './SectionHeading';

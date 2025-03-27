@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Responsive, WidthProvider, Layout } from 'react-grid-layout';
 import { useLanyard } from 'react-use-lanyard';
-import { Skeleton } from './shadcn/skeleton';
+import { Skeleton } from './ui/skeleton';
 import { useActivities } from '../src/hooks/useActivities';
 
 // Component imports
@@ -20,8 +20,8 @@ import SpotifyBox from './boxes/SpotifyBox';
 import ProjectsBox from './boxes/ProjectsBox';
 
 // Toast functionality
-import { ToastProvider } from '@/components/shadcn/toast-provider';
-import { useToast } from './shadcn/use-toast';
+import { ToastProvider } from '@/components/ui/toast-provider';
+import { useToast } from './ui/use-toast';
 
 // Layout utilities
 import { lgLayout, mdLayout, smLayout, xlLayout } from 'src/utils/bento-layouts';
@@ -47,7 +47,7 @@ const MinimalistFooterPills = ({ isDraggable }) => {
           {isDraggable ? 'Lock' : 'Unlock'}
         </span>
       </div>
-      
+
       <div className="flex items-center px-3 py-1 rounded-full bg-secondary/40 backdrop-blur-sm border border-border/50">
         <KeySquare size={12} className="text-primary mr-1.5" />
         <span className="text-xs font-medium mx-0.5">⌘K</span>
@@ -64,20 +64,20 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 const BentoWithToast = () => {
   const { toast } = useToast();
   const { activities } = useActivities();
-  
+
   // States
   const [introSilhouette, setIntroSilhouette] = useState(false);
   const [isDiscordLoaded, setDiscordLoaded] = useState(false);
   const [isSpotifyLoaded, setIsSpotifyLoaded] = useState(false);
   const [rowHeight, setRowHeight] = useState(280);
-  
+
   // New states for draggability and layouts
   const [isDraggable, setIsDraggable] = useState(true);
   const [layouts, setLayouts] = useState(defaultLayouts);
-  
+
   // Refs
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   // Lanyard data hook for Discord/Spotify integration
   const lanyard = useLanyard({
     userId: process.env.NEXT_PUBLIC_LANYARD_USER_ID || '661068667781513236',
@@ -94,13 +94,13 @@ const BentoWithToast = () => {
         setIsDraggable(prev => !prev);
         toast({
           title: isDraggable ? "Dragging disabled" : "Dragging enabled",
-          description: isDraggable 
-            ? "Use ⌘L to re-enable dragging" 
+          description: isDraggable
+            ? "Use ⌘L to re-enable dragging"
             : "Drag boxes to rearrange your dashboard",
           duration: 2000,
         });
       }
-      
+
       // Reset layout with Command+K
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -115,7 +115,7 @@ const BentoWithToast = () => {
 
     // Add event listener
     window.addEventListener('keydown', handleKeyDown);
-    
+
     // Cleanup
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -134,7 +134,7 @@ const BentoWithToast = () => {
       setRowHeight(350); // For xl screens
     }
   };
-  
+
 
   // Drag handlers for grid items
   const handleDragStart = (element: HTMLElement) => {
@@ -154,7 +154,7 @@ const BentoWithToast = () => {
       element.style.zIndex = '1';
     }, 500);
   };
-  
+
   // Track layout changes
   const onLayoutChange = (layout: Layout[], allLayouts: any) => {
     // Only save changes if dragging is enabled
@@ -173,68 +173,68 @@ const BentoWithToast = () => {
   }, []);
 
   // Visual indicator for draggable state
-  const gridItemClass = isDraggable 
-    ? "react-grid-item" 
+  const gridItemClass = isDraggable
+    ? "react-grid-item"
     : "react-grid-item transition-all duration-300 hover:cursor-default";
 
   return (
     <>
-<ResponsiveGridLayout
-  className="mx-auto max-w-[375px] bento-md:max-w-[800px] bento-lg:max-w-[1200px] bento-xl:max-w-[1600px]"
-  layouts={layouts}
-  breakpoints={{ xl: 1600, lg: 1199, md: 799, sm: 374 }} // Add XL breakpoint
-  cols={{ xl: 4, lg: 4, md: 4, sm: 2 }} // Add cols for XL
-  rowHeight={rowHeight}
-  isResizable={false}
-  isDraggable={isDraggable}
-  onWidthChange={handleWidthChange}
-  isBounded
-  margin={[16, 16]} // Slightly larger margins
-  useCSSTransforms={true}
-  onDragStart={(layout, oldItem, newItem, placeholder, e, element) => handleDragStart(element)}
-  onDragStop={(layout, oldItem, newItem, placeholder, e, element) => handleDragStop(element)}
-  onLayoutChange={onLayoutChange}
-  draggableCancel=".drag-blocker"
->
-      {/* Intro Box with Shader Gradient */}
-      <div key="intro" className={`relative ${gridItemClass}`}>
-      <ShaderGradientBox
-  className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
-  animate="on"
-  control="props"
-  positionX={0}
-  positionY={0}
-  positionZ={0}
-  rotationX={50}
-  rotationY={0}
-  rotationZ={-60}
-  color1="#606080" // Golden tone
-  color2="#8d7dca" // Muted purple for transition
-  color3="#212121" // Deep navy blue
-  wireframe={false}
-  shader="a"
-  type="waterPlane"
-  uAmplitude={1.4}
-  uDensity={1.5}
-  uFrequency={1.0}
-  uSpeed={0.1} // Slightly slowed down for smoother motion
-  uStrength={1.5}
-  cDistance={2.8}
-  cameraZoom={29}
-  cAzimuthAngle={180}
-  cPolarAngle={80}
-  uTime={2}
-  lightType="3d"
-  reflection={0.4}
-  brightness={0.3}
-  grain="on"
-  // grainBlending=
-  toggleAxis={false}
-  hoverState="off"
-  enableTransition={true}
-  />
+      <ResponsiveGridLayout
+        className="mx-auto max-w-[375px] bento-md:max-w-[800px] bento-lg:max-w-[1200px] bento-xl:max-w-[1600px]"
+        layouts={layouts}
+        breakpoints={{ xl: 1600, lg: 1199, md: 799, sm: 374 }} // Add XL breakpoint
+        cols={{ xl: 4, lg: 4, md: 4, sm: 2 }} // Add cols for XL
+        rowHeight={rowHeight}
+        isResizable={false}
+        isDraggable={isDraggable}
+        onWidthChange={handleWidthChange}
+        isBounded
+        margin={[16, 16]} // Slightly larger margins
+        useCSSTransforms={true}
+        onDragStart={(layout, oldItem, newItem, placeholder, e, element) => handleDragStart(element)}
+        onDragStop={(layout, oldItem, newItem, placeholder, e, element) => handleDragStop(element)}
+        onLayoutChange={onLayoutChange}
+        draggableCancel=".drag-blocker"
+      >
+        {/* Intro Box with Shader Gradient */}
+        <div key="intro" className={`relative ${gridItemClass}`}>
+          <ShaderGradientBox
+            className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
+            animate="on"
+            control="props"
+            positionX={0}
+            positionY={0}
+            positionZ={0}
+            rotationX={50}
+            rotationY={0}
+            rotationZ={-60}
+            color1="#606080" // Golden tone
+            color2="#8d7dca" // Muted purple for transition
+            color3="#212121" // Deep navy blue
+            wireframe={false}
+            shader="a"
+            type="waterPlane"
+            uAmplitude={1.4}
+            uDensity={1.5}
+            uFrequency={1.0}
+            uSpeed={0.1} // Slightly slowed down for smoother motion
+            uStrength={1.5}
+            cDistance={2.8}
+            cameraZoom={29}
+            cAzimuthAngle={180}
+            cPolarAngle={80}
+            uTime={2}
+            lightType="3d"
+            reflection={0.4}
+            brightness={0.3}
+            grain="on"
+            // grainBlending=
+            toggleAxis={false}
+            hoverState="off"
+            enableTransition={true}
+          />
 
-{/* <ShaderGradientBox
+          {/* <ShaderGradientBox
   className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
   animate="on"
   control="props"
@@ -270,69 +270,69 @@ const BentoWithToast = () => {
   enableTransition={true}
 /> */}
 
-        {/* SVG Overlay - placed after ShaderGradientBox to appear on top */}
-        <Image
-  src="/svg/lewis-card-hover-4.svg"
-  alt="Bento Intro Silhouette"
-  fill
-  className="rounded-3xl object-contain absolute top-0 left-0 z-10" // Changed from object-cover to object-contain
-  skeletonClassName="rounded-3xl"
-  noRelative
-  unoptimized
-  priority
-/>
-      </div>
+          {/* SVG Overlay - placed after ShaderGradientBox to appear on top */}
+          <Image
+            src="/svg/lewis-card-hover-4.svg"
+            alt="Bento Intro Silhouette"
+            fill
+            className="rounded-3xl object-contain absolute top-0 left-0 z-10" // Changed from object-cover to object-contain
+            skeletonClassName="rounded-3xl"
+            noRelative
+            unoptimized
+            priority
+          />
+        </div>
 
-      {/* GitHub Box */}
-      <div
-        key="github"
-        className={`group ${gridItemClass}`}
-        onMouseEnter={() => setIntroSilhouette(true)}
-        onMouseLeave={() => setIntroSilhouette(false)}
-      >
-        <GithubBox />
-      </div>
+        {/* GitHub Box */}
+        <div
+          key="github"
+          className={`group ${gridItemClass}`}
+          onMouseEnter={() => setIntroSilhouette(true)}
+          onMouseLeave={() => setIntroSilhouette(false)}
+        >
+          <GithubBox />
+        </div>
 
-      {/* Tall Gradient Box */}
-      <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
-      <ShaderGradientBox
-  className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
-  animate="on"
-  control="props"
-  positionX={1.2}
-  positionY={0}
-  positionZ={0}
-  rotationX={50}
-  rotationY={20}
-  rotationZ={-60}
-  color1="#606080" 
-  color2="#ffbe7b" // color to tweak
-  color3="#212121" 
-  wireframe={false}
-  shader="a"
-  type="waterPlane"
-  uAmplitude={1.4}
-  uDensity={1.5}
-  uFrequency={1.0}
-  uSpeed={0.1} // Slightly slowed down for smoother motion
-  uStrength={1.5}
-  cDistance={2.8}
-  cameraZoom={29}
-  cAzimuthAngle={180}
-  cPolarAngle={80}
-  uTime={4}
-  lightType="3d"
-  reflection={0.4}
-  brightness={0.27}
-  grain="on"
-  // grainBlending=
-  toggleAxis={false}
-  hoverState="off"
-  enableTransition={true}
-  />
-      </div>
-      {/* commented out while refining styles */}
-      {/* <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
+        {/* Tall Gradient Box */}
+        <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
+          <ShaderGradientBox
+            className="rounded-3xl object-cover transition-opacity duration-300 skeleton"
+            animate="on"
+            control="props"
+            positionX={1.2}
+            positionY={0}
+            positionZ={0}
+            rotationX={50}
+            rotationY={20}
+            rotationZ={-60}
+            color3="#606080" // Golden tone
+            color2="#8d7dca" // Muted purple for transition
+            color1="#212121"
+            wireframe={false}
+            shader="a"
+            type="waterPlane"
+            uAmplitude={1.4}
+            uDensity={1.5}
+            uFrequency={1.0}
+            uSpeed={0.1} // Slightly slowed down for smoother motion
+            uStrength={1.5}
+            cDistance={2.8}
+            cameraZoom={29}
+            cAzimuthAngle={180}
+            cPolarAngle={80}
+            uTime={4}
+            lightType="3d"
+            reflection={0.4}
+            brightness={.73}
+            grain="on"
+            // grainBlending=
+            toggleAxis={false}
+            hoverState="off"
+            enableTransition={true}
+          />
+        </div>
+        {/* commented out while refining styles */}
+        {/* <div key="tall-gradient" className={`h-full w-full overflow-hidden ${gridItemClass}`}>
       <CurrentActivitiesBox 
     title="Currently"
     activities={[
@@ -377,70 +377,70 @@ const BentoWithToast = () => {
   />
 </div> */}
 
-      {/* Discord Status Box */}
-      <div key="discord" className={gridItemClass}>
-        {lanyard.data && !lanyard.isValidating ? (
-          <DiscordPresence lanyard={lanyard.data} onLoad={() => setDiscordLoaded(true)} />
-        ) : (
-          <Skeleton className="w-full h-full rounded-3xl" />
-        )}
-      </div>
+        {/* Discord Status Box */}
+        <div key="discord" className={gridItemClass}>
+          {lanyard.data && !lanyard.isValidating ? (
+            <DiscordPresence lanyard={lanyard.data} onLoad={() => setDiscordLoaded(true)} />
+          ) : (
+            <Skeleton className="w-full h-full rounded-3xl" />
+          )}
+        </div>
 
-      {/* Audio Player Box */}
-      <div
-        key="audiobox"
-        className={`group ${gridItemClass}`}
-        onMouseEnter={() => setIntroSilhouette(true)}
-        onMouseLeave={() => setIntroSilhouette(false)}
-      >
-        <AudioBox />
-      </div>
+        {/* Audio Player Box */}
+        <div
+          key="audiobox"
+          className={`group ${gridItemClass}`}
+          onMouseEnter={() => setIntroSilhouette(true)}
+          onMouseLeave={() => setIntroSilhouette(false)}
+        >
+          <AudioBox />
+        </div>
 
-      {/* Projects Box */}
-      <div
-        key="projects"
-        className={`group ${gridItemClass}`}
-        onMouseEnter={() => setIntroSilhouette(true)}
-        onMouseLeave={() => setIntroSilhouette(false)}
-      >
-        <SoundcloudBox />
-        {/* <ProjectsBox /> */}
-      </div>
+        {/* Projects Box */}
+        <div
+          key="projects"
+          className={`group ${gridItemClass}`}
+          onMouseEnter={() => setIntroSilhouette(true)}
+          onMouseLeave={() => setIntroSilhouette(false)}
+        >
+          <SoundcloudBox />
+          {/* <ProjectsBox /> */}
+        </div>
 
-      {/* Spotify Status Box */}
-      <div
-        key="spotify"
-        className={`group ${gridItemClass}`}
-        onMouseEnter={() => setIntroSilhouette(true)}
-        onMouseLeave={() => setIntroSilhouette(false)}
-      >
-        <SpotifyBox />
-      </div>
+        {/* Spotify Status Box */}
+        <div
+          key="spotify"
+          className={`group ${gridItemClass}`}
+          onMouseEnter={() => setIntroSilhouette(true)}
+          onMouseLeave={() => setIntroSilhouette(false)}
+        >
+          <SpotifyBox />
+        </div>
 
-      {/* Skills Box */}
-      <div key="tech" className={`flex justify-center items-center ${gridItemClass}`}>
-        <SkillsBox />
-      </div>
+        {/* Skills Box */}
+        <div key="tech" className={`flex justify-center items-center ${gridItemClass}`}>
+          <SkillsBox />
+        </div>
 
-      {/* GitHub Contributions Box */}
-      <div
-        key="contributions"
-        className={`group flex items-center justify-center ${gridItemClass}`}
-        onMouseEnter={() => setIntroSilhouette(true)}
-        onMouseLeave={() => setIntroSilhouette(false)}
-      >
-        <GithubCalendar
-          username="lewisgoing"
-          hideColorLegend
-          hideTotalCount
-          blockMargin={6}
-          blockSize={20}
-          blockRadius={7}
-        />
-      </div>
-    </ResponsiveGridLayout>
-    <KeyboardShortcutsIndicators isDraggable={isDraggable} />
-    {/* <MinimalistFooterPills isDraggable={isDraggable} /> */}
+        {/* GitHub Contributions Box */}
+        <div
+          key="contributions"
+          className={`group flex items-center justify-center ${gridItemClass}`}
+          onMouseEnter={() => setIntroSilhouette(true)}
+          onMouseLeave={() => setIntroSilhouette(false)}
+        >
+          <GithubCalendar
+            username="lewisgoing"
+            hideColorLegend
+            hideTotalCount
+            blockMargin={6}
+            blockSize={20}
+            blockRadius={7}
+          />
+        </div>
+      </ResponsiveGridLayout>
+      <KeyboardShortcutsIndicators isDraggable={isDraggable} />
+      {/* <MinimalistFooterPills isDraggable={isDraggable} /> */}
     </>
   );
 };
@@ -449,12 +449,12 @@ const BentoWithToast = () => {
 export default function Bento() {
   return (
     <>
-        <ToastProvider>
-      <BentoWithToast />
-      
-    </ToastProvider>
-    <KeyboardShortcutsIndicators />
-    {/* <div className="w-full mx-auto flex h-[60px] justify-around">
+      <ToastProvider>
+        <BentoWithToast />
+
+      </ToastProvider>
+      <KeyboardShortcutsIndicators />
+      {/* <div className="w-full mx-auto flex h-[60px] justify-around">
 
             <div className="flex">
 
@@ -466,7 +466,7 @@ export default function Bento() {
             </div>
             </div> */}
 
-            
+
     </>
 
   );

@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 import ThemeSwitch from './assets/ThemeSwitch';
-import { Button } from './shadcn/button';
+import { Button } from './ui/button';
 
 const NavBar = () => {
   const logo = './logo.png';

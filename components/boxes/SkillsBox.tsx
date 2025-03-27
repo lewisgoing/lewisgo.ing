@@ -16,7 +16,7 @@ import { SiPowerautomate } from 'react-icons/si';
 import { FaMarkdown } from 'react-icons/fa';
 import { SiGnubash } from 'react-icons/si';
 import { FaSmileBeam } from 'react-icons/fa';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../shadcn/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 // Prepare your icons in an array for easy mapping
 const icons = [

@@ -4,12 +4,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { MoveUpRight, ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '../shadcn/button';
+import { Button } from '../ui/button';
 import ImageBox from '../assets/ImageBox';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../shadcn/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { cn } from '../../src/utils/tailwind-helpers';
 import { getSvgUrl } from '../../src/utils/blob-utils';
-import { Project, getAllProjects } from '../../src/types/project';
+import { Project, getAllProjects } from '../../src/types/old-projects';
 import { useRouter } from 'next/router';
 import ExternalLink from '../assets/ExternalLink';
 

@@ -13,15 +13,18 @@ export interface Project {
     technologies: string[];
     githubUrl?: string;
     liveUrl?: string;
-    thumbnailUrl?: string;
+    thumbnailUrl: string;
     projectUrl: string;
     featured?: boolean;
     category: 'web' | 'mobile' | 'design' | 'other' | 'research' | 'audio';
     images?: string[];
     detailedContent?: string;
-  }
+    content: string;
+    date: Date;
+    tags?: string[];
+}
 
-  export const harmonyHubProject: Project = {
+export const harmonyHubProject: Project = {
     id: "harmony-hub",
     title: "Harmony Hub",
     description: "A personalized audio experience app for adults with hearing impairments, featuring tinnitus relief and customizable equalization.",
@@ -42,6 +45,7 @@ export interface Project {
     projectUrl: "/projects/capstone",
     githubUrl: "https://github.com/lewisgoing/INFO-capstone-hearingheroes",
     liveUrl: "https://hearingheroes.vercel.app/",
+    thumbnailUrl: "/projects/harmony-hub/thumbnail.png",
     featured: true,
     category: "web",
     images: [
@@ -102,13 +106,16 @@ export interface Project {
       <p>
         Plans for future development include a native mobile app, integration with streaming services like YouTube and SoundCloud, advanced calibration features, haptic feedback support, AI-driven personalized recommendations, and community features for sharing presets.
       </p>
-    `
-  };
+    `,
+    content: "Harmony Hub content",
+    date: new Date(),
+    tags: ["tinnitus", "hearing aids", "music therapy"]
+};
   
-  /**
-   * Collection of all projects
-   */
-  export const projects: Project[] = [
+/**
+ * Collection of all projects
+ */
+export const projects: Project[] = [
     harmonyHubProject,
     {
       id: "portfolio",
@@ -123,7 +130,10 @@ export interface Project {
       liveUrl: "https://lewisgo.ing",
       images: ["/svg/discord.svg", "/svg/discord.svg", "/svg/discord.svg"],
       completedDate: "2024-03",
-      status: "completed"
+      status: "completed",
+      content: "Portfolio Website content",
+      date: new Date(),
+      tags: ["web development", "portfolio"]
     },
     {
       id: "music-tools",
@@ -138,7 +148,10 @@ export interface Project {
       liveUrl: "https://tools.lewisgo.ing",
       images: ["/svg/discord.svg", "/svg/discord.svg"],
     //   completedDate: "2023-11",
-      status: "in-progress"
+      status: "in-progress",
+      content: "Music Tools content",
+      date: new Date(),
+      tags: ["audio processing", "music production"]
     },
     {
         id: "dis-paper",
@@ -153,7 +166,10 @@ export interface Project {
         liveUrl: "https://arxiv.org/abs/2501.15276",
         images: ["/svg/discord.svg", "/svg/discord.svg"],
         completedDate: "2025-01",
-        status: "completed"
+        status: "completed",
+        content: "Dis-Paper content",
+        date: new Date(),
+        tags: ["research", "music production"]
       },
       {
         id: "ismir-paper",
@@ -168,7 +184,10 @@ export interface Project {
         liveUrl: "https://arxiv.org/abs/2501.15276",
         images: ["/svg/discord.svg", "/svg/discord.svg"],
         completedDate: "2025-03",
-        status: "completed"
+        status: "completed",
+        content: "ISMIR Paper content",
+        date: new Date(),
+        tags: ["research", "music"]
       },
       {
         id: "music-homepage",
@@ -183,24 +202,27 @@ export interface Project {
         liveUrl: "https://lewisgoing.vercel.app/",
         images: ["/svg/discord.svg", "/svg/discord.svg"],
         completedDate: "2025-05",
-        status: "completed"
+        status: "completed",
+        content: "Music Homepage content",
+        date: new Date(),
+        tags: ["web development", "music"]
       },
-  ];
+];
   
-  /**
-   * Get all projects
-   */
-  export function getAllProjects(): Project[] {
+/**
+ * Get all projects
+ */
+export function getAllProjects(): Project[] {
     return projects;
-  }
+}
   
 // Function to get a project by ID
 export function getProjectById(id: string): Project | undefined {
     return projects.find(project => project.id === id);
-  }
+}
   
-  // Function to get related projects (based on category or technologies)
-  export function getRelatedProjects(currentProjectId: string, limit: number = 3): Project[] {
+// Function to get related projects (based on category or technologies)
+export function getRelatedProjects(currentProjectId: string, limit: number = 3): Project[] {
     const currentProject = getProjectById(currentProjectId);
     
     if (!currentProject) return [];
@@ -213,4 +235,4 @@ export function getProjectById(id: string): Project | undefined {
            currentProject.technologies.includes(tech)))
       )
       .slice(0, limit);
-  }
+}

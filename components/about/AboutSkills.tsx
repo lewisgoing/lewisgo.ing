@@ -8,7 +8,7 @@ import {
   TooltipContent, 
   TooltipProvider, 
   TooltipTrigger 
-} from '../shadcn/tooltip';
+} from '../ui/tooltip';
 import SectionHeading from './SectionHeading';
 
 // Icon imports

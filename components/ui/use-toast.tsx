@@ -1,4 +1,4 @@
-// components/shadcn/use-toast.ts
+// components/ui/use-toast.ts
 import { useState, useEffect, useCallback } from "react"
 
 const TOAST_LIMIT = 3

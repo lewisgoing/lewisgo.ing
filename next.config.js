@@ -1,7 +1,25 @@
 // next.config.js
+const withMDX = require('@next/mdx')({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [
+      require('remark-gfm'),
+      require('remark-math')
+    ],
+    rehypePlugins: [
+      require('rehype-slug'),
+      [require('rehype-autolink-headings'), { behavior: 'wrap' }],
+      require('rehype-prism-plus'),
+      require('rehype-katex')
+    ],
+    providerImportSource: '@mdx-js/react',
+  },
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   webpack(config) {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.module.rules.push({
@@ -11,15 +29,6 @@ const nextConfig = {
     return config;
   },
   images: {
-    // domains: [
-    //   "api.lanyard.rest",
-    //   "cdn.discordapp.com",
-    //   "pbs.twimg.com",
-    //   "i.scdn.co",
-    //   "www.gravatar.com",
-    //   "avatars.githubusercontent.com",
-    //   "lastfm.freetls.fastly.net"
-    // ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -50,4 +59,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withMDX(nextConfig);

@@ -1,7 +1,7 @@
 // components/assets/OptimizedImage.tsx
 import React from 'react';
 import Image, { ImageProps } from 'next/image';
-import { Skeleton } from '../shadcn/skeleton';
+import { Skeleton } from '../ui/skeleton';
 import { cn } from 'src/utils/tailwind-helpers';
 
 interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {

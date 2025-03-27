@@ -1,4 +1,4 @@
-// components/shadcn/button.tsx
+// components/ui/button.tsx
 import { cn } from '../../src/utils/tailwind-helpers';
 import { Slot } from '@radix-ui/react-slot';
 import { type VariantProps, cva } from 'class-variance-authority';

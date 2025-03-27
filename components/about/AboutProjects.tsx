@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { MoveUpRight } from 'lucide-react';
 import Image from '../assets/ImageBox';
 import Link from '../assets/Link';
-import { Button } from '../shadcn/button';
+import { Button } from '../ui/button';
 import { FaGithub } from 'react-icons/fa';
 import SectionHeading from './SectionHeading';
 

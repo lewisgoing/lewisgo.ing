@@ -1,7 +1,7 @@
 // components/assets/ImageBox.tsx
 'use client';
 
-import { Skeleton } from '../shadcn/skeleton';
+import { Skeleton } from '../ui/skeleton';
 import NextImage, { ImageProps } from 'next/image';
 import { useState } from 'react';
 

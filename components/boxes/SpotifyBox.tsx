@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { FaSpotify } from 'react-icons/fa';
-import { Skeleton } from '../shadcn/skeleton';
+import { Skeleton } from '../ui/skeleton';
 import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { getSvgUrl } from '../../src/utils/blob-utils';
