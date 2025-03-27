@@ -16,7 +16,7 @@ const FloatingPillIndicators = ({ isDraggable }) => {
     <div className={`fixed bottom-6 right-6 flex flex-col gap-2 transition-opacity duration-500 ${visible ? 'opacity-80' : 'opacity-0 hover:opacity-60'}`}>
       <div className="flex items-center bg-secondary/80 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-border">
         <Command size={14} className="text-primary mr-1" />
-        <span className="text-xs font-medium mr-1">D</span>
+        <span className="text-xs font-medium mr-1">L</span>
         <span className="text-xs text-muted-foreground">
           {isDraggable ? 'Lock' : 'Unlock'} grid
         </span>
@@ -42,7 +42,7 @@ const MinimalistFooterPills = ({ isDraggable }) => {
     <div className="mx-auto flex justify-center gap-4 py-2 mt-3 mb-6">
       <div className="flex items-center px-3 py-1 rounded-full bg-secondary/40 backdrop-blur-sm border border-border/50">
         <KeySquare size={12} className="text-primary mr-1.5" />
-        <span className="text-xs font-medium mx-0.5">⌘D</span>
+        <span className="text-xs font-medium mx-0.5">⌘L</span>
         <span className="text-xs text-muted-foreground ml-1 mr-0.5">
           {isDraggable ? 'Lock' : 'Unlock'}
         </span>

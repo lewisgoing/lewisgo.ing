@@ -32,7 +32,7 @@ const NavBar = () => {
   return (
     <header
     className={cn(
-      'fixed inset-x-0 bento-xl:left-16 top-4 z-40 flex h-[60px] mx-8 bento-md:mx-auto items-center justify-between rounded-3xl px-4 bento-md:pr-8 transition-all duration-200 bento-md:max-w-[768px] bento-lg:max-w-[1200px] bento-xl:max-w-[1600px]',
+      'fixed inset-x-0 bento-xl:left-8 top-4 z-40 flex h-[60px] mx-8 bento-md:mx-auto items-center justify-between rounded-3xl px-4 bento-md:pr-8 transition-all duration-200 bento-md:max-w-[768px] bento-lg:max-w-[1200px] bento-xl:max-w-[1600px]',
       isScrolled && 'bg-background/80 border-transparent shadow-sm saturate-100 backdrop-blur-[10px]',
     )}
   >
