@@ -1,0 +1,222 @@
+---
+title: 'Teaching and Researching AI Music Co-Creation'
+description: 'My experience as a TA for an undergraduate capstone course exploring how novices collaborate with AI tools to produce original music'
+date: '2024-05-20'
+tags: ['teaching', 'AI', 'music production', 'research', 'case study', 'human-AI collaboration']
+status: 'completed'
+completedDate: 'May 2024'
+technologies: ['AI Music Generation', 'Web Audio API', 'Qualitative Research', 'Creative Systems']
+category: 'research'
+featured: true
+githubUrl: 'https://github.com/lewisgoing/AI-Music-Capstone'
+liveUrl: 'https://arxiv.org/abs/2501.15276'
+thumbnailUrl: '/projects/project-1.png'
+images: [
+  '/projects/ta-experience/student-teams.jpg',
+  '/projects/ta-experience/research-presentation.jpg',
+  '/projects/ta-experience/spotify-releases.jpg',
+  '/projects/ta-experience/interview-session.jpg'
+]
+---
+
+## Course Overview
+
+During the 2023-2024 academic year, I served as the Teaching Assistant for the AI & Music capstone course at the University of Washington's Information School. This innovative 10-week program challenged undergraduate students with limited to no musical background to create original music using AI tools, culminating in professionally released EPs on Spotify.
+
+<InfoBox type="flag">
+  The capstone course led to two published research papers examining how novices co-create with AI, with findings that challenge traditional creative process models.
+</InfoBox>
+
+The course brought together 20 students from diverse academic backgrounds, organizing them into teams of 4-5 members each. Most participants had minimal prior experience with music production, making this an ideal environment to study how AI tools might democratize creative expression in domains typically requiring specialized skills.
+
+## Teaching Responsibilities
+
+As the TA for this unique course, my responsibilities spanned technical support, mentorship, and research facilitation:
+
+### Technical Guidance
+
+I introduced students to various AI music generation tools and helped them navigate the technical complexities of audio production:
+
+<CodeBlock
+  language="markdown"
+  title="AI Tools Introduced During Workshops"
+  showLineNumbers={true}
+>
+{`## Text-to-Audio Generation
+- Meta's MusicGen - Creates audio from text descriptions
+- Suno - All-in-one music generation platform
+- Google's AudioLM - Audio continuation and generation
+
+## Audio-to-MIDI Tools
+- Samplab - Converts recorded audio to editable MIDI 
+- AudioToMIDI - Extracts musical notes from recordings
+
+## Lyric Generation
+- ChatGPT with specialized prompting
+- Specialized lyric generators 
+
+## Mixing and Mastering
+- LANDR - Automated mastering platform
+- iZotope Elements - AI-assisted mixing plugins`}
+</CodeBlock>
+
+Throughout the quarter, I held weekly office hours where I troubleshooted technical issues, demonstrated workflow optimizations, and helped students combine outputs from multiple AI tools into cohesive songs.
+
+### Project Mentorship
+
+Each week, I reviewed team progress and provided structured feedback to help students overcome creative and technical challenges:
+
+<TechStack
+  title="Mentorship Areas"
+  technologies={[
+    { name: "Project Planning", icon: "FaTasks", url: "#" },
+    { name: "Audio Integration", icon: "FaMusic", url: "#" },
+    { name: "Creative Direction", icon: "FaLightbulb", url: "#" },
+    { name: "Research Documentation", icon: "FaClipboard", url: "#" }
+  ]}
+/>
+
+A significant part of my role involved helping students balance AI assistance with their own creative expression. Many students initially struggled with the paradox of having powerful tools at their disposal but limited domain knowledge to guide their use.
+
+<InfoBox type="info">
+  Students consistently reported that the most challenging phase wasn't generating ideas with AI, but selecting which AI outputs to use and then integrating those disparate elements into a cohesive whole.
+</InfoBox>
+
+## Research Involvement
+
+What began as a teaching assignment evolved into a rich research opportunity. With faculty guidance, I helped design a case study examining how teams of novices collaborate with AI tools over extended periods.
+
+### Data Collection
+
+I systematically collected and organized research materials throughout the course:
+
+- Weekly progress logs from each team
+- Process documentation and milestone submissions
+- Final presentations and reflection essays
+- Published music tracks and accompanying websites
+
+Following the course completion, I assisted in conducting in-depth interviews with nine students from three teams, exploring their experiences, challenges, and perceptions of AI's role in their creative process.
+
+### Analysis and Publication
+
+Working with the research team, I helped analyze the rich qualitative data through an abductive approach using Amabile's Componential Model of Creativity as our theoretical framework. Our findings revealed significant insights that contributed to two published papers:
+
+<ResearchPublication
+  title="Exploring the Collaborative Co-Creation Process with AI: A Case Study in Novice Music Production"
+  authors={["Yue Fu", "Michele Newman", "Lewis Going", "Qiuzi Feng", "Jin Ha Lee"]}
+  publication="Information School, University of Washington"
+  date="2024"
+  abstract="This study examined how undergraduate students with minimal musical experience created original music using AI tools over 10 weeks. Our findings highlight how AI transforms creative workflows: accelerating ideation but compressing preparation, requiring novices to navigate challenging idea selection phases, and introducing a new 'collaging and refinement' stage."
+  pdfUrl="#"
+  doiUrl="#"
+  showAbstract={true}
+/>
+
+Our research identified key transformations to traditional creative processes when AI becomes involved:
+
+1. **Compressed Preparation Phase** - AI enabled students to bypass traditional learning and move directly to creation
+2. **Accelerated Ideation** - Teams generated numerous ideas quickly but sometimes fixated on initial AI outputs
+3. **Challenging Validation** - Students struggled to evaluate AI-generated options without domain expertise
+4. **New Integration Stage** - Teams faced difficulties combining outputs from different AI tools into cohesive songs
+
+<Badge label="Qualitative Research" color="blue" />
+<Badge label="Human-AI Collaboration" color="purple" />
+<Badge label="Creative Process" color="green" />
+
+## Technical Innovations
+
+Beyond teaching and research, I contributed technically by developing several tools that helped students better understand and utilize AI in their music creation:
+
+### Audio Analysis Workshop
+
+I created and led a workshop on audio analysis, introducing students to key concepts through interactive demonstrations:
+
+<CodeBlock
+  language="typescript"
+  title="Audio Analysis Demonstration"
+  showLineNumbers={true}
+  highlightLines={[8, 9, 10]}
+>
+{`// Simple spectrogram visualization used in workshops
+const visualizeAudio = (audioBuffer, canvas) => {
+  const ctx = canvas.getContext('2d');
+  const audioData = audioBuffer.getChannelData(0);
+  const fftSize = 2048;
+  
+  // Create analyzer node to process audio data
+  const audioContext = new AudioContext();
+  const analyzer = audioContext.createAnalyser();
+  analyzer.fftSize = fftSize;
+  
+  // Convert time domain data to frequency domain
+  const bufferLength = analyzer.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+  analyzer.getByteFrequencyData(dataArray);
+  
+  // Draw frequency data on canvas
+  // ... visualization code
+}`}
+</CodeBlock>
+
+### Team Assignment Algorithm
+
+To optimize team formation, I developed an algorithm that balanced skills and interests across teams:
+
+<InfoBox type="warning">
+  Team dynamics proved crucial for successful AI collaboration. Teams needed a mix of creative vision and technical ability to effectively harness AI tools.
+</InfoBox>
+
+## Challenges & Discoveries
+
+### The Collaging Challenge
+
+The most unexpected finding from both teaching and research was the emergence of what we called the "collaging and refinement" stage. Students generated plenty of promising material using AI, but struggled to integrate these elements:
+
+<ProjectMetrics 
+  stars={37}
+  forks={12}
+  views={1250}
+  lastUpdated="May 2024"
+/>
+
+### AI Perception Evolution
+
+I observed a fascinating evolution in how students perceived AI's role:
+
+1. **Initial Excitement** - Students initially viewed AI as a magical solution
+2. **Technical Frustration** - Reality set in as they encountered limitations and integration challenges
+3. **Balanced Partnership** - By project end, most teams developed a nuanced understanding of AI as a specialized tool rather than a replacement for human creativity
+
+## Impact on My Research Direction
+
+This teaching experience profoundly shaped my own research interests in human-AI co-creation. I became particularly interested in:
+
+1. How AI tools affect the acquisition of domain knowledge
+2. The emotional connection between creators and their AI-assisted work
+3. Design principles that preserve human agency while leveraging AI capabilities
+
+<InfoBox type="info">
+  The challenges students faced integrating AI-generated content directly informed my subsequent research and the development of "Harmony Hub," a project that emphasizes human control over AI-processed audio.
+</InfoBox>
+
+## Lessons Learned
+
+Teaching this capstone provided valuable insights that have influenced my approach to both teaching and researching creative AI:
+
+1. **Process Over Product** - Focusing on documenting the creative process yielded more valuable insights than just evaluating final outputs
+2. **Domain Knowledge Matters** - Even with powerful AI tools, basic domain knowledge significantly impacts creative success
+3. **Social Dynamics Transform** - AI changes how teams collaborate, critique, and assign roles
+
+## Conclusion
+
+Serving as TA for this innovative capstone was a transformative experience that bridged teaching, research, and technical development. The insights gained from observing novices collaborate with AI have informed not only published research but also my own approach to designing AI creative systems.
+
+As AI tools become increasingly embedded in creative workflows, understanding how they transform both individual processes and team dynamics becomes crucial. This experience has positioned me to contribute meaningfully to this emerging field, with a particular focus on designing systems that enhance rather than replace human creativity.
+
+<ProjectCard
+  title="AI Music Class EP Showcase"
+  description="Listen to the original music created by undergraduate students using AI collaboration tools"
+  image="/projects/ta-experience/ep-showcase.jpg"
+  technologies={['Spotify', 'Sound Design', 'AI Music']}
+  liveUrl="https://open.spotify.com/playlist/37i9dQZF1DX4dyzvuaRJ0n"
+/>

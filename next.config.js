@@ -52,7 +52,17 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'github.com/',
+        hostname: 'github.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i1.sndcdn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'soundcloud-images.s3.amazonaws.com',
         pathname: '/**',
       }
     ],
