@@ -16,8 +16,8 @@ interface ProjectCardProps {
     date: string; // Changed from Date to string
     status: 'completed' | 'in-progress' | 'planned';
     featured?: boolean;
-    githubUrl?: string;
-    liveUrl?: string;
+    githubUrl?: string | null;
+    liveUrl?: string | null;
   };
   variant?: 'default' | 'compact';
 }

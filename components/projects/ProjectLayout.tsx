@@ -125,7 +125,7 @@ const ProjectLayout: React.FC<ProjectLayoutProps> = ({
               <div className="mb-8">
                 <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border">
                   <Image
-                    src={project.images?.[activeImage] || project.thumbnailUrl || '/placeholder.jpg'}
+                    src={project.images?.[activeImage] || project.thumbnailUrl || '/projects/project-1.png'}
                     alt={project.title}
                     fill
                     className="object-cover"

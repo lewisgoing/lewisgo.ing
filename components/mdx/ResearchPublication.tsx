@@ -43,25 +43,25 @@ const ResearchPublication: React.FC<ResearchPublicationProps> = ({
       
       <div className="mt-4 flex gap-3">
         {pdfUrl && (
-          <Link 
+          <a 
             href={pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
           >
             <FaFileAlt className="mr-1.5" /> PDF
-          </Link>
+          </a>
         )}
         
         {doiUrl && (
-          <Link 
+          <a 
             href={doiUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
           >
             <FaExternalLinkAlt className="mr-1.5" size={12} /> DOI
-          </Link>
+          </a>
         )}
       </div>
     </div>

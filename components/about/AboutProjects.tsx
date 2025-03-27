@@ -93,7 +93,7 @@ const AboutProjects = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                 
                 <Image
-                  src={project.image || "/images/placeholder-project.webp"}
+                  src={project.image || "/projects/project-1.png"}
                   alt={project.title}
                   fill
                   className="rounded-2xl object-cover transition-transform duration-500 group-hover:scale-105"

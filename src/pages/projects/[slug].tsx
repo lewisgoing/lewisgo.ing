@@ -16,19 +16,45 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 // MDX components
-import Challenge from '@/components/mdx/Challenge';
 import InfoBox from '@/components/mdx/InfoBox';
+import Challenge from '@/components/mdx/Challenge';
 import CodeBlock from '@/components/mdx/CodeBlock';
+import AudioPlayer from '@/components/mdx/AudioPlayer';
+import Badge from '@/components/mdx/Badge'
+import ProjectCard from '@/components/mdx/ProjectCard';
+import ProjectMetrics from '@/components/mdx/ProjectMetrics'
+import ResearchPublication from '@/components/mdx/ResearchPublication';
+import TechStack from '@/components/mdx/TechStack';
+import WebAudioDemo from '@/components/mdx/WebAudioDemo';
 
 // Define projects directory path
 const projectsDirectory = path.join(process.cwd(), 'content/projects');
 
+// Add this interface near the top of the file
+interface ProjectData {
+  date: string;
+  title: string;
+  description: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  thumbnailUrl?: string;
+  completedDate?: string;
+  images?: string[];
+  [key: string]: any; // For other dynamic properties
+}
+
 // MDX components mapping
 const components = {
-  Challenge,
   InfoBox,
-  pre: CodeBlock,
-  // Add any other custom components here
+  Challenge,
+  ProjectCard,
+  CodeBlock,
+  AudioPlayer,
+  Badge,
+  ProjectMetrics,
+  ResearchPublication,
+  TechStack,
+  WebAudioDemo
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -64,11 +90,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data, content } = matter(fileContents);
   
   // Process data to ensure all dates are strings
-  const serializedData = {
+  const serializedData: ProjectData = {
     ...data,
     date: typeof data.date === 'object' && data.date instanceof Date 
       ? data.date.toISOString() 
-      : data.date
+      : data.date,
+    title: data.title || '',
+    description: data.description || ''
   };
   
   // Serialize the MDX content with serialized data

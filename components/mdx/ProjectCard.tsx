@@ -51,14 +51,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         
         <div className="flex gap-3 mt-auto">
           {githubUrl && (
-            <Link href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               <FaGithub size={20} />
-            </Link>
+            </a>
           )}
           {liveUrl && (
-            <Link href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               <FaExternalLinkAlt size={18} />
-            </Link>
+            </a>
           )}
         </div>
       </div>

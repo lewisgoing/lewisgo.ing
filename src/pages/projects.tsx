@@ -61,7 +61,7 @@ async function getAllProjects(): Promise<ProjectWithStringDate[]> {
       
       // Get first image as thumbnail if not explicitly defined
       const thumbnailUrl = data.thumbnailUrl || 
-        (data.images && data.images.length > 0 ? data.images[0] : '/placeholder.jpg');
+        (data.images && data.images.length > 0 ? data.images[0] : '/projects/project-1.png');
       
       // Convert date to ISO string for serialization
       const dateString = new Date(data.date).toISOString();
