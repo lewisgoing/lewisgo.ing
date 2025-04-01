@@ -27,10 +27,24 @@ const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   webpack(config) {
     config.resolve.fallback = { fs: false, net: false, tls: false };
+    
+    // IMPORTANT: Update this section for dual SVG handling
     config.module.rules.push({
       test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
       use: [{ loader: '@svgr/webpack', options: { icon: true } }],
     });
+    
+    // Add this rule to handle SVGs as static assets when loaded via URL
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: { not: /\.[jt]sx?$/ },
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/media/[name].[hash][ext]',
+      },
+    });
+    
     return config;
   },
   images: {

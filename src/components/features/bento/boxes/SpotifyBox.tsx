@@ -1,5 +1,5 @@
 // components/boxes/SpotifyBox.tsx
-'use cache';
+// 'use cache;
 
 import { useEffect, useState } from 'react';
 import { FaSpotify } from 'react-icons/fa';
@@ -8,6 +8,7 @@ import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { getSvgUrl } from '@/utils/blob-utils';
 import ExternalLink from '@/components/assets/ExternalLink';
+import NowPlayingIcon from 'public/svg/now-playing.svg';
 
 interface Track {
   name: string;
@@ -37,7 +38,8 @@ const SpotifyBox = () => {
   const handleMouseLeave = () => setIsHovered(false);
 
   // Get the now playing SVG from blob storage if available
-  const nowPlayingIcon = getSvgUrl('now-playing.svg');
+  // const nowPlayingIcon = getSvgUrl('now-playing.svg');
+  // const nowPlayingIcon = getSvgUrl('now-playing.svg');
 
   useEffect(() => {
     fetch('https://lastfm-last-played.biancarosa.com.br/trancepilled/latest-song')
@@ -99,16 +101,17 @@ const SpotifyBox = () => {
           />
         </div>
 
-        <div className="flex lg:min-w-0 lg:flex-1 lg:flex-col lg:justify-end lg:overflow-hidden lg:pl-0 lg:pt-0 lg:relative lg:w-[97%] sm:min-w-0 sm:flex-1 sm:flex-col sm:justify-end sm:overflow-hidden sm:pl-0 sm:pt-0 sm:relative sm:w-[97%] md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]">
+        <div className="flex bento-lg:min-w-0 bento-lg:flex-1 bento-lg:flex-col bento-lg:justify-end bento-lg:overflow-hidden bento-lg:pl-0 bento-lg:pt-0 bento-lg:relative bento-lg:w-[97%] bento-sm:min-w-0 bento-sm:flex-1 bento-sm:flex-col bento-sm:justify-end bento-sm:overflow-hidden bento-sm:pl-0 bento-sm:pt-0 bento-sm:relative bento-sm:w-[97%] md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]">
           <div className="flex flex-col">
             <span className="mb-2 flex gap-2">
-              <Image 
-                src={nowPlayingIcon}
+            <NowPlayingIcon width={16} height={16} className="text-primary mt-0.5" />
+              {/* <Image 
+                src={NowPlayingIcon}
                 alt="Now playing" 
                 width={16} 
                 height={16} 
                 unoptimized
-              />
+              /> */}
               <span className="text-sm text-primary">
                 {displayData['@attr']?.nowplaying === 'true' ? 'Now playing...' : 'Last played...'}
               </span>

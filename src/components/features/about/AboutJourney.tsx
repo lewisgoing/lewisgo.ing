@@ -1,5 +1,5 @@
 // components/about/AboutJourney.tsx
-'use cache';
+// 'use cache;
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';

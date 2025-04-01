@@ -1,5 +1,5 @@
 // components/about/AboutHero.tsx
-'use cache';
+// 'use cache;
 
 import React, { useState } from 'react';
 import ShaderGradientBox from '@/components/features/bento/boxes/ShaderGradientBox';

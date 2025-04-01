@@ -1,5 +1,5 @@
 // components/boxes/ProjectsBox.tsx
-// Since we're using the Pages Router, we can't use 'use cache' directive
+// Since we're using the Pages Router, we can't use // 'use cache directive
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { MoveUpRight, ChevronRight, ChevronLeft } from 'lucide-react';

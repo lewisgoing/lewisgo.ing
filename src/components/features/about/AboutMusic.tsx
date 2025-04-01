@@ -1,5 +1,5 @@
 // components/about/AboutMusic.tsx
-'use cache';
+// 'use cache;
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';

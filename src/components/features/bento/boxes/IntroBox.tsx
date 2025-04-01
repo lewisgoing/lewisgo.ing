@@ -1,5 +1,5 @@
 // components/boxes/IntroBox.tsx
-'use cache';
+// 'use cache;
 
 import React, { useState } from 'react';
 import ImageBox from '@/components/shared/ImageBox';
