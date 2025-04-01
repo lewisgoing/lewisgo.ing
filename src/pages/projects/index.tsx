@@ -66,7 +66,7 @@ export default function ProjectsPage({
               <div className="font-semibold">{year}</div>
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {projectsByYear[year].map((project) => {
-                  console.log('Project data:', JSON.stringify(project, null, 2));
+                  // console.log('Project data:', JSON.stringify(project, null, 2));
                   return (
                     <li key={project.id}>
                       <ProjectCard project={project} />

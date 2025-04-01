@@ -102,14 +102,14 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
         <div className="m-3 flex flex-col h-full gap-3">
           <div className="h-6 flex-shrink-0">
             <div className="bg-tertiary/50 rounded-lg w-[40%] h-full ml-auto">
-            <DiscordBadges className="w-full h-full rounded-lg grayscale" />
-              {/* <Image
-                src={discordBadgesUrl}
+
+              <Image
+                src='svg/discord-badges.svg'
                 alt="Discord Badges"
                 width={0}
                 height={0}
                 className="w-full rounded-lg grayscale"
-              /> */}
+              />
             </div>
           </div>
           <div className="text-sm h-fit px-2 py-1 rounded-lg bg-tertiary/50 leading-snug">
@@ -154,14 +154,13 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center w-full h-full">
-                {/* <Image
-                  src={discordImageUrl}
+                <Image
+                  src='svg/discord.svg'
                   alt="No Status Image"
                   width={0}
                   height={0}
                   className="h-full w-fit rounded-lg"
-                /> */}
-                <DiscordStatus className="h-full w-fit rounded-lg" />
+                />
               </div>
             )}
           </div>
@@ -211,14 +210,13 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
                   @{lanyard.data.discord_user.username}
                 </div>
               </div>
-              {/* <Image
-                src={discordBadgesUrl}
+              <Image
+                src='svg/discord-badges.svg'
                 alt="Discord Badges"
                 width={0}
                 height={0}
                 className="h-full w-full rounded-md grayscale"
-              /> */}
-              <DiscordBadges className="w-full h-full rounded-md grayscale" />
+              />
             </div>
           </div>
           <div className="flex h-full py-1 px-2 bento-md:p-2 bg-tertiary/50 leading-snug gap-2 items-center rounded-2xl">
@@ -257,14 +255,13 @@ const DiscordStatusBox = ({ lanyard, onLoad }) => {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center w-full h-full">
-                {/* <Image
-                  src={discordImageUrl}
+                <Image
+                  src='svg/discord.svg'
                   alt="No Status Image"
                   width={0}
                   height={0}
                   className="h-full w-fit rounded-lg"
-                /> */}
-                  <DiscordStatus className="h-full w-fit rounded-lg" />
+                />
               </div>
             )}
           </div>
