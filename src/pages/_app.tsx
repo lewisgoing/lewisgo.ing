@@ -1,8 +1,8 @@
 // src/pages/_app.tsx
 
-import Footer from '../../components/Footer';
-import NavBar from '../../components/NavBar';
-import SectionContainer from '../../components/SectionContainer';
+import Footer from '@/layout/Footer';
+import NavBar from '@/layout/NavBar';
+import SectionContainer from '../components/layout/SectionContainer';
 import type { AppProps } from 'next/app';
 import siteMetadata from '../../public/data/siteMetaData';
 
@@ -17,12 +17,12 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import '../styles/globals.css';
-import { ThemeProviders } from '../../components/ThemeProviders';
+import { ThemeProviders } from '@/components/shared/ThemeProviders';
 import { Analytics } from '@vercel/analytics/next';
 
 import { fontClass } from '../utils/fonts';
-import LayoutWrapper from '@/components/LayoutWrapper';
-import MDXWrapper from '@/components/MDXProvider';
+import LayoutWrapper from 'src/components/layout/LayoutWrapper';
+import MDXWrapper from '@/components/mdx/MDXProvider';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),

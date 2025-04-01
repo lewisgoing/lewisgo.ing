@@ -8,13 +8,13 @@ import siteMetadata from 'public/data/siteMetaData';
 // import { unstable_after as after } from 'next/server';
 
 // Components
-import AboutHero from '@/components/about/AboutHero';
-import AboutJourney from '@/components/about/AboutJourney';
-import AboutSkills from '@/components/about/AboutSkills';
-import AboutProjects from '@/components/about/AboutProjects';
-import AboutMusic from '@/components/about/AboutMusic';
-import AboutContact from '@/components/about/AboutContact';
-import AboutLayout from '@/components/about/AboutLayout';
+import AboutHero from '@/components/features/about/AboutHero';
+import AboutJourney from '@/components/features/about/AboutJourney';
+import AboutSkills from '@/components/features/about/AboutSkills';
+import AboutProjects from '@/components/features/about/AboutProjects';
+import AboutMusic from '@/components/features/about/AboutMusic';
+import AboutContact from '@/components/features/about/AboutContact';
+import AboutLayout from '@/components/features/about/AboutLayout';
 // import { after } from 'lodash';
 
 // Animation variants

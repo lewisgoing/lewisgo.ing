@@ -2,19 +2,28 @@ import { useState } from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { ProjectCard } from '@/components/projects/ProjectCard';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import Container from '@/components/Container';
-import Pagination from '@/components/ui/pagination';
+import { ProjectCard } from 'src/components/features/projects/ProjectCard';
+import Breadcrumbs from 'src/components/common/Breadcrumbs';
+import Container from 'src/components/common/Container';
+import Pagination from 'src/components/ui/pagination';
 import { Archive, FolderOpen } from 'lucide-react';
-import { Project } from 'src/types/types';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
 // Define a type for projects with string dates for serialization
-interface ProjectWithStringDate extends Omit<Project, 'date'> {
+interface ProjectWithStringDate {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
   date: string;
+  tags: string[];
+  image: string;
+  link: string;
+  content?: string;
+  draft?: boolean;
+  hidden?: boolean;
 }
 
 interface ProjectsPageProps {
@@ -58,11 +67,14 @@ export default function ProjectsPage({
             <section key={year} className="flex flex-col gap-y-4">
               <div className="font-semibold">{year}</div>
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {projectsByYear[year].map((project) => (
-                  <li key={project.slug}>
-                    <ProjectCard project={project} />
-                  </li>
-                ))}
+                {projectsByYear[year].map((project) => {
+                  console.log('Project data:', JSON.stringify(project, null, 2));
+                  return (
+                    <li key={project.id}>
+                      <ProjectCard project={project} />
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}

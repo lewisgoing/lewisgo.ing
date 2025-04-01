@@ -1,8 +1,30 @@
 // next.config.ts
 import type { NextConfig } from 'next';
+import withMDXPlugin from '@next/mdx';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypePrismPlus from 'rehype-prism-plus';
+import rehypeKatex from 'rehype-katex';
+
+// MDX configuration
+const withMDX = withMDXPlugin({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [remarkGfm, remarkMath],
+    rehypePlugins: [
+      rehypeSlug,
+      [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+      rehypePrismPlus,
+      rehypeKatex
+    ],
+  },
+});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   webpack(config) {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.module.rules.push({
@@ -33,7 +55,21 @@ const nextConfig: NextConfig = {
         hostname: 'lastfm.freetls.fastly.net',
         pathname: '/**',
       },
-      // Add Vercel Blob hostname pattern
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i1.sndcdn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'soundcloud-images.s3.amazonaws.com',
+        pathname: '/**',
+      },
       {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
@@ -41,7 +77,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // NextJS 15 features
   experimental: {
     useCache: true,
     dynamicIO: true,
@@ -63,25 +98,14 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  publicRuntimeConfig: {
+    staticFolder: '/public',
+  },
   // Add environment variables that should be available to the client
   env: {
-    NEXT_PUBLIC_USE_VERCEL_BLOB: process.env.NEXT_PUBLIC_USE_VERCEL_BLOB || 'false',
-    VERCEL_BLOB_URL: process.env.NEXT_PUBLIC_VERCEL_BLOB_URL || '',
+    NEXT_PUBLIC_USE_VERCEL_BLOB: process.env.NEXT_PUBLIC_USE_VERCEL_BLOB,
+    VERCEL_BLOB_URL: process.env.NEXT_PUBLIC_VERCEL_BLOB_URL,
   },
 };
 
-const withMDX = require('@next/mdx')({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [require('remark-gfm'), require('remark-math')],
-    rehypePlugins: [
-      require('rehype-slug'),
-      [require('rehype-autolink-headings'), { behavior: 'wrap' }],
-      require('rehype-prism-plus'),
-      require('rehype-katex'),
-    ],
-  },
-})
-
-
-export default nextConfig;
+export default withMDX(nextConfig);

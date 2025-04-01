@@ -42,18 +42,22 @@ export function getAssetUrl(path: string): string {
   /**
    * Gets the proper URL for an SVG file
    */
-  export function getSvgUrl(fileName: string): string {
-    // Extract just the filename if a full path is provided
-    const svgFileName = fileName.includes('/') 
-      ? fileName.split('/').pop() || fileName 
-      : fileName;
-      
-    // Make sure it has .svg extension
-    const withExtension = svgFileName.endsWith('.svg') 
-      ? svgFileName 
-      : `${svgFileName}.svg`;
-      
-    const path = `svg/${withExtension}`;
+export function getSvgUrl(fileName: string): string {
+  // Extract just the filename if a full path is provided
+  const svgFileName = fileName.includes('/') 
+    ? fileName.split('/').pop() || fileName 
+    : fileName;
     
-    return getAssetUrl(path);
-  }
+  // Make sure it has .svg extension
+  const withExtension = svgFileName.endsWith('.svg') 
+    ? svgFileName 
+    : `${svgFileName}.svg`;
+    
+  // Always use the public/svg path for consistency
+  const path = `svg/${withExtension}`;
+  
+  // For debugging, log the resolved path
+  console.log(`Resolving SVG: ${fileName} -> ${path}`);
+  
+  return getAssetUrl(path);
+}

@@ -1,6 +1,6 @@
 // src/pages/index.tsx
 import Head from 'next/head';
-import Bento from '../../components/Bento';
+import Bento from '@/components/features/bento/Bento';
 
 export default function Home() {
   return (
