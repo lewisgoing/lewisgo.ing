@@ -49,11 +49,9 @@ export default function ProjectsPage({
 
   return (
     <>
-      <Head>
-        <title>Projects {currentPage > 1 ? `- Page ${currentPage}` : ''}</title>
-        <meta name="description" content={`My projects and work${currentPage > 1 ? ` - Page ${currentPage}` : ''}`} />
-      </Head>
-
+<Head>
+  <title>{`Projects${currentPage > 1 ? ` - Page ${currentPage}` : ''}`}</title>
+</Head>
       <Container className="flex grow flex-col gap-y-6">
         <Breadcrumbs
           items={[
