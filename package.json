@@ -44,7 +44,7 @@
     "katex": "^0.16.21",
     "lodash": "^4.17.21",
     "lucide-react": "^0.359.0",
-    "next": "^15.2.0-canary.76",
+    "next": "^15.2.4",
     "next-mdx-remote": "^5.0.0",
     "next-redis-cache": "^1.0.3",
     "next-themes": "^0.3.0",
