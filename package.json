@@ -68,7 +68,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.150.1",
-    "undici": "^5.28.5",
+    "undici": "^5.29.0",
     "vercel": "^41.3.2"
   },
   "devDependencies": {
