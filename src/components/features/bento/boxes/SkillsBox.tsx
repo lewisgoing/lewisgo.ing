@@ -9,14 +9,16 @@ import { SiTailwindcss } from 'react-icons/si';
 import { SiTypescript } from 'react-icons/si';
 import { SiJavascript } from 'react-icons/si';
 import { SiGit } from 'react-icons/si';
-import { SiAbletonlive } from 'react-icons/si';
+import { SiAudiomack } from 'react-icons/si';
 import { SiFigma } from 'react-icons/si';
 import { SiHtml5 } from 'react-icons/si';
-import { SiPowerautomate } from 'react-icons/si';
+import { SiApacheairflow } from 'react-icons/si';
 import { FaMarkdown } from 'react-icons/fa';
 import { SiGnubash } from 'react-icons/si';
 import { FaSmileBeam } from 'react-icons/fa';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/ui/tooltip';
+import { LuKeyboardMusic } from "react-icons/lu";
+import { TbAutomation } from "react-icons/tb";
 
 // Prepare your icons in an array for easy mapping
 const icons = [
@@ -29,10 +31,10 @@ const icons = [
   { Icon: SiTypescript, description: 'TypeScript' },
   { Icon: SiJavascript, description: 'JavaScript' },
   { Icon: SiGit, description: 'Git' },
-  { Icon: SiAbletonlive, description: 'Ableton Live' },
+  { Icon: LuKeyboardMusic, description: 'Ableton Live' },
   { Icon: SiFigma, description: 'Figma' },
   { Icon: SiHtml5, description: 'HTML' },
-  { Icon: SiPowerautomate, description: 'Power Automate' },
+  { Icon: TbAutomation, description: 'Power Automate' },
   { Icon: FaMarkdown, description: 'Markdown' },
   { Icon: SiGnubash, description: 'Bash' },
   { Icon: FaSmileBeam, description: 'Soft Skills' },

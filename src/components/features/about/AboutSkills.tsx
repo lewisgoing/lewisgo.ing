@@ -21,20 +21,20 @@ import {
   SiTypescript, 
   SiJavascript, 
   SiGit, 
-  SiAbletonlive, 
+  SiAudiomack, 
   SiFigma, 
   SiHtml5, 
-  SiPowerautomate, 
+  SiApacheairflow, 
   SiNodedotjs,
   SiMongodb,
   SiPostgresql,
   SiGraphql,
   SiDocker,
-  SiAmazonaws,
+  SiAmazonwebservices,
   SiGithubactions,
   SiFirebase,
   SiVercel,
-  SiVisualstudiocode,
+  SiAndroidstudio,
   SiThreedotjs
 } from 'react-icons/si';
 import { FaMarkdown, FaSmileBeam, FaServer, FaMobileAlt } from 'react-icons/fa';
@@ -177,7 +177,7 @@ const skillCategories: SkillCategory[] = [
       },
       { 
         name: "AWS", 
-        icon: SiAmazonaws, 
+        icon: SiAmazonwebservices, 
         proficiency: 2,
         description: "S3, Lambda, CloudFront, and serverless architectures" 
       },
@@ -201,7 +201,7 @@ const skillCategories: SkillCategory[] = [
       },
       { 
         name: "VS Code", 
-        icon: SiVisualstudiocode, 
+        icon: SiAndroidstudio, 
         proficiency: 5,
         description: "Custom extensions, snippets, and productive workflows" 
       },
@@ -225,7 +225,7 @@ const skillCategories: SkillCategory[] = [
       },
       { 
         name: "Ableton Live", 
-        icon: SiAbletonlive, 
+        icon: SiAudiomack, 
         proficiency: 4,
         description: "Music production, sound design, and creative audio" 
       },
@@ -237,7 +237,7 @@ const skillCategories: SkillCategory[] = [
       },
       { 
         name: "Automation", 
-        icon: SiPowerautomate, 
+        icon: SiApacheairflow, 
         proficiency: 3,
         description: "Workflow automation, integrations, and productivity systems" 
       },
