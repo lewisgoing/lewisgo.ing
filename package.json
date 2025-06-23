@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "clean": "bun run build --clean"
   },
   "dependencies": {
     "@lottiefiles/react-lottie-player": "^3.5.3",
