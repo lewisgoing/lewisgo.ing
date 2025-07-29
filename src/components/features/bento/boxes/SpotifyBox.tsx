@@ -8,7 +8,6 @@ import { MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { getSvgUrl } from '@/utils/blob-utils';
 import ExternalLink from '@/components/assets/ExternalLink';
-import NowPlayingIcon from 'public/svg/now-playing.svg';
 
 interface Track {
   name: string;
@@ -38,8 +37,6 @@ const SpotifyBox = () => {
   const handleMouseLeave = () => setIsHovered(false);
 
   // Get the now playing SVG from blob storage if available
-  // const nowPlayingIcon = getSvgUrl('now-playing.svg');
-  // const nowPlayingIcon = getSvgUrl('now-playing.svg');
 
   useEffect(() => {
     fetch('https://lastfm-last-played.biancarosa.com.br/trancepilled/latest-song')
@@ -104,7 +101,7 @@ const SpotifyBox = () => {
         <div className="flex bento-lg:min-w-0 bento-lg:flex-1 bento-lg:flex-col bento-lg:justify-end bento-lg:overflow-hidden bento-lg:pl-0 bento-lg:pt-0 bento-lg:relative bento-lg:w-[97%] bento-sm:min-w-0 bento-sm:flex-1 bento-sm:flex-col bento-sm:justify-end bento-sm:overflow-hidden bento-sm:pl-0 bento-sm:pt-0 bento-sm:relative bento-sm:w-[97%] md:absolute md:pl-36 bento-md:pt-8 bento-md:w-[86%]">
           <div className="flex flex-col">
             <span className="mb-2 flex gap-2">
-            <NowPlayingIcon width={16} height={16} className="text-primary mt-0.5" />
+            <img src="/svg/now-playing.svg" alt="Now playing" width={16} height={16} className="text-primary mt-0.5" />
               {/* <Image 
                 src={NowPlayingIcon}
                 alt="Now playing" 

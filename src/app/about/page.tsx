@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
 import { motion } from 'framer-motion';
 import siteMetadata from 'public/data/siteMetaData';
 // import { unstable_after as after } from 'next/server';
@@ -53,10 +52,6 @@ export default function About() {
   return (
     // <AboutLayout>
     <>
-          <Head>
-        <title>About | {siteMetadata.title}</title>
-        <meta name="description" content="About Lewis Going - Full-stack developer, creative, and student." />
-      </Head>
 
       <div className="divide-y divide-accent-foreground dark:divide-accent">
         <div className="space-y-24 pt-10 sm:space-y-32 sm:pt-12 md:space-y-40 md:pt-16">
