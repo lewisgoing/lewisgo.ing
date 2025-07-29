@@ -92,7 +92,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    typedRoutes: true,
+    typedRoutes: false,
     serverActions: {
       bodySizeLimit: '2mb',
     },

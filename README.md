@@ -42,6 +42,8 @@ This project leverages modern web technologies:
   - Vercel Blob
 - **Deployment**: Vercel
 
+This version uses the Next.js **App Router** under `/src/app` and bundles global providers in `layout.tsx`. Run development with `bun dev`.
+
 ## Project Structure
 
 ```
@@ -54,20 +56,20 @@ This project leverages modern web technologies:
 │   ├── images/         # Images and artwork
 │   └── svg/            # SVG assets
 ├── src/
+│   ├── app/            # Next.js App Router
+│   │   ├── api/        # Route handlers
+│   │   ├── about/      # About route
+│   │   └── projects/   # Project routes
 │   ├── components/     # UI Components
 │   │   ├── assets/     # Asset components
 │   │   ├── common/     # Common UI elements
 │   │   ├── features/   # Feature components
-│   │   │   ├── about/  # About page components
-│   │   │   ├── bento/  # Bento grid components
-│   │   │   └── projects/ # Project components
 │   │   ├── layout/     # Layout components
 │   │   ├── mdx/        # MDX rendering components
 │   │   ├── shared/     # Shared components
 │   │   └── ui/         # Base UI components
 │   ├── contexts/       # React context providers
 │   ├── hooks/          # Custom React hooks
-│   ├── pages/          # Next.js pages
 │   ├── styles/         # CSS styles
 │   ├── types/          # TypeScript type definitions
 │   └── utils/          # Utility functions
